@@ -258,7 +258,7 @@ charmap = {
     0xF9:u"プ",
     0xFA:u"ペ",
     0xFB:u"ポ",
-    #0xFC:u"[FC]",
+    0xFC:u"～",
     #0xFD:u"[FD]",
     #0xFE:u"[FE]",
     #0xFF:u"[FF]",

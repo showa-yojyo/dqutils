@@ -23,7 +23,7 @@ from dqutils.parser import getbits, getbytes
 from dqutils.dq6 import open_rom
 import mmap
 
-__DEBUG__ = True
+__DEBUG__ = False
 
 def _is_delimiter(code):
     """Local function"""
