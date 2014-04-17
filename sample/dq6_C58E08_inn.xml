@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ6 宿屋構造体
+     $Id: $
+  -->
+  <rom name="dq6"/>
+  <struct cpuaddress="0xC58E0B" size="4" number="0x25">
+    <member offset="0x00" type="word" format="%d" name="台詞グループ"/>
+    <member offset="0x02" type="word" format="%d" name="宿代"/>
+  </struct>
+</db>

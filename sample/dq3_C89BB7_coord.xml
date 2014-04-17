@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 座標情報構造体（この名前では詳細がわからない）
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC89BB7" size="5" number="408">
+    <member offset="0x00" type="bit" mask="0x03FF" format="%04X" name="マップ"/>
+    <member offset="0x01" type="bit" mask="0x07FE" format="%d" name="X"/>
+    <member offset="0x02" type="bit" mask="0x0FF8" format="%d" name="Y"/>
+
+    <member offset="0x03" type="bit" mask="0xF0" format="%02X" name="unknown"/>
+    <member offset="0x04" type="byte" name="unknown"/>
+  </struct>
+</db>

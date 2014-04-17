@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 行動構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC21860" size="29" number="274">
+    <member offset="0x00" type="word" format="@TEXT(%04X)" name="名前"/>
+
+    <!-- JSR ($6971,X) -->
+    <member offset="0x02" type="byte" name="対象選択ルーチン[0]"/>
+    <member offset="0x03" type="byte" name="対象選択ルーチン[1]"/>
+    <member offset="0x04" type="byte" name="対象選択ルーチン[2]"/>
+
+    <member offset="0x05" type="byte" name="効果音"/>
+    <member offset="0x06" type="long" name="処理ルーチン"/>
+    <member offset="0x09" type="word" format="@BATTLE_MSG(%04X)" name="メッセージ"/>
+    <member offset="0x0B" type="byte" name="キャプション"/>
+
+    <member offset="0x0C" type="word" name="表示エフェクトルーチン[0]"/>
+    <member offset="0x0E" type="word" name="表示エフェクトルーチン[1]"/> <!-- $8D71 -->
+    <member offset="0x10" type="word" name="消滅ルーチン"/>
+
+    <member offset="0x12" type="byte" name="ダメージ ID"/>
+    <member offset="0x13" type="byte" name="基礎ダメージ算出法"/> <!-- JSR ($BE5E,X) -->
+    <member offset="0x14" type="byte" name="移動時行動"/>
+
+    <!-- ここから細かいビット列となる -->
+
+    <member offset="0x15" type="bit" mask="0x03" format="%d" name="対象数"/> <!-- JSR ($601C,X) -->
+    <member offset="0x15" type="bit" mask="0xFC" format="%d" name="MP"/>
+    <member offset="0x16" type="bit" mask="0x07" format="%d" name="選択対象"/> <!-- JSR ($601C,X) -->
+    <member offset="0x16" type="bit" mask="0xF8" format="%02X" name="呪文属性"/>
+    <member offset="0x17" type="bit" mask="0x0F" format="%d" name="unknown"/>
+    <member offset="0x17" type="bit" mask="0xF0" format="%d" name="成功率係数"/>
+
+    <member offset="0x18" type="bit" mask="0x0F" format="%d" name="装備品耐性係数"/>
+    <member offset="0x18" type="bit" mask="0x30" format="%d" name="戦闘終了時述語処理"/>
+    <member offset="0x18" type="bit" mask="0x40" format="%d" name="マホトーン"/>
+    <member offset="0x18" type="bit" mask="0x80" format="%d" name="マホカンタ"/>
+    <member offset="0x19" type="bit" mask="0x01" format="%d" name="フバーハ"/>
+    <member offset="0x19" type="bit" mask="0x02" format="%d" name="マヌーサ"/>
+    <member offset="0x19" type="bit" mask="0x04" format="%d" name="我に返る"/> <!-- ねむり or こんらん -->
+    <member offset="0x19" type="bit" mask="0x08" format="%d" name="もろはのつるぎ・やいばのよろい"/>
+    <member offset="0x19" type="bit" mask="0x10" format="%d" name="みかわし"/>
+    <member offset="0x19" type="bit" mask="0x20" format="%d" name="バイキルト"/>
+    <member offset="0x19" type="bit" mask="0x40" format="%d" name="会心の一撃"/>
+    <member offset="0x19" type="bit" mask="0x80" format="%d" name="集中攻撃"/> <!-- 要確認 -->
+
+    <member offset="0x1A" type="bit" mask="0x01" format="%d" name="武器による対象複数化"/>
+    <member offset="0x1A" type="bit" mask="0x02" format="%d" name="味方の並び順による狙われやすさ"/> <!-- 要確認 -->
+    <member offset="0x1A" type="bit" mask="0x04" format="%d" name="アストロン"/>
+    <member offset="0x1A" type="bit" mask="0x08" format="%d" name="攻撃ミス"/>
+    <member offset="0x1A" type="bit" mask="0x10" format="%d" name="魔物系統補正"/> <!-- 要確認 -->
+
+    <!-- 次の 3 フラグは並び順を確認済 -->
+    <member offset="0x1A" type="bit" mask="0x20" format="%d" name="どくばり用ダメージ"/>
+    <member offset="0x1A" type="bit" mask="0x40" format="%d" name="即死抽選"/>
+    <member offset="0x1A" type="bit" mask="0x80" format="%d" name="はやぶさのけん"/>
+
+    <member offset="0x1B" type="bit" mask="0x01" format="%d" name="経験値獲得"/>
+    <member offset="0x1B" type="bit" mask="0x02" format="%d" name="メッセージ抑制"/>
+    <member offset="0x1B" type="bit" mask="0x04" format="%d" name="表示エフェクト抑制"/> <!-- JSR $CEBE フラグ -->
+    <member offset="0x1B" type="bit" mask="0x08" format="%d" name="対象突発変更"/> <!-- $00 = $23EA フラグ -->
+    <member offset="0x1B" type="bit" mask="0x10" format="%d" name="うんのよさ依存"/>
+    <member offset="0x1B" type="bit" mask="0x20" format="%d" name="unknown"/>
+    <member offset="0x1B" type="bit" mask="0xC0" format="%d" name="対象死亡時"/>
+
+    <member offset="0x1C" type="bit" mask="0x01" format="%d" name="武器による対象複数化"/>
+    <member offset="0x1C" type="bit" mask="0x02" format="%d" name="対象選択ルーチンが有効"/>
+    <member offset="0x1C" type="bit" mask="0x04" format="%d" name="ゴールド獲得"/>
+    <member offset="0x1C" type="bit" mask="0x08" format="%d" name="アイテム獲得"/> <!-- 要確認 -->
+    <member offset="0x1C" type="bit" mask="0x10" format="%d" name="メダパニ時にこうげきに変更"/>
+    <member offset="0x1C" type="bit" mask="0xE0" format="%d" name="unused"/>
+  </struct>
+</db>

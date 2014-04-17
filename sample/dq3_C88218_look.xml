@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 しらべる構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC88218" size="13" number="140">
+    <member offset="0x00" type="bit" mask="0x1F"  format="%02X" name="対象"/>
+    <member offset="0x00" type="bit" mask="0x3FE0" format="%d" name="X"/>
+    <member offset="0x01" type="bit" mask="0x7FC0" format="%d" name="Y"/>
+    <member offset="0x02" type="bit" mask="0x0180" format="%d" name="Z"/>
+    <member offset="0x03" type="bit" mask="0xFE" format="%02X" name="unknown"/>
+    <member offset="0x04" type="byte" name="unknown"/>
+    <member offset="0x05" type="long" name="処理ルーチン"/>
+    <member offset="0x08" type="long" name="何らかのアドレス"/>
+    <member offset="0x0B" type="word" name="フラグ"/>
+  </struct>
+</db>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 モンスター構造体
+     $Id: $
+-->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC20000" size="0x25" number="0xA0">
+    <member offset="0x00" type="word" format="@TEXT(%04X)" name="名前"/>
+    <member offset="0x02" type="bit" mask="0x3F" format="%d" name="レベル"/>
+    <member offset="0x02" type="bit" mask="0x40" format="%d" name="ドラゴン"/>
+    <member offset="0x02" type="bit" mask="0x80" format="%d" name="ゾンビ"/>
+    <member offset="0x03" type="word" format="%d" name="経験値"/>
+    <member offset="0x05" type="bit" mask="0x03FF" format="%d" name="ゴールド"/>
+    <member offset="0x06" type="bit" mask="0x0FFC" format="%d" name="攻撃力"/>
+    <member offset="0x07" type="bit" mask="0x3FF0" format="%d" name="守備力"/>
+    <member offset="0x09" type="byte" format="%02X" name="パレット"/>
+    <member offset="0x0A" type="byte" format="%d" name="すばやさ"/>
+    <member offset="0x0B" type="byte" format="%d" name="MP"/>
+    <member offset="0x0C" type="byte" format="%02X" name="アイテム"/>
+    <member offset="0x0D" type="word" format="%04X" name="$C54F80 ID"/>
+    <member offset="0x0E" type="bit" mask="0x01FF" format="%03X" name="行動ID[0]"/>
+    <member offset="0x0F" type="bit" mask="0x03FE" format="%03X" name="行動ID[1]"/>
+    <member offset="0x10" type="bit" mask="0x07FC" format="%03X" name="行動ID[2]"/>
+    <member offset="0x11" type="bit" mask="0x0FF8" format="%03X" name="行動ID[3]"/>
+    <member offset="0x12" type="bit" mask="0x1FF0" format="%03X" name="行動ID[4]"/>
+    <member offset="0x13" type="bit" mask="0x3FE0" format="%03X" name="行動ID[5]"/>
+    <member offset="0x14" type="bit" mask="0x7FC0" format="%03X" name="行動ID[6]"/>
+    <member offset="0x15" type="bit" mask="0xFF80" format="%03X" name="行動ID[7]"/>
+    <member offset="0x17" type="bit" mask="0x01" format="%d" name="行動フラグ[0]"/>
+    <member offset="0x17" type="bit" mask="0x02" format="%d" name="行動フラグ[1]"/>
+    <member offset="0x17" type="bit" mask="0x04" format="%d" name="行動フラグ[2]"/>
+    <member offset="0x17" type="bit" mask="0x08" format="%d" name="行動フラグ[3]"/>
+    <member offset="0x17" type="bit" mask="0x10" format="%d" name="行動フラグ[4]"/>
+    <member offset="0x17" type="bit" mask="0x20" format="%d" name="行動フラグ[5]"/>
+    <member offset="0x17" type="bit" mask="0x40" format="%d" name="行動フラグ[6]"/>
+    <member offset="0x17" type="bit" mask="0x80" format="%d" name="行動フラグ[7]"/>
+    <member offset="0x18" type="bit" mask="0x03" format="%02X" name="JSR($CE37,X)[0]"/>
+    <member offset="0x18" type="bit" mask="0x0C" format="%02X" name="JSR($CE37,X)[1]"/>
+    <member offset="0x19" type="bit" mask="0x30" format="%02X" name="JSR($CE37,X)[2]"/>
+    <member offset="0x19" type="bit" mask="0xC0" format="%02X" name="JSR($CE37,X)[3]"/>
+    <member offset="0x1A" type="bit" mask="0x03" format="%02X" name="JSR($CE37,X)[4]"/>
+    <member offset="0x1A" type="bit" mask="0x0C" format="%02X" name="JSR($CE37,X)[5]"/>
+    <member offset="0x1B" type="bit" mask="0x30" format="%02X" name="JSR($CE37,X)[6]"/>
+    <member offset="0x1B" type="bit" mask="0xC0" format="%02X" name="JSR($CE37,X)[7]"/>
+    <member offset="0x1C" type="bit" mask="0x03" format="%02X" name="JSR($CE37,X)[8]"/>
+    <member offset="0x1C" type="bit" mask="0x30" format="%d" name="行動タイプ"/>
+    <member offset="0x1C" type="bit" mask="0xC0" format="%d" name="行動関係"/>
+    <member offset="0x1D" type="bit" mask="0x07" format="%d" name="よけ"/>
+    <member offset="0x1D" type="bit" mask="0x38" format="%d" name="アイテム確率"/>
+    <member offset="0x1D" type="bit" mask="0xC0" format="%d" name="複数回"/>
+    <member offset="0x1E" type="bit" mask="0x03" format="%d" name="自動回復"/>
+    <member offset="0x1E" type="bit" mask="0x0C" format="%d" name="集中攻撃"/>
+    <member offset="0x1E" type="bit" mask="0x30" format="%d" name="メラ"/>
+    <member offset="0x1E" type="bit" mask="0xC0" format="%d" name="ヒャド"/>
+    <member offset="0x1F" type="bit" mask="0x03" format="%d" name="バギ"/>
+    <member offset="0x1F" type="bit" mask="0x0C" format="%d" name="デイン"/>
+    <member offset="0x1F" type="bit" mask="0x30" format="%d" name="ザキ"/>
+    <member offset="0x1F" type="bit" mask="0xC0" format="%d" name="メガンテ"/>
+    <member offset="0x20" type="bit" mask="0x03" format="%d" name="ラリホー"/>
+    <member offset="0x20" type="bit" mask="0x0C" format="%d" name="マホトーン"/>
+    <member offset="0x20" type="bit" mask="0x30" format="%d" name="ルカニ"/>
+    <member offset="0x20" type="bit" mask="0xC0" format="%d" name="マヌーサ"/>
+    <member offset="0x21" type="bit" mask="0x03" format="%d" name="マホトラ"/>
+    <member offset="0x21" type="bit" mask="0x0C" format="%d" name="メダパニ"/>
+    <member offset="0x21" type="bit" mask="0x30" format="%d" name="ボミオス"/>
+    <member offset="0x21" type="bit" mask="0xC0" format="%d" name="ニフラム"/>
+    <member offset="0x22" type="word" format="%d" name="HP"/>
+    <member offset="0x24" type="bit" mask="0x01" format="%d" name="メタル"/>
+    <member offset="0x24" type="bit" mask="0x02" format="%d" name="限界登場数"/>
+  </struct>
+</db>

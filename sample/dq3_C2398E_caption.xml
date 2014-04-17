@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 行動説明テキスト構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC2398E" size="6" number="0x49">
+    <member offset="0x00" type="word" format="@TEXT(%04X)" name="文字列[0]"/>
+    <member offset="0x02" type="word" format="@TEXT(%04X)" name="文字列[1]"/>
+    <member offset="0x04" type="word" format="@TEXT(%04X)" name="文字列[2]"/>
+  </struct>
+</db>

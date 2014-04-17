@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ5 特殊エンカウント構造体
+     $Id: $
+  -->
+  <rom name="dq5"/>
+  <struct cpuaddress="0x23B04B" size="6" number="9">
+    <member offset="0x00" type="byte" name="モンスター[0]"/>
+    <member offset="0x01" type="byte" name="モンスター[1]"/>
+    <member offset="0x02" type="byte" name="モンスター[2]"/>
+
+    <member offset="0x03" type="bit" mask="0x0F" format="%d" name="unknown"/>  <!-- どうせオールゼロ -->
+    <member offset="0x03" type="bit" mask="0xF0" format="%d" name="頭数抽選[0]"/>
+    <member offset="0x04" type="bit" mask="0x0F" format="%d" name="unknown"/>  <!-- どうせオールゼロ -->
+    <member offset="0x04" type="bit" mask="0xF0" format="%d" name="頭数抽選[1]"/>
+    <member offset="0x05" type="bit" mask="0x0F" format="%d" name="unknown"/>  <!-- どうせオールゼロ -->
+    <member offset="0x05" type="bit" mask="0xF0" format="%d" name="頭数抽選[2]"/>
+  </struct>
+</db>

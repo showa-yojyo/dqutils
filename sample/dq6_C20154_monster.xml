@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ6 モンスター構造体
+     $Id: $
+  -->
+  <rom name="dq6"/>
+  <struct cpuaddress="0xC20154" size="0x2A" number="0x100">
+    <member offset="0x00" type="bit" mask="0x01FF" format="%04X" name="行動[0]"/>
+    <member offset="0x01" type="bit" mask="0x02" format="%d" name="unknown-A[00]"/>
+    <member offset="0x01" type="bit" mask="0x0C" format="%d" name="耐性[00]メラ"/>
+    <member offset="0x01" type="bit" mask="0xF0" format="%d" name="unknown-B[00]"/>
+    <member offset="0x02" type="bit" mask="0x01FF" format="%04X" name="行動[1]"/>
+    <member offset="0x03" type="bit" mask="0x02" format="%d" name="unknown-A[01]"/>
+    <member offset="0x03" type="bit" mask="0x0C" format="%d" name="耐性[01]ギラ"/>
+    <member offset="0x03" type="bit" mask="0xF0" format="%d" name="unknown-B[01]"/>
+    <member offset="0x04" type="bit" mask="0x01FF" format="%04X" name="行動[2]"/>
+    <member offset="0x05" type="bit" mask="0x02" format="%d" name="unknown-A[02]"/>
+    <member offset="0x05" type="bit" mask="0x0C" format="%d" name="耐性[02]イオ"/>
+    <member offset="0x05" type="bit" mask="0xF0" format="%d" name="unknown-B[02]"/>
+    <member offset="0x06" type="bit" mask="0x01FF" format="%04X" name="行動[3]"/>
+    <member offset="0x07" type="bit" mask="0x02" format="%d" name="unknown-A[03]"/>
+    <member offset="0x07" type="bit" mask="0x0C" format="%d" name="耐性[03]ヒャド"/>
+    <member offset="0x07" type="bit" mask="0xF0" format="%d" name="unknown-B[03]"/>
+    <member offset="0x08" type="bit" mask="0x01FF" format="%04X" name="行動[4]"/>
+    <member offset="0x09" type="bit" mask="0x02" format="%d" name="unknown-A[04]"/>
+    <member offset="0x09" type="bit" mask="0x0C" format="%d" name="耐性[04]バギ"/>
+    <member offset="0x09" type="bit" mask="0xF0" format="%d" name="unknown-B[04]"/>
+    <member offset="0x0A" type="bit" mask="0x01FF" format="%04X" name="行動[5]"/>
+    <member offset="0x0B" type="bit" mask="0x02" format="%d" name="unknown-A[05]"/>
+    <member offset="0x0B" type="bit" mask="0x0C" format="%d" name="耐性[05]デイン"/>
+    <member offset="0x0B" type="bit" mask="0xF0" format="%d" name="unknown-B[05]"/>
+
+    <member offset="0x0C" type="bit" mask="0x01FF" format="%d" name="すばやさ"/>
+    <member offset="0x0D" type="byte" format="%d" name="レベル"/>
+
+    <member offset="0x0E" type="bit" mask="0x03FF" format="%d" name="攻撃力"/>
+    <member offset="0x0F" type="bit" mask="0x1C" format="%d" name="アイテム確率"/>
+    <member offset="0x0F" type="bit" mask="0xE0" format="%d" name="行動タイプ"/>
+    <member offset="0x10" type="bit" mask="0x03FF" format="%d" name="守備力"/>
+    <member offset="0x11" type="bit" mask="0x1C" format="%d" name="みかわし"/>
+    <member offset="0x11" type="bit" mask="0xE0" format="%d" name="仲間確率"/>
+
+    <member offset="0x12" type="bit" mask="0x03" format="%d" name="耐性[06]マヌーサ"/>
+    <member offset="0x12" type="bit" mask="0x0C" format="%d" name="耐性[07]ラリホー"/>
+    <member offset="0x12" type="bit" mask="0xFFF8" format="%d" name="ゴールド"/>
+
+    <member offset="0x14" type="bit" mask="0x01" format="%d" name="unknown-C[00]"/>
+    <member offset="0x15" type="bit" mask="0x06" format="%d" name="耐性[08]ザキ"/>
+    <member offset="0x15" type="bit" mask="0x18" format="%d" name="耐性[09]ニフラム"/>
+    <member offset="0x15" type="bit" mask="0x60" format="%d" name="耐性[0A]マホトラ"/>
+    <member offset="0x15" type="bit" mask="0x80" format="%d" name="メタル系"/>
+    <member offset="0x16" type="bit" mask="0x01" format="%d" name="unknown-C[01]"/>
+    <member offset="0x17" type="bit" mask="0x06" format="%d" name="耐性[0B]マホトーン"/>
+    <member offset="0x17" type="bit" mask="0x18" format="%d" name="耐性[0C]メダパニ"/>
+    <member offset="0x17" type="bit" mask="0x60" format="%d" name="耐性[0D]ルカニ"/>
+    <member offset="0x17" type="bit" mask="0x80" format="%d" name="ドラゴン系"/>
+
+    <member offset="0x18" type="bit" mask="0x03" format="%d" name="耐性[0E]"/>
+    <member offset="0x18" type="bit" mask="0x0C" format="%d" name="耐性[0F]毒"/>
+    <member offset="0x18" type="bit" mask="0x30" format="%d" name="耐性[10]やすみ"/>
+    <member offset="0x18" type="bit" mask="0xC0" format="%d" name="耐性[11]踊りふうじ"/>
+    <member offset="0x19" type="bit" mask="0x03" format="%d" name="耐性[12]炎"/>
+    <member offset="0x19" type="bit" mask="0x0C" format="%d" name="耐性[13]吹雪"/>
+    <member offset="0x19" type="bit" mask="0x30" format="%d" name="耐性[14]たたき"/>
+    <member offset="0x19" type="bit" mask="0xC0" format="%d" name="耐性[15]まひ"/>
+    <member offset="0x1A" type="bit" mask="0x03" format="%d" name="耐性[16]ぐんたい"/>
+    <member offset="0x1A" type="bit" mask="0x0C" format="%d" name="耐性[17]"/>
+    <member offset="0x1A" type="bit" mask="0x30" format="%d" name="耐性[18]"/>
+    <member offset="0x1A" type="bit" mask="0xC0" format="%d" name="耐性[19]"/>
+    <member offset="0x1B" type="bit" mask="0x03" format="%d" name="耐性[1A]"/>
+    <member offset="0x1B" type="bit" mask="0x0C" format="%d" name="耐性[1B]"/>
+    <member offset="0x1B" type="bit" mask="0x30" format="%d" name="耐性[1C]"/>
+    <member offset="0x1B" type="bit" mask="0xC0" format="%d" name="耐性[1D]"/>
+    <member offset="0x1C" type="bit" mask="0x03" format="%d" name="耐性[1E]"/>
+    <member offset="0x1C" type="bit" mask="0x0C" format="%d" name="初期確率"/>
+    <member offset="0x1C" type="bit" mask="0x10" format="%d" name="ゾンビ系"/>
+    <member offset="0x1C" type="bit" mask="0x20" format="%d" name="そら系"/>
+    <member offset="0x1C" type="bit" mask="0x40" format="%d" name="スライム系"/>
+    <member offset="0x1C" type="bit" mask="0x80" format="%d" name="unused"/>
+    <member offset="0x1D" type="bit" mask="0x03" format="%d" name="unknown"/>
+    <member offset="0x1D" type="bit" mask="0x0C" format="%d" name="複数回"/>
+    <member offset="0x1D" type="bit" mask="0x30" format="%d" name="自動回復"/>
+    <member offset="0x1D" type="bit" mask="0xC0" format="%d" name="集中攻撃"/>
+
+    <member offset="0x1E" type="byte" format="%04X" name="モンスターイメージ"/>
+    <member offset="0x1F" type="byte" format="%d" name="MP"/>
+    <member offset="0x20" type="byte" format="%04X" name="アイテム"/>
+
+    <member offset="0x21" type="bit" mask="0x03FF" format="%04X" name="パレット"/>
+    <member offset="0x22" type="bit" mask="0x04" format="%d" name="初期状態"/>
+    <member offset="0x22" type="bit" mask="0x78" format="%d" name="unknown-B[06]"/>
+    <member offset="0x22" type="bit" mask="0x80" format="%d" name="unused"/>  <!-- あとで次のフィールドとまとえる -->
+    <member offset="0x23" type="byte" name="unused"/>
+
+    <member offset="0x24" type="word" format="%d" name="HP"/>
+    <member offset="0x26" type="word" format="%d" name="経験値"/>
+    <member offset="0x28" type="word" format="@TEXT(%04X)" name="名前"/>
+  </struct>
+</db>

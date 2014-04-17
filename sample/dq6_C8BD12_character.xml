@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ6 仲間キャラクター構造体
+     $Id: $
+  -->
+  <rom name="dq6"/>
+  <struct cpuaddress="0xC8BD12" size="0x1B" number="0x52">
+    <member offset="0x00" type="word" format="@TEXT(%04X)" name="名前"/>
+    <member offset="0x02" type="word" format="@TEXT(%04X)" name="誰"/>
+
+    <member offset="0x04" type="bit" mask="0x03" format="%d" name="性別"/>
+    <member offset="0x04" type="bit" mask="0x04" format="%d" name="モンスター"/>
+    <member offset="0x04" type="bit" mask="0x08" format="%d" name="パーティ常駐"/>
+    <!-- member offset="0x04" type="bit" mask="0x10" format="%d" name="unused?"/ -->
+    <member offset="0x04" type="bit" mask="0x60" format="%d" name="他人操作"/>
+    <!-- member offset="0x04" type="bit" mask="0x80" format="%d" name="unused"/ -->
+
+    <member offset="0x05" type="byte" format="%d" name="レベル初期値"/>
+    <member offset="0x06" type="byte" format="%04X" name="レベルアップ"/>
+
+    <!-- member offset="0x07" type="bit" mask="0x01" format="%d" name="unused"/ -->
+    <member offset="0x07" type="bit" mask="0x02" format="%d" name="別れ"/>
+
+    <member offset="0x07" type="bit" mask="0x0C" format="%d" name="耐性[00]"/>
+    <member offset="0x07" type="bit" mask="0x30" format="%d" name="耐性[01]"/>
+    <member offset="0x07" type="bit" mask="0xC0" format="%d" name="耐性[02]"/>
+    <member offset="0x08" type="bit" mask="0x03" format="%d" name="耐性[03]"/>
+    <member offset="0x08" type="bit" mask="0x0C" format="%d" name="耐性[04]"/>
+    <member offset="0x08" type="bit" mask="0x30" format="%d" name="耐性[05]"/>
+    <member offset="0x08" type="bit" mask="0xC0" format="%d" name="耐性[06]"/>
+    <member offset="0x09" type="bit" mask="0x03" format="%d" name="耐性[07]"/>
+    <member offset="0x09" type="bit" mask="0x0C" format="%d" name="耐性[08]"/>
+    <member offset="0x09" type="bit" mask="0x30" format="%d" name="耐性[09]"/>
+    <member offset="0x09" type="bit" mask="0xC0" format="%d" name="耐性[0A]"/>
+    <member offset="0x0A" type="bit" mask="0x03" format="%d" name="耐性[0B]"/>
+    <member offset="0x0A" type="bit" mask="0x0C" format="%d" name="耐性[0C]"/>
+    <member offset="0x0A" type="bit" mask="0x30" format="%d" name="耐性[0D]"/>
+    <member offset="0x0A" type="bit" mask="0xC0" format="%d" name="耐性[0E]"/>
+    <member offset="0x0B" type="bit" mask="0x03" format="%d" name="耐性[0F]"/>
+    <member offset="0x0B" type="bit" mask="0x0C" format="%d" name="耐性[10]"/>
+    <member offset="0x0B" type="bit" mask="0x30" format="%d" name="耐性[11]"/>
+    <member offset="0x0B" type="bit" mask="0xC0" format="%d" name="耐性[12]"/>
+    <member offset="0x0C" type="bit" mask="0x03" format="%d" name="耐性[13]"/>
+    <member offset="0x0C" type="bit" mask="0x0C" format="%d" name="耐性[14]"/>
+    <member offset="0x0C" type="bit" mask="0x30" format="%d" name="耐性[15]"/>
+    <member offset="0x0C" type="bit" mask="0xC0" format="%d" name="耐性[16]"/>
+
+    <member offset="0x0D" type="bit" mask="0x03" format="%d" name="unknown"/>
+    <member offset="0x0D" type="bit" mask="0x0C" format="%d" name="複数回"/>
+    <member offset="0x0D" type="bit" mask="0x30" format="%d" name="自動回復"/>
+    <member offset="0x0D" type="bit" mask="0x01C0" format="%d" name="みかわし"/>
+
+    <member offset="0x0E" type="bit" mask="0x1E" name="行動関係？"/>
+    <member offset="0x0E" type="bit" mask="0x07E0" name="行動関係？"/>
+
+    <!-- member offset="0x0F" type="bit" mask="0xF8" name="unused"/ -->
+
+    <member offset="0x10" type="byte" format="%04X" name="初期装備[0]"/>
+    <member offset="0x11" type="byte" format="%04X" name="初期装備[1]"/>
+    <member offset="0x12" type="byte" format="%04X" name="初期装備[2]"/>
+    <member offset="0x13" type="byte" format="%04X" name="初期装備[3]"/>
+    <member offset="0x14" type="byte" format="%04X" name="初期装備[4]"/>
+
+    <member offset="0x15" type="bit" mask="0x1F" format="%02X" name="装備グループ"/>
+    <member offset="0x15" type="bit" mask="0xE0" format="%02X" name="装備状態"/>
+
+    <member offset="0x16" type="bit" mask="0x0FFF" format="%04X" name="移動時画像"/>
+    <member offset="0x17" type="bit" mask="0x0FF0" format="%04X" name="戦闘時画像"/>
+    <member offset="0x18" type="bit" mask="0x3FF0" format="%04X" name="unknown"/>
+    <member offset="0x19" type="bit" mask="0x40" format="%d" name="スライム"/>
+    <!-- member offset="0x19" type="bit" mask="0x80" format="%d" name="unused"/ -->
+    <member offset="0x1A" type="byte" name="$C40014"/>
+  </struct>
+</db>

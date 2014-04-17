@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 アイテム構造体
+
+     $Id: $
+-->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC40043" size="0x13" number="0xE5">
+    <member offset="0x00" type="word" format="@TEXT(%04X)" name="名前"/>
+    <member offset="0x02" type="byte" format="%d" name="アイテム種別"/>
+    <member offset="0x03" type="byte" format="%d" name="装備パラメータ種別"/>
+    <member offset="0x04" type="word" format="%d" name="装備によるパラメータ増加値"/>
+    <member offset="0x06" type="bit" mask="0x01FF" format="%03X" name="職業別装備可能性"/>
+    <member offset="0x07" type="bit" mask="0x02" format="%d" name="消耗"/>
+    <member offset="0x07" type="bit" mask="0x04" format="%d" name="可処分"/>
+    <member offset="0x07" type="bit" mask="0x08" format="%d" name="希少"/>
+    <member offset="0x07" type="bit" mask="0x10" format="%d" name="呪い"/>
+    <member offset="0x07" type="bit" mask="0x30" format="%d" name="性別"/>
+    <member offset="0x07" type="bit" mask="0x80" format="%d" name="整理"/>
+    <member offset="0x08" type="bit" mask="0x01FF" format="%04X" name="戦闘行動 ID"/>
+    <member offset="0x09" type="bit" mask="0x7E" format="%02X" name="$FEE82C 構造体 ID"/>
+    <member offset="0x09" type="bit" mask="0x80" format="%d" name="大事"/>
+    <member offset="0x0A" type="long" format="%d" name="価格"/>
+    <member offset="0x0D" type="word" name="職業別使用可能性"/>
+    <member offset="0x0E" type="byte" name="移動時「つかう」処理 ID"/>
+    <member offset="0x0F" type="byte" name="「みる」処理 ID"/>
+  </struct>
+</db>

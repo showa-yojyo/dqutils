@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ5 アイテム装備可能フラグ配列
+
+     $Id: $
+  -->
+  <rom name="dq5"/>
+  <struct cpuaddress="0x23B669" size="2" number="216">
+    <member offset="0x00" type="word" format="%04X" name="マスク"/>
+  </struct>
+</db>

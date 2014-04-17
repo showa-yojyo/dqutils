@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 職業構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC4179E" size="0x0173" number="9">
+    <member offset="0x00" type="word" format="@TEXT(%04X)" name="名前" />
+    <member offset="0x02" type="byte" name="グラフィック男"/>
+    <member offset="0x03" type="byte" name="グラフィック女"/>
+    <member offset="0x04" type="byte" name="グラフィック水着"/>
+    <member offset="0x05" type="byte" name="未解析"/>
+    <member offset="0x06" type="byte" name="初期性格決定[0]"/>
+    <member offset="0x07" type="byte" name="初期性格決定[1]"/>
+    <member offset="0x08" type="byte" name="初期性格決定[2]"/>
+    <member offset="0x09" type="byte" name="初期性格決定[3]"/>
+    <member offset="0x0A" type="byte" name="初期性格決定[4]"/>
+    <member offset="0x0B" type="long" name="習得呪文配列先頭アドレス"/>
+    <member offset="0x0E" type="byte" format="%d" name="習得呪文配列サイズ"/>
+
+    <member offset="0x00F" type="long" format="%d" name="レベル 2 経験値"/>
+    <member offset="0x012" type="long" format="%d" name="レベル 3 経験値"/>
+    <member offset="0x015" type="long" format="%d" name="レベル 4 経験値"/>
+    <member offset="0x018" type="long" format="%d" name="レベル 5 経験値"/>
+    <member offset="0x01B" type="long" format="%d" name="レベル 6 経験値"/>
+    <member offset="0x01E" type="long" format="%d" name="レベル 7 経験値"/>
+    <member offset="0x021" type="long" format="%d" name="レベル 8 経験値"/>
+    <member offset="0x024" type="long" format="%d" name="レベル 9 経験値"/>
+    <member offset="0x027" type="long" format="%d" name="レベル 10 経験値"/>
+    <member offset="0x02A" type="long" format="%d" name="レベル 11 経験値"/>
+    <member offset="0x02D" type="long" format="%d" name="レベル 12 経験値"/>
+    <member offset="0x030" type="long" format="%d" name="レベル 13 経験値"/>
+    <member offset="0x033" type="long" format="%d" name="レベル 14 経験値"/>
+    <member offset="0x036" type="long" format="%d" name="レベル 15 経験値"/>
+    <member offset="0x039" type="long" format="%d" name="レベル 16 経験値"/>
+    <member offset="0x03C" type="long" format="%d" name="レベル 17 経験値"/>
+    <member offset="0x03F" type="long" format="%d" name="レベル 18 経験値"/>
+    <member offset="0x042" type="long" format="%d" name="レベル 19 経験値"/>
+    <member offset="0x045" type="long" format="%d" name="レベル 20 経験値"/>
+    <member offset="0x048" type="long" format="%d" name="レベル 21 経験値"/>
+    <member offset="0x04B" type="long" format="%d" name="レベル 22 経験値"/>
+    <member offset="0x04E" type="long" format="%d" name="レベル 23 経験値"/>
+    <member offset="0x051" type="long" format="%d" name="レベル 24 経験値"/>
+    <member offset="0x054" type="long" format="%d" name="レベル 25 経験値"/>
+    <member offset="0x057" type="long" format="%d" name="レベル 26 経験値"/>
+    <member offset="0x05A" type="long" format="%d" name="レベル 27 経験値"/>
+    <member offset="0x05D" type="long" format="%d" name="レベル 28 経験値"/>
+    <member offset="0x060" type="long" format="%d" name="レベル 29 経験値"/>
+    <member offset="0x063" type="long" format="%d" name="レベル 30 経験値"/>
+    <member offset="0x066" type="long" format="%d" name="レベル 31 経験値"/>
+    <member offset="0x069" type="long" format="%d" name="レベル 32 経験値"/>
+    <member offset="0x06C" type="long" format="%d" name="レベル 33 経験値"/>
+    <member offset="0x06F" type="long" format="%d" name="レベル 34 経験値"/>
+    <member offset="0x072" type="long" format="%d" name="レベル 35 経験値"/>
+    <member offset="0x075" type="long" format="%d" name="レベル 36 経験値"/>
+    <member offset="0x078" type="long" format="%d" name="レベル 37 経験値"/>
+    <member offset="0x07B" type="long" format="%d" name="レベル 38 経験値"/>
+    <member offset="0x07E" type="long" format="%d" name="レベル 39 経験値"/>
+    <member offset="0x081" type="long" format="%d" name="レベル 40 経験値"/>
+    <member offset="0x084" type="long" format="%d" name="レベル 41 経験値"/>
+    <member offset="0x087" type="long" format="%d" name="レベル 42 経験値"/>
+    <member offset="0x08A" type="long" format="%d" name="レベル 43 経験値"/>
+    <member offset="0x08D" type="long" format="%d" name="レベル 44 経験値"/>
+    <member offset="0x090" type="long" format="%d" name="レベル 45 経験値"/>
+    <member offset="0x093" type="long" format="%d" name="レベル 46 経験値"/>
+    <member offset="0x096" type="long" format="%d" name="レベル 47 経験値"/>
+    <member offset="0x099" type="long" format="%d" name="レベル 48 経験値"/>
+    <member offset="0x09C" type="long" format="%d" name="レベル 49 経験値"/>
+    <member offset="0x09F" type="long" format="%d" name="レベル 50 経験値"/>
+    <member offset="0x0A2" type="long" format="%d" name="レベル 51 経験値"/>
+    <member offset="0x0A5" type="long" format="%d" name="レベル 52 経験値"/>
+    <member offset="0x0A8" type="long" format="%d" name="レベル 53 経験値"/>
+    <member offset="0x0AB" type="long" format="%d" name="レベル 54 経験値"/>
+    <member offset="0x0AE" type="long" format="%d" name="レベル 55 経験値"/>
+    <member offset="0x0B1" type="long" format="%d" name="レベル 56 経験値"/>
+    <member offset="0x0B4" type="long" format="%d" name="レベル 57 経験値"/>
+    <member offset="0x0B7" type="long" format="%d" name="レベル 58 経験値"/>
+    <member offset="0x0BA" type="long" format="%d" name="レベル 59 経験値"/>
+    <member offset="0x0BD" type="long" format="%d" name="レベル 60 経験値"/>
+    <member offset="0x0C0" type="long" format="%d" name="レベル 61 経験値"/>
+    <member offset="0x0C3" type="long" format="%d" name="レベル 62 経験値"/>
+    <member offset="0x0C6" type="long" format="%d" name="レベル 63 経験値"/>
+    <member offset="0x0C9" type="long" format="%d" name="レベル 64 経験値"/>
+    <member offset="0x0CC" type="long" format="%d" name="レベル 65 経験値"/>
+    <member offset="0x0CF" type="long" format="%d" name="レベル 66 経験値"/>
+    <member offset="0x0D2" type="long" format="%d" name="レベル 67 経験値"/>
+    <member offset="0x0D5" type="long" format="%d" name="レベル 68 経験値"/>
+    <member offset="0x0D8" type="long" format="%d" name="レベル 69 経験値"/>
+    <member offset="0x0DB" type="long" format="%d" name="レベル 70 経験値"/>
+    <member offset="0x0DE" type="long" format="%d" name="レベル 71 経験値"/>
+    <member offset="0x0E1" type="long" format="%d" name="レベル 72 経験値"/>
+    <member offset="0x0E4" type="long" format="%d" name="レベル 73 経験値"/>
+    <member offset="0x0E7" type="long" format="%d" name="レベル 74 経験値"/>
+    <member offset="0x0EA" type="long" format="%d" name="レベル 75 経験値"/>
+    <member offset="0x0ED" type="long" format="%d" name="レベル 76 経験値"/>
+    <member offset="0x0F0" type="long" format="%d" name="レベル 77 経験値"/>
+    <member offset="0x0F3" type="long" format="%d" name="レベル 78 経験値"/>
+    <member offset="0x0F6" type="long" format="%d" name="レベル 79 経験値"/>
+    <member offset="0x0F9" type="long" format="%d" name="レベル 80 経験値"/>
+    <member offset="0x0FC" type="long" format="%d" name="レベル 81 経験値"/>
+    <member offset="0x0FF" type="long" format="%d" name="レベル 82 経験値"/>
+    <member offset="0x102" type="long" format="%d" name="レベル 83 経験値"/>
+    <member offset="0x105" type="long" format="%d" name="レベル 84 経験値"/>
+    <member offset="0x108" type="long" format="%d" name="レベル 85 経験値"/>
+    <member offset="0x10B" type="long" format="%d" name="レベル 86 経験値"/>
+    <member offset="0x10E" type="long" format="%d" name="レベル 87 経験値"/>
+    <member offset="0x111" type="long" format="%d" name="レベル 88 経験値"/>
+    <member offset="0x114" type="long" format="%d" name="レベル 89 経験値"/>
+    <member offset="0x117" type="long" format="%d" name="レベル 90 経験値"/>
+    <member offset="0x11A" type="long" format="%d" name="レベル 91 経験値"/>
+    <member offset="0x11D" type="long" format="%d" name="レベル 92 経験値"/>
+    <member offset="0x120" type="long" format="%d" name="レベル 93 経験値"/>
+    <member offset="0x123" type="long" format="%d" name="レベル 94 経験値"/>
+    <member offset="0x126" type="long" format="%d" name="レベル 95 経験値"/>
+    <member offset="0x129" type="long" format="%d" name="レベル 96 経験値"/>
+    <member offset="0x12C" type="long" format="%d" name="レベル 97 経験値"/>
+    <member offset="0x12F" type="long" format="%d" name="レベル 98 経験値"/>
+    <member offset="0x132" type="long" format="%d" name="レベル 99 経験値"/>
+
+    <member offset="0x135" type="byte" format="%d" name="男キャラ Lv 1 のちから"/>
+    <member offset="0x136" type="byte" format="%d" name="女キャラ Lv 1 のちから"/>
+    <member offset="0x137" type="byte" format="%d" name="ちから成長 レベル境界値[0]"/>
+    <member offset="0x138" type="byte" format="%d" name="ちから成長幅[0]"/>
+    <member offset="0x139" type="byte" format="%d" name="ちから成長 レベル境界値[1]"/>
+    <member offset="0x13A" type="byte" format="%d" name="ちから成長幅[1]"/>
+    <member offset="0x13B" type="byte" format="%d" name="ちから成長 レベル境界値[2]"/>
+    <member offset="0x13C" type="byte" format="%d" name="ちから成長幅[2]"/>
+    <member offset="0x13D" type="byte" format="%d" name="ちから成長 レベル境界値[3]"/>
+    <member offset="0x13E" type="byte" format="%d" name="ちから成長幅[3]"/>
+    <member offset="0x13F" type="byte" format="%d" name="ちから成長 レベル境界値[4]"/>
+    <member offset="0x140" type="byte" format="%d" name="ちから成長幅[4]"/>
+
+    <member offset="0x141" type="byte" format="%d" name="男キャラ Lv 1 のすばやさ"/>
+    <member offset="0x142" type="byte" format="%d" name="女キャラ Lv 1 のすばやさ"/>
+    <member offset="0x143" type="byte" format="%d" name="すばやさ成長 レベル境界値[0]"/>
+    <member offset="0x144" type="byte" format="%d" name="すばやさ成長幅[0]"/>
+    <member offset="0x145" type="byte" format="%d" name="すばやさ成長 レベル境界値[1]"/>
+    <member offset="0x146" type="byte" format="%d" name="すばやさ成長幅[1]"/>
+    <member offset="0x147" type="byte" format="%d" name="すばやさ成長 レベル境界値[2]"/>
+    <member offset="0x148" type="byte" format="%d" name="すばやさ成長幅[2]"/>
+    <member offset="0x149" type="byte" format="%d" name="すばやさ成長 レベル境界値[3]"/>
+    <member offset="0x14A" type="byte" format="%d" name="すばやさ成長幅[3]"/>
+    <member offset="0x14B" type="byte" format="%d" name="すばやさ成長 レベル境界値[4]"/>
+    <member offset="0x14C" type="byte" format="%d" name="すばやさ成長幅[4]"/>
+
+    <member offset="0x14D" type="byte" format="%d" name="男キャラ Lv 1 のたいりょく"/>
+    <member offset="0x14E" type="byte" format="%d" name="女キャラ Lv 1 のたいりょく"/>
+    <member offset="0x14F" type="byte" format="%d" name="たいりょく成長 レベル境界値[0]"/>
+    <member offset="0x150" type="byte" format="%d" name="たいりょく成長幅[0]"/>
+    <member offset="0x151" type="byte" format="%d" name="たいりょく成長 レベル境界値[1]"/>
+    <member offset="0x152" type="byte" format="%d" name="たいりょく成長幅[1]"/>
+    <member offset="0x153" type="byte" format="%d" name="たいりょく成長 レベル境界値[2]"/>
+    <member offset="0x154" type="byte" format="%d" name="たいりょく成長幅[2]"/>
+    <member offset="0x155" type="byte" format="%d" name="たいりょく成長 レベル境界値[3]"/>
+    <member offset="0x156" type="byte" format="%d" name="たいりょく成長幅[3]"/>
+    <member offset="0x157" type="byte" format="%d" name="たいりょく成長 レベル境界値[4]"/>
+    <member offset="0x158" type="byte" format="%d" name="たいりょく成長幅[4]"/>
+    <member offset="0x159" type="byte" format="%d" name="たいりょく成長 レベル境界値[5]"/>
+    <member offset="0x15A" type="byte" format="%d" name="たいりょく成長幅[5]"/>
+
+    <member offset="0x15B" type="byte" format="%d" name="男キャラ Lv 1 のかしこさ"/>
+    <member offset="0x15C" type="byte" format="%d" name="女キャラ Lv 1 のかしこさ"/>
+    <member offset="0x15D" type="byte" format="%d" name="かしこさ成長 レベル境界値[0]"/>
+    <member offset="0x15E" type="byte" format="%d" name="かしこさ成長幅[0]"/>
+    <member offset="0x15F" type="byte" format="%d" name="かしこさ成長 レベル境界値[1]"/>
+    <member offset="0x160" type="byte" format="%d" name="かしこさ成長幅[1]"/>
+    <member offset="0x161" type="byte" format="%d" name="かしこさ成長 レベル境界値[2]"/>
+    <member offset="0x162" type="byte" format="%d" name="かしこさ成長幅[2]"/>
+    <member offset="0x163" type="byte" format="%d" name="かしこさ成長 レベル境界値[3]"/>
+    <member offset="0x164" type="byte" format="%d" name="かしこさ成長幅[3]"/>
+    <member offset="0x165" type="byte" format="%d" name="かしこさ成長 レベル境界値[4]"/>
+    <member offset="0x166" type="byte" format="%d" name="かしこさ成長幅[4]"/>
+
+    <member offset="0x167" type="byte" format="%d" name="男キャラ Lv 1 のうんのよさ"/>
+    <member offset="0x168" type="byte" format="%d" name="女キャラ Lv 1 のうんのよさ"/>
+    <member offset="0x169" type="byte" format="%d" name="うんのよさ成長 レベル境界値[0]"/>
+    <member offset="0x16A" type="byte" format="%d" name="うんのよさ成長幅[0]"/>
+    <member offset="0x16B" type="byte" format="%d" name="うんのよさ成長 レベル境界値[1]"/>
+    <member offset="0x16C" type="byte" format="%d" name="うんのよさ成長幅[1]"/>
+    <member offset="0x16D" type="byte" format="%d" name="うんのよさ成長 レベル境界値[2]"/>
+    <member offset="0x16E" type="byte" format="%d" name="うんのよさ成長幅[2]"/>
+    <member offset="0x16F" type="byte" format="%d" name="うんのよさ成長 レベル境界値[3]"/>
+    <member offset="0x170" type="byte" format="%d" name="うんのよさ成長幅[3]"/>
+    <member offset="0x171" type="byte" format="%d" name="うんのよさ成長 レベル境界値[4]"/>
+    <member offset="0x172" type="byte" format="%d" name="うんのよさ成長幅[4]"/>
+  </struct>
+</db>

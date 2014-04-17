@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ5 インパス参照配列 part 1
+     $Id: $
+  -->
+  <rom name="dq5"/>
+  <struct cpuaddress="0x23B309" size="1" number="216">
+    <member offset="0x00" type="bit" mask="0x3F" format="%02X" name="特別効果メッセージ"/>
+    <member offset="0x00" type="bit" mask="0x40" format="%d" name="売値"/>
+    <member offset="0x00" type="bit" mask="0x80" format="%d" name="消耗"/>
+  </struct>
+</db>

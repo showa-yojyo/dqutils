@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ6 店屋構造体
+     $Id: $
+  -->
+  <rom name="dq6"/>
+  <struct cpuaddress="0xC58B93" size="8" number="0x4F">
+    <member offset="0x00" type="word" format="%d" name="店種"/>
+    <member offset="0x02" type="byte" name="商品アイテム[0]"/>
+    <member offset="0x03" type="byte" name="商品アイテム[1]"/>
+    <member offset="0x04" type="byte" name="商品アイテム[2]"/>
+    <member offset="0x05" type="byte" name="商品アイテム[3]"/>
+    <member offset="0x06" type="byte" name="商品アイテム[4]"/>
+    <member offset="0x07" type="byte" name="商品アイテム[5]"/>
+  </struct>
+</db>

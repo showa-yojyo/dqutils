@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ5 タイルエンカウント構造体
+     $Id: $
+  -->
+  <rom name="dq5"/>
+  <struct cpuaddress="0x2396F3" size="0x16" number="0x55">
+    <member offset="0x00" type="byte" format="%d" name="レベル"/>
+
+    <member offset="0x01" type="bit" mask="0x07" format="%d" name="モンスター抽選[00]"/>
+    <member offset="0x01" type="bit" mask="0x38" format="%d" name="頭数抽選[00]"/>
+    <member offset="0x01" type="bit" mask="0xC0" format="%d" name="グループ数抽選[00]"/>
+
+    <member offset="0x02" type="bit" mask="0x07" format="%d" name="モンスター抽選[01]"/>
+    <member offset="0x02" type="bit" mask="0x38" format="%d" name="頭数抽選[01]"/>
+    <member offset="0x02" type="bit" mask="0xC0" format="%d" name="グループ数抽選[01]"/>
+
+    <member offset="0x03" type="bit" mask="0x07" format="%d" name="モンスター抽選[02]"/>
+    <member offset="0x03" type="bit" mask="0x38" format="%d" name="頭数抽選[02]"/>
+    <member offset="0x03" type="bit" mask="0xC0" format="%d" name="グループ数抽選[02]"/>
+
+    <member offset="0x04" type="bit" mask="0x07" format="%d" name="モンスター抽選[03]"/>
+    <member offset="0x04" type="bit" mask="0x38" format="%d" name="頭数抽選[03]"/>
+    <member offset="0x04" type="bit" mask="0xC0" format="%d" name="unknown"/>
+
+    <member offset="0x05" type="bit" mask="0x07" format="%d" name="モンスター抽選[04]"/>
+    <member offset="0x05" type="bit" mask="0x38" format="%d" name="頭数抽選[04]"/>
+    <member offset="0x05" type="bit" mask="0x40" format="%d" name="unused"/>
+    <member offset="0x05" type="bit" mask="0x80" format="%d" name="遭遇決定係数表{L}"/>
+
+    <member offset="0x06" type="bit" mask="0x07" format="%d" name="モンスター抽選[05]"/>
+    <member offset="0x06" type="bit" mask="0x38" format="%d" name="頭数抽選[05]"/>
+    <member offset="0x06" type="bit" mask="0x40" format="%d" name="unused"/>
+    <member offset="0x06" type="bit" mask="0x80" format="%d" name="遭遇決定係数表{M}"/>
+
+    <member offset="0x07" type="bit" mask="0x07" format="%d" name="モンスター抽選[06]"/>
+    <member offset="0x07" type="bit" mask="0x38" format="%d" name="頭数抽選[06]"/>
+    <member offset="0x07" type="bit" mask="0x40" format="%d" name="unused"/>
+    <member offset="0x07" type="bit" mask="0x80" format="%d" name="遭遇決定係数表{H}"/>
+
+    <member offset="0x08" type="bit" mask="0x07" format="%d" name="モンスター抽選[07]"/>
+    <member offset="0x08" type="bit" mask="0x38" format="%d" name="頭数抽選[07]"/>
+    <member offset="0x08" type="bit" mask="0x40" format="%d" name="unused"/>
+    <member offset="0x08" type="bit" mask="0x80" format="%d" name="仲間可能性"/>
+
+    <member offset="0x09" type="bit" mask="0x07" format="%d" name="モンスター抽選[08]"/>
+    <member offset="0x09" type="bit" mask="0x38" format="%d" name="頭数抽選[08]"/>
+    <member offset="0x09" type="bit" mask="0x40" format="%d" name="unused"/>
+    <member offset="0x09" type="bit" mask="0x80" format="%d" name="unknown"/>
+
+    <member offset="0x0A" type="bit" mask="0x07" format="%d" name="モンスター抽選[09]"/>
+    <member offset="0x0A" type="bit" mask="0x38" format="%d" name="頭数抽選[09]"/>
+    <member offset="0x0A" type="bit" mask="0xC0" format="%d" name="unused"/>
+
+    <member offset="0x0B" type="bit" mask="0x07" format="%d" name="モンスター抽選[0A]"/>
+    <member offset="0x0B" type="bit" mask="0x38" format="%d" name="特別遭遇表"/>
+
+    <member offset="0x0C" type="byte" name="モンスター[00]"/>
+    <member offset="0x0D" type="byte" name="モンスター[01]"/>
+    <member offset="0x0E" type="byte" name="モンスター[02]"/>
+    <member offset="0x0F" type="byte" name="モンスター[03]"/>
+    <member offset="0x10" type="byte" name="モンスター[04]"/>
+    <member offset="0x11" type="byte" name="モンスター[05]"/>
+    <member offset="0x12" type="byte" name="モンスター[06]"/>
+    <member offset="0x13" type="byte" name="モンスター[07]"/>
+    <member offset="0x14" type="byte" name="モンスター[08]"/>
+    <member offset="0x15" type="byte" name="モンスター[09]"/>
+  </struct>
+</db>

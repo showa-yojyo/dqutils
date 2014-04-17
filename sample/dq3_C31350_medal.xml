@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 ちいさなメダル景品リスト
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC31350" size="2" number="0x0C">
+    <member name="交換枚数" offset="0x00" type="byte" format="%d"/>
+    <member name="景品" offset="0x01" type="byte"/>
+  </struct>
+</db>

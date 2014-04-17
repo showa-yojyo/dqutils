@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 サイト情報構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC8A6D4" size="9" number="91">
+    <member offset="0x00" type="bit" mask="0x0F" format="%X" name="地上かアレフガルドか"/>
+    <member offset="0x00" type="bit" mask="0x10" format="%X" name="unknown"/>
+    <member offset="0x00" type="bit" mask="0x20" format="%X" name="unknown"/>
+    <member offset="0x00" type="bit" mask="0x3FC0" format="%02X" name="ルーラフラグ"/>
+    <member offset="0x01" type="bit" mask="0xC0" format="%d" name="リレミトできる"/>
+
+    <member offset="0x02" type="bit" mask="0x01" format="%d" name="unknown"/>
+    <member offset="0x02" type="bit" mask="0x02" format="%d" name="unknown"/>
+
+    <member offset="0x02" type="bit" mask="0x07FC" format="%04X" name="座標情報"/>
+    <member offset="0x03" type="bit" mask="0x0FF8" format="%04X" name="リレミト用座標情報[0]"/>
+    <member offset="0x04" type="bit" mask="0x1FF0" format="%04X" name="リレミト用座標情報[1]"/>
+    <member offset="0x05" type="bit" mask="0x3FE0" format="%04X" name="ラナルータ用座標情報"/>
+
+    <member offset="0x06" type="bit" mask="0x40" format="%d" name="unknown"/>
+    <member offset="0x06" type="bit" mask="0x80" format="%d" name="unknown"/>
+
+    <member offset="0x07" type="word" format="@TEXT(%04X)" name="名前"/>
+  </struct>
+</db>

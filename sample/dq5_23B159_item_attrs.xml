@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ5 アイテム各種フラグ配列
+     $Id: $
+  -->
+  <rom name="dq5"/>
+  <struct cpuaddress="0x23B159" size="1" number="216">
+    <member offset="0x00" type="bit" mask="0x03" format="%d" name="値段オーダー"/> <!-- LDA $21A47B,X -->
+    <member offset="0x00" type="bit" mask="0x04" format="%d" name="unknown"/>
+    <member offset="0x00" type="bit" mask="0x08" format="%d" name="売却不可"/>
+    <member offset="0x00" type="bit" mask="0x10" format="%d" name="廃棄不可"/>
+    <member offset="0x00" type="bit" mask="0x20" format="%d" name="消耗"/>
+    <member offset="0x00" type="bit" mask="0x40" format="%d" name="仲間に使う"/>
+    <member offset="0x00" type="bit" mask="0x80" format="%d" name="つかう表示"/>
+  </struct>
+</db>

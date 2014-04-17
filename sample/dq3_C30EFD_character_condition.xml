@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 登録所・性格条件群構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC30EFD" size="0x0F" number="0x11">
+    <member offset="0x00" type="bit" mask="0x7F" format="%d" name="増分の閾値[0]"/>
+    <member offset="0x00" type="bit" mask="0x80" format="%d" name="二位フラグ[0]"/>
+    <member offset="0x01" type="byte" name="パラメータ種別[0]"/>
+    <member offset="0x02" type="byte" name="$C30FFC 構造体 ID[0]"/>
+
+    <member offset="0x03" type="bit" mask="0x7F" format="%d" name="増分の閾値[1]"/>
+    <member offset="0x03" type="bit" mask="0x80" format="%d" name="二位フラグ[1]"/>
+    <member offset="0x04" type="byte" name="パラメータ種別[1]"/>
+    <member offset="0x05" type="byte" name="$C30FFC 構造体 ID[1]"/>
+
+    <member offset="0x06" type="bit" mask="0x7F" format="%d" name="増分の閾値[2]"/>
+    <member offset="0x06" type="bit" mask="0x80" format="%d" name="二位フラグ[2]"/>
+    <member offset="0x07" type="byte" name="パラメータ種別[2]"/>
+    <member offset="0x08" type="byte" name="$C30FFC 構造体 ID[2]"/>
+
+    <member offset="0x09" type="bit" mask="0x7F" format="%d" name="増分の閾値[3]"/>
+    <member offset="0x09" type="bit" mask="0x80" format="%d" name="二位フラグ[3]"/>
+    <member offset="0x0A" type="byte" name="パラメータ種別[3]"/>
+    <member offset="0x0B" type="byte" name="パラメータ種別[3]"/>
+
+    <member offset="0x0C" type="bit" mask="0x7F" format="%d" name="増分の閾値[4]"/>
+    <member offset="0x0C" type="bit" mask="0x80" format="%d" name="二位フラグ[4]"/>
+    <member offset="0x0D" type="byte" name="パラメータ種別[4]"/>
+    <member offset="0x0E" type="byte" name="パラメータ種別[4]"/>
+  </struct>
+</db>

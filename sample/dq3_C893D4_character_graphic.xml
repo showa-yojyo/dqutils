@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 キャラクターグラフィック情報構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC893D4" size="9" number="125">
+    <member offset="0x00" type="bit" mask="0x01FF" format="%02X" name="通常"/>
+    <member offset="0x01" type="bit" mask="0xFE"   format="%02X" name="unknown"/>
+    <member offset="0x02" type="byte" name="レムオル"/>
+
+    <member offset="0x03" type="long" name="処理ルーチンアドレス"/>
+    <member offset="0x06" type="long" name="処理ルーチンアドレス"/>
+  </struct>
+</db>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     宿屋構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC30A98" size="3" number="0x1F">
+    <member offset="0x00" type="bit" mask="0x03FF" format="%d" name="宿代"/>
+    <member offset="0x01" type="bit" mask="0x7FFC" format="%02X" name="$C89BB7 構造体 ID"/>
+    <!-- member offset="0x02" type="bit" mask="0x80" name="未使用"/ -->
+  </struct>
+</db>

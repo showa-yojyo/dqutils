@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 サウンドデータ構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC723BC" size="4" number="383">
+    <member offset="0x00" type="byte" name="チャネル割り当て"/>
+    <member offset="0x01" type="long" name="データアドレス"/>
+  </struct>
+</db>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ5 アイテム種別その他フラグ配列
+     $Id: $
+  -->
+  <rom name="dq5"/>
+  <struct cpuaddress="0x23B231" size="1" number="216">
+    <member offset="0x00" type="bit" mask="0x07" format="%d" name="種別"/>
+    <member offset="0x00" type="bit" mask="0x08" format="%d" name="呪い"/>
+    <member offset="0x00" type="bit" mask="0x10" format="%d" name="戦闘時だれに直後"/>
+    <member offset="0x00" type="bit" mask="0x20" format="%d" name="戦闘時対象"/>
+    <member offset="0x00" type="bit" mask="0x40" format="%d" name="戦闘時つかう"/>
+    <member offset="0x00" type="bit" mask="0x80" format="%d" name="移動時つかう"/>
+  </struct>
+</db>

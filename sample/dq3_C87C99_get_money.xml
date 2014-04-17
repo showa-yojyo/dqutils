@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 ゴールド発見構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC87C99" size="8" number="35">
+    <member offset="0x00" type="bit" mask="0x001F" format="%02X" name="対象"/>
+    <member offset="0x00" type="bit" mask="0x3FE0" format="%d" name="X"/>
+    <member offset="0x01" type="bit" mask="0x7FC0" format="%d" name="Y"/>
+    <member offset="0x02" type="bit" mask="0x0180" format="%d" name="Z"/>
+
+    <member offset="0x03" type="bit" mask="0xFE" format="%02X" name="unknown"/>
+
+    <member offset="0x04" type="word" format="%d" name="ゴールド"/>
+    <member offset="0x06" type="word" name="フラグ"/>
+  </struct>
+</db>

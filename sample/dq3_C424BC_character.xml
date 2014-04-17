@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 性格構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC424BC" size="0x0C" number="0x2F">
+    <member offset="0x00" type="word" format="@TEXT(%04X)" name="名前"/>
+
+    <member offset="0x02" type="byte" format="%d" name="ちから上昇補正"/>
+    <member offset="0x03" type="byte" format="%d" name="すばやさ上昇補正"/>
+    <member offset="0x04" type="byte" format="%d" name="たいりょく上昇補正"/>
+    <member offset="0x05" type="byte" format="%d" name="かしこさ上昇補正"/>
+    <member offset="0x06" type="byte" format="%d" name="うんのよさ上昇補正"/>
+
+    <member offset="0x07" type="bit" mask="0x03" format="%d" name="性別"/>
+    <member offset="0x07" type="bit" mask="0x1C" format="%02X" name="登録所台詞"/>
+    <member offset="0x07" type="bit" mask="0x20" format="%d" name="性格変化 男"/>
+    <member offset="0x07" type="bit" mask="0x40" format="%d" name="性格変化 女"/>
+
+    <member offset="0x07" type="bit" mask="0x0780" format="%02X" name="戦士転職"/>
+    <member offset="0x08" type="bit" mask="0x0078" format="%02X" name="武闘家転職"/>
+    <member offset="0x08" type="bit" mask="0x0780" format="%02X" name="僧侶転職"/>
+    <member offset="0x09" type="bit" mask="0x0078" format="%02X" name="魔法使い転職"/>
+    <member offset="0x09" type="bit" mask="0x0780" format="%02X" name="賢者転職"/>
+    <member offset="0x0A" type="bit" mask="0x0078" format="%02X" name="商人転職"/>
+    <member offset="0x0A" type="bit" mask="0x0780" format="%02X" name="遊び人転職"/>
+    <member offset="0x0B" type="bit" mask="0x0078" format="%02X" name="盗賊転職"/>
+
+    <!-- member offset="0x0B" type="bit" mask="0x03" format="%d" name="unused"/ -->
+  </struct>
+</db>

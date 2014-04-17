@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<db>
+<!-- dqutils 構造体抽出用 xml ファイル
+     DQ3 サイト出入口座標構造体
+     $Id: $
+  -->
+  <rom name="dq3"/>
+  <struct cpuaddress="0xC85A70" size="7" number="578">
+    <member offset="0x00" type="bit" mask="0x0F" format="%02X" name="演出"/>
+    <member offset="0x00" type="bit" mask="0x1FF0" format="%d" name="X 左端"/>
+    <member offset="0x01" type="bit" mask="0x03FE" format="%d" name="Y 上端"/>
+    <member offset="0x02" type="bit" mask="0x7FC0" format="%d" name="X 右端"/>
+    <member offset="0x03" type="bit" mask="0xFF80" format="%d" name="Y 下端"/>
+    <member offset="0x05" type="bit" mask="0x03"   format="%d" name="通行"/>
+    <member offset="0x05" type="bit" mask="0x3FFC" format="%04X" name="移動先"/>
+    <member offset="0x06" type="bit" mask="0x40"   format="%d" name="効果音"/>
+  </struct>
+</db>
