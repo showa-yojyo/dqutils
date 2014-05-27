@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# $Id$
 u"""dqutils.database.parser モジュール
 
 利用部と解析部との間にある

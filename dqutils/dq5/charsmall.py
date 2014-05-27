@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
 r"""ドラクエ 5 小さいフォントの文字コード辞書
 
 See dqviewer.exe for the table of small font, as well as dq3encode.c of 

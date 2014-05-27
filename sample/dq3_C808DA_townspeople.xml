@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 街の人々構造体
-     $Id: $
   -->
   <rom name="dq3"/>
   <struct cpuaddress="0xC808DA" size="0x0C" number="0x056D">

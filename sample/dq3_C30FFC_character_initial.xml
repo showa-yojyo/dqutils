@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 登録所・性格群
-     $Id: $
   -->
   <rom name="dq3"/>
   <struct cpuaddress="0xC30FFC" size="0x0C" number="0x41">

@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# $Id$
 u"""dqutils.dq3.database モジュール
 
 利用部と解析部との間にある

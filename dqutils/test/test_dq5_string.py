@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
 
 """Tests for dqutils.dq5.string
 """

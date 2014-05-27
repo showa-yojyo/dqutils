@@ -3,7 +3,6 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ5 アイテム価格の配列
      市価を 10 の N 乗で割ったものが配列されている。
-     $Id: $
   -->
   <rom name="dq5"/>
   <struct cpuaddress="0x23B081" size="1" number="216">

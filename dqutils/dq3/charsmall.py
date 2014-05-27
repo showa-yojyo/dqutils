@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
 """ドラクエ 3 小さいフォントの文字コード辞書
 """
 

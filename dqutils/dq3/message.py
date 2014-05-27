@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
 """dqutils.dq3.string module
 
 This module implements decoding methods for DQ3 message

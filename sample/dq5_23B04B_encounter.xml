@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ5 特殊エンカウント構造体
-     $Id: $
   -->
   <rom name="dq5"/>
   <struct cpuaddress="0x23B04B" size="6" number="9">

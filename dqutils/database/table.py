@@ -1,6 +1,5 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-# $Id$
 u"""dqutils.database.table モジュール
 
 試作版だよ

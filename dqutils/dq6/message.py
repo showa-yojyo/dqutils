@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
 """dqutils.dq6.message module
 
 This module implements decoding methods for DQ6 message

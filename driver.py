@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 #
-# $Id$
 """dqutils 
 あいうえお
 """

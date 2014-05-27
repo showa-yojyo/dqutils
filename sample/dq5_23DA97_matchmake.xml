@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ5 マッチメイク構造体
-     $Id: $
   -->
   <rom name="dq5"/>
   <struct cpuaddress="0x23DA97" size="8" number="50">

@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 星座構造体
-     $Id: $
   -->
   <rom name="dq3"/>
   <struct cpuaddress="0xC31308" size="6" number="12">

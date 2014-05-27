@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 階段移動データ
-     $Id: $
   -->
   <rom name="dq3"/>
   <struct cpuaddress="0xC84CA2" size="6" number="428">

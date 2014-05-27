@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 #
-# $Id$
 """dqutils package - dq3
 """
 

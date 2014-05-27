@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 サイト情報構造体
-     $Id: $
   -->
   <rom name="dq3"/>
   <struct cpuaddress="0xC8A6D4" size="9" number="91">

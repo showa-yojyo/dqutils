@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ6 モンスター構造体
-     $Id: $
   -->
   <rom name="dq6"/>
   <struct cpuaddress="0xC20154" size="0x2A" number="0x100">

@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
 """ドラクエ 6 大きいフォントの文字コード辞書
 """
 

@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 フロア間出入口座標構造体（左右方向移動による）
-     $Id: $
   -->
   <rom name="dq3"/>
   <struct cpuaddress="0xC85A62" size="7" number="2">

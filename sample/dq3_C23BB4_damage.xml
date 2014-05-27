@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 ダメージ構造体
-     $Id: $
   -->
   <rom name="dq3"/>
   <struct cpuaddress="0xC23B44" size="5" number="0x32">

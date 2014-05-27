@@ -1,7 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# $Id$
 
 """Module dqutils.dq6.string -- a string loader for DQ6.
 

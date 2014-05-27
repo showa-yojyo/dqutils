@@ -2,7 +2,6 @@
 <db>
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ5 タイルエンカウント構造体
-     $Id: $
   -->
   <rom name="dq5"/>
   <struct cpuaddress="0x2396F3" size="0x16" number="0x55">
