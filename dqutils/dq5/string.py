@@ -39,7 +39,7 @@ def load_code(group):
     """Obtain all raw codes of a section of string table.
     """
     if group < GROUP_FIRST or group >= GROUP_LAST:
-        raise RuntimeError('invalid group: ' + repr(group))
+        raise IndexError('invalid group: ' + repr(group))
 
     # Data to be returned.
     data = []

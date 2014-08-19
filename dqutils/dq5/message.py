@@ -68,11 +68,11 @@ def _verify_msg_id(first, last):
     """Local function"""
 
     if first < MSG_ID_FIRST:
-        raise RuntimeError('out of range:')
+        raise IndexError('out of range:')
     if MSG_ID_LAST < last:
-        raise RuntimeError('out of range:')
+        raise IndexError('out of range:')
     if first > last:
-        raise RuntimeError('invalid range:')
+        raise IndexError('invalid range:')
 
 def load_msg_code(idfirst = MSG_ID_FIRST, idlast = MSG_ID_LAST):
     """Return a list of tuples (cpuaddr, shift, codeseq).
@@ -324,11 +324,11 @@ def _verify_input(first, last):
     """Local function"""
 
     if first < BATTLE_ID_FIRST:
-        raise RuntimeError('out of range:')
+        raise IndexError('out of range:')
     if BATTLE_ID_LAST < last:
-        raise RuntimeError('out of range:')
+        raise IndexError('out of range:')
     if first > last:
-        raise RuntimeError('invalid range:')
+        raise IndexError('invalid range:')
 
 def load_battle_msg_code(
     idfirst = BATTLE_ID_FIRST,

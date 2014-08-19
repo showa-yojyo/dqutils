@@ -18,9 +18,9 @@ class DQ5MessageTestCase(unittest.TestCase):
         self.assertEqual(wai, codeseq)
 
         from dqutils.dq5.message import MSG_ID_FIRST, MSG_ID_LAST
-        self.assertRaises(RuntimeError, load_msg_code, MSG_ID_FIRST - 1, MSG_ID_FIRST)
-        self.assertRaises(RuntimeError, load_msg_code, MSG_ID_LAST, MSG_ID_LAST + 1)
-        self.assertRaises(RuntimeError, load_msg_code, MSG_ID_LAST, MSG_ID_FIRST)
+        self.assertRaises(IndexError, load_msg_code, MSG_ID_FIRST - 1, MSG_ID_FIRST)
+        self.assertRaises(IndexError, load_msg_code, MSG_ID_LAST, MSG_ID_LAST + 1)
+        self.assertRaises(IndexError, load_msg_code, MSG_ID_LAST, MSG_ID_FIRST)
 
 class DQ5BattleMessageTestCase(unittest.TestCase):
 
@@ -33,9 +33,9 @@ class DQ5BattleMessageTestCase(unittest.TestCase):
         self.assertEqual(however_nothing_happened, codeseq)
 
         from dqutils.dq5.message import BATTLE_ID_FIRST, BATTLE_ID_LAST
-        self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_FIRST - 1, BATTLE_ID_FIRST)
-        self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_LAST + 1)
-        self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_FIRST)
+        self.assertRaises(IndexError, load_battle_msg_code, BATTLE_ID_FIRST - 1, BATTLE_ID_FIRST)
+        self.assertRaises(IndexError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_LAST + 1)
+        self.assertRaises(IndexError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_FIRST)
 
 def test_suite():
     suite = unittest.TestSuite()

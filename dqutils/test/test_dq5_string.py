@@ -29,8 +29,8 @@ class DQ5StringTestCase(unittest.TestCase):
             data = func(group)
             self.assertEqual(len(data), GROUPS[group][1])
 
-        self.assertRaises(RuntimeError, func, GROUP_FIRST - 1)
-        self.assertRaises(RuntimeError, func, GROUP_LAST)
+        self.assertRaises(IndexError, func, GROUP_FIRST - 1)
+        self.assertRaises(IndexError, func, GROUP_LAST)
 
 def test_suite():
     return unittest.makeSuite(DQ5StringTestCase)

@@ -53,7 +53,7 @@ def load_code(id):
     """
 
     if id < ID_FIRST or ID_LAST <= id:
-        raise RuntimeError('out of range')
+        raise IndexError('out of range')
 
     loc = 0
     with open_rom() as fin:

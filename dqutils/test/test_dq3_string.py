@@ -26,8 +26,8 @@ class DQ3StringTestCase(unittest.TestCase):
 
     def _range_check(self, func):
         from dqutils.dq3.string import ID_FIRST, ID_LAST
-        self.assertRaises(RuntimeError, func, ID_FIRST - 1)
-        self.assertRaises(RuntimeError, func, ID_LAST)
+        self.assertRaises(IndexError, func, ID_FIRST - 1)
+        self.assertRaises(IndexError, func, ID_LAST)
 
 def test_suite():
     return unittest.makeSuite(DQ3StringTestCase)
