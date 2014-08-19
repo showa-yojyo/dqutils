@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-u"""dqutils.database.table モジュール
+"""dqutils.database.table モジュール
 
 試作版だよ
 """
@@ -16,7 +16,7 @@ __all__ = ['Field',
            ]
 
 class Field:
-    u"""構造体オブジェクト配列をデータベース的に捉えたときの
+    """構造体オブジェクト配列をデータベース的に捉えたときの
     カラム一個に相当するクラス。
 
     Attributes:
@@ -32,7 +32,7 @@ class Field:
     TYPES = ['byte','word','long','bits']
 
     def __init__(self, name, *opts, **attrs):
-        u"""いろいろセットする"""
+        """いろいろセットする"""
         self.name = name
 
         # Set all other attrs (action, type, etc.) from 'attrs' dict
@@ -43,7 +43,7 @@ class Field:
         assert self.format
 
     def __cmp__(self, other):
-        u"""naive comparison"""
+        """naive comparison"""
         sign = cmp(self.offset, other.offset)
         if sign != 0:
             return sign
@@ -52,89 +52,89 @@ class Field:
         return cmp(self.mask, other.mask)
 
     def __str__(self):
-        u"""デバッグ用"""
+        """デバッグ用"""
         # TODO: 何を出力する？
         return self.name
 
     def _set_attrs(self, attrs):
-        u"""メンバーデータをセット"""
+        """メンバーデータをセット"""
         for a in self.ATTRS:
-            if attrs.has_key(a):
+            if a in attrs:
                 setattr(self, a, attrs[a])
                 del attrs[a]  # 行儀が悪いが
         # TODO: 残りカスをチェック
 
     def do_set_fmt(self):
-        u"""書式文字列をセット"""
-        raise NotImplementedError, "subclasses must implement"
+        """書式文字列をセット"""
+        raise NotImplementedError("subclasses must implement")
 
     def process(self, chunk):
-        u"""バイト塊を処理するメソッド"""
+        """バイト塊を処理するメソッド"""
         return ''
 
     def title(self):
-        u"""フィールド名を返すだけ"""
+        """フィールド名を返すだけ"""
         return self.name
 
 
 class BitField(Field):
-    u"""メンバーデータがビット列で表現されているものに対応する"""
+    """メンバーデータがビット列で表現されているものに対応する"""
     def __init__(self, name, *opts, **attrs):
         Field.__init__(self, name, *opts, **attrs)
 
     def do_set_fmt(self):
-        u"""書式文字列をセット"""
+        """書式文字列をセット"""
         self.format = '%X'
 
     def process(self, chunk):
-        u"""バイト塊を処理するメソッド"""
+        """バイト塊を処理するメソッド"""
         return self.format % getbits(chunk, self.offset, self.mask)
 
 
 class ByteField(Field):
-    u"""メンバーデータが 1byte で表現されているものに対応する"""
+    """メンバーデータが 1byte で表現されているものに対応する"""
     def __init__(self, name, *opts, **attrs):
         Field.__init__(self, name, *opts, **attrs)
 
     def do_set_fmt(self):
-        u"""書式文字列をセット"""
+        """書式文字列をセット"""
         self.format = '%02X'
 
     def process(self, chunk):
-        u"""バイト塊を処理するメソッド"""
+        """バイト塊を処理するメソッド"""
         return self.format % getbytes(chunk, self.offset, 1)
 
 
 class WordField(Field):
-    u"""メンバーデータが 2byte で表現されているものに対応する"""
+    """メンバーデータが 2byte で表現されているものに対応する"""
     def __init__(self, name, *opts, **attrs):
         Field.__init__(self, name, *opts, **attrs)
 
     def do_set_fmt(self):
-        u"""書式文字列をセット"""
+        """書式文字列をセット"""
         self.format = '%04X'
 
     def process(self, chunk):
-        u"""バイト塊を処理するメソッド"""
+        """バイト塊を処理するメソッド"""
         return self.format % getbytes(chunk, self.offset, 2)
 
 
 class LongField(Field):
-    u"""メンバーデータが 3byte で表現されているものに対応する"""
+    """メンバーデータが 3byte で表現されているものに対応する"""
     def __init__(self, name, *opts, **attrs):
         Field.__init__(self, name, *opts, **attrs)
 
     def do_set_fmt(self):
-        u"""書式文字列をセット"""
+        """書式文字列をセット"""
         self.format = '%06X'
 
     def process(self, chunk):
-        u"""バイト塊を処理するメソッド"""
+        """バイト塊を処理するメソッド"""
         return self.format % getbytes(chunk, self.offset, 3)
 
 
 class BadFieldType(Exception):
-    u"""フィールドタイプが不明な名前の場合の例外"""
+    """フィールドタイプが不明な名前の場合の例外"""
 
     def __init__(self, type):
         self.type = type
@@ -144,21 +144,21 @@ class BadFieldType(Exception):
 
 
 def make_field(name, type, *args, **kwargs):
-    u"""Factory method"""
-    if type in (u'bit', u'bits'):
+    """Factory method"""
+    if type in ('bit', 'bits'):
         return BitField(name, *args, **kwargs)
-    elif type in (u'byte', u'1byte'):
+    elif type in ('byte', '1byte'):
         return ByteField(name, *args, **kwargs)
-    elif type in (u'word', u'2byte'):
+    elif type in ('word', '2byte'):
         return WordField(name, *args, **kwargs)
-    elif type in (u'long', u'3byte'):
+    elif type in ('long', '3byte'):
         return LongField(name, *args, **kwargs)
     else:
         raise BadFieldType(type)
 
 
 class Table:
-    u"""工事中"""
+    """工事中"""
 
     def __init__(self, 
                  rom=None,
@@ -188,21 +188,21 @@ class Table:
         # setup table header information
         self.do_make_header()
 
-        for i in xrange(self.recnum):
+        for i in range(self.recnum):
             # obtain a byte sequence (list so far)
             chunk = readbytes(self.rom, self.reclen)
             self.do_write_record([field.process(chunk) for field in self.field_list])
 
     def do_make_header(self):
-        u"""テーブルヘッダを書式化して標準出力に出力する"""
+        """テーブルヘッダを書式化して標準出力に出力する"""
         self.formatter.make_header([field.title() for field in self.field_list])
 
     def do_write_record(self, value_list):
-        u"""レコード一行分を書式化して標準出力に出力する"""
+        """レコード一行分を書式化して標準出力に出力する"""
         self.formatter.write_record(value_list)
 
     def sort_fields(self):
-        u"""フィールドをそのアドレス位置の昇順でソート"""
+        """フィールドをそのアドレス位置の昇順でソート"""
         # Field.__cmp__ を実装しておくように
         self.field_list.sort()
 

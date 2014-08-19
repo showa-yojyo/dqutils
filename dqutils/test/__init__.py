@@ -6,18 +6,16 @@ dqutils.test package.  Each test module has a name starting with
 'test' and contains a function test_suite().  The function is expected
 to return an initialized unittest.TestSuite instance.
 
-Modules are modeled after the ones of distutils.
+The modules are modeled after the ones of distutils.
 """
 
-# code below is taken from distutils.tests.__init__
+# The code below is taken from distutils.tests.__init__
 
 import os
 import sys
 import unittest
 
-
 here = os.path.dirname(__file__)
-
 
 def test_suite():
     suite = unittest.TestSuite()

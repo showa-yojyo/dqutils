@@ -5,7 +5,7 @@
 
 from distutils.core import setup
 setup(name = 'dqutils',
-      version = '1.0.0',
+      version = '1.1.0',
       description = 'dqutils (Python version)',
       author = 'yojyo@hotmail.com',
       author_email = 'yojyo@hotmail.com',

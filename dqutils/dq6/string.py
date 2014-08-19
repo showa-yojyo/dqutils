@@ -1,16 +1,14 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#
 
 """Module dqutils.dq6.string -- a string loader for DQ6.
 
-A string is an array of characters that are rendered with the small font.
+A string is an array of characters that are rendered in windows with the small font.
 
-This module has a few of functions capable to load strings in the form of
-both raw bytes or texts legible to human.
+This module has a few functions capable to load strings in the forms of
+raw bytes and legible texts.
 """
 
-from __future__ import with_statement
 from dqutils.address import from_hi as CPUADDR
 from dqutils.address import conv_hi as ROMADDR
 from dqutils.dq6 import open_rom
@@ -22,8 +20,7 @@ def _is_delimiter(code):
 
     return code == 0xAC
 
-
-# Location at where string data are stored
+# Location at where string data are stored.
 _LOCSTR = ROMADDR(0xFB8703)
 
 
@@ -33,12 +30,11 @@ def _seekloc(fin, id):
     fin.seek(_LOCSTR)
     ncount = 0
     while ncount < id:
-        code = ord(fin.read(1)[0])
+        code = fin.read(1)[0]
         if _is_delimiter(code):
             ncount += 1
 
     return CPUADDR(fin.tell())
-
 
 # Constants for the loading method arguments:
 ID_FIRST = 0x0000
@@ -57,7 +53,7 @@ def load_code(id):
     """
 
     if id < ID_FIRST or ID_LAST <= id:
-        raise RuntimeError, 'out of range'
+        raise RuntimeError('out of range')
 
     loc = 0
     with open_rom() as fin:
@@ -67,24 +63,22 @@ def load_code(id):
         codeseq = []
         code = 0
         while not _is_delimiter(code):
-            code = ord(mem.read(1)[0])
+            code = mem.read(1)[0]
             codeseq.append(code)
         mem.close()
     return loc, codeseq
-
 
 def make_text(codeseq):
     """Return a legible string.
 
     make_text(codeseq) -> str,
 
-    where codeseq is the list of raw codes that is obtained by
-    using load_code method and str is text representation.
+    where codeseq is the list of raw codes that are obtained by
+    using load_code method, and str is a text representation.
     """
 
     from dqutils.dq6.charsmall import charmap
-    return u''.join([charmap.get(c, u'[%02X]' % c) for c in codeseq])
-
+    return ''.join([charmap.get(c, '[%02X]' % c) for c in codeseq])
 
 def load_string(id):
     """Return a legible string.
@@ -93,19 +87,16 @@ def load_string(id):
     """
     return make_text(load_code(id)[1])
 
-
 # Demonstration method (by the author, for the author)
 
 def print_all():
     """Print all of the strings in DQ6 to sys.stdout."""
 
-    for id in xrange(ID_FIRST, ID_LAST):
+    for id in range(ID_FIRST, ID_LAST):
         loc, codeseq = load_code(id)
         codeseq.pop()  # remove delimiter code (AC)
         text = make_text(codeseq)
-        print u'%04X:%06X:%s' % (id, loc, text)
-
+        print('{0:04X}:{1:06X}:{2}'.format(id, loc, text))
 
 if __name__ == '__main__':
     print_all()
-

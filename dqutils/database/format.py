@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-u"""dqutils.database.format モジュール
+"""dqutils.database.format モジュール
 
 試作版だよ
 """
@@ -13,7 +13,7 @@ __all__ = ['TableFormatter',
            ]
 
 class TableFormatter:
-    u"""テーブルを書式化して出力するための抽象クラス。
+    """テーブルを書式化して出力するための抽象クラス。
     クラス Table がこのサブクラスのうちのひとつを用いる。
     ちなみにデフォルトでは CSVFormatter を使う。
 
@@ -25,37 +25,37 @@ class TableFormatter:
         pass
 
     def make_header(self, title_list):
-        u"""テーブルヘッダを書式化して標準出力に出力する"""
-        raise NotImplementedError, "subclasses must implement"
+        """テーブルヘッダを書式化して標準出力に出力する"""
+        raise NotImplementedError("subclasses must implement")
 
     def write_record(self, value_list):
-        u"""レコード一行分を書式化して標準出力に出力する"""
-        raise NotImplementedError, "subclasses must implement"
+        """レコード一行分を書式化して標準出力に出力する"""
+        raise NotImplementedError("subclasses must implement")
 
 
 class CSVFormatter(TableFormatter):
-    u"""ROM を parse しながら構造体オブジェクト配列を CSV として出力する
+    """ROM を parse しながら構造体オブジェクト配列を CSV として出力する
 
     属性の説明:
       sep  CSV におけるセパレータ文字列。デフォルトはコロン。
     """
 
-    def __init__(self, sep=u':'):
+    def __init__(self, sep=':'):
         TableFormatter.__init__(self)
         self.sep = sep
 
     def make_header(self, title_list):
-        u"""CSV のヘッダ部分を出力する"""
-        print self.sep.join(title_list)
+        """CSV のヘッダ部分を出力する"""
+        print(self.sep.join(title_list))
 
     def write_record(self, value_list):
-        u"""CSV 形式でレコード一行分を標準出力に出力する"""
-        print self.sep.join(value_list)
+        """CSV 形式でレコード一行分を標準出力に出力する"""
+        print(self.sep.join(value_list))
 
 # 以下未実装
 
 class XMLFormatter(TableFormatter):
-    u"""ROM を parse しながら構造体オブジェクト配列を XML として出力する
+    """ROM を parse しながら構造体オブジェクト配列を XML として出力する
 
     """
     def __init__(self):
@@ -63,7 +63,7 @@ class XMLFormatter(TableFormatter):
 
 
 class ExcelFormatter(TableFormatter):
-    u"""ROM を parse しながら構造体オブジェクト配列を
+    """ROM を parse しながら構造体オブジェクト配列を
     Excel スプレッドシートに出力する。
 
     win32com モジュールを利用するので、Windows 以外では使えない。

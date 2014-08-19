@@ -19,7 +19,6 @@ class DQ3BattleMessageTestCase(unittest.TestCase):
         self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_LAST + 1)
         self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_FIRST)
 
-
 class DQ3MessageTestCase(unittest.TestCase):
 
     def test_load_msg_code(self):
@@ -32,10 +31,9 @@ class DQ3MessageTestCase(unittest.TestCase):
                 [0x05DA, 0x05DB, 0x0535, 0x0200, 0x05DA, 0x05DB, 0x0535, 0x052E],
                 [0x05DA, 0x053A, 0x0535, 0x0200, 0x05DA, 0x053A, 0x0535, 0x0529],)
 
-        for i in xrange(3):
+        for i in range(3):
             # [-1] holds a delimiter character
             self.assertEqual(msgs[i], rawcodes[i][-1][:-1])
-
 
     def _verify_id(self, func):
         from dqutils.dq3.message import MSG_ID_FIRST, MSG_ID_LAST
@@ -43,13 +41,11 @@ class DQ3MessageTestCase(unittest.TestCase):
         self.assertRaises(RuntimeError, func, MSG_ID_LAST, MSG_ID_LAST + 1)
         self.assertRaises(RuntimeError, func, MSG_ID_LAST, MSG_ID_FIRST)
 
-
 def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(unittest.makeSuite(DQ3BattleMessageTestCase))
     suite.addTest(unittest.makeSuite(DQ3MessageTestCase))
     return suite
-
 
 if __name__ == "__main__":
     unittest.main(defaultTest="test_suite")

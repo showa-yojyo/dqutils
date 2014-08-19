@@ -3,18 +3,17 @@
 """dqutils SNES addressing module
 """
 
-def from_hi(romaddr, fast = True):
+def from_hi(romaddr, fast=True):
     """Convert from ROM image to CPU address for HiROM.
 
     Map a ROM image address to SNES CPU address for HiROM.
 
     >>> cpuaddr = from_hi(0x020000, True)
-    >>> print '0x%06X' % cpuaddr
+    >>> print('0x{:%06X}'.format(cpuaddr))
     0xC20000
     >>> cpuaddr = from_hi(0x020000, False)
-    >>> print '0x%06X' % cpuaddr
+    >>> print('0x{:%06X}'.format(cpuaddr))
     0x420000
-
     """
     cpuaddr = romaddr & 0x003FFFFF
     if fast:
@@ -28,12 +27,11 @@ def from_lo(romaddr, fast = False):
     Map a ROM image address to SNES CPU address for LoROM.
 
     >>> cpuaddr = from_lo(0x008000, True)
-    >>> print '0x%06X' % cpuaddr
+    >>> print('0x{:%06X}'.format(cpuaddr))
     0x818000
     >>> cpuaddr = from_lo(0x008000, False)
-    >>> print '0x%06X' % cpuaddr
+    >>> print('0x{:%06X}'.format(cpuaddr))
     0x018000
-
     """
     cpuaddr = (romaddr & 0x00007FFF) | (((romaddr & 0x007F8000) << 1) | 0x00008000)
     if fast:
@@ -46,9 +44,8 @@ def conv_hi(cpuaddr):
     Map an SNES CPU address to ROM image address for HiROM.
 
     >>> romaddr = conv_hi(0xC20000)
-    >>> print '0x%06X' % romaddr
+    >>> print('0x{:%06X}'.format(romaddr))
     0x020000
-
     """
     return cpuaddr & 0x003FFFFF
 
@@ -58,9 +55,8 @@ def conv_lo(cpuaddr):
     Map an SNES CPU address to ROM image address for LoROM.
 
     >>> romaddr = conv_lo(0x018000)
-    >>> print '0x%06X' % romaddr
+    >>> print('0x{:%06X}'.format(romaddr))
     0x008000
-
     """
     return (cpuaddr & 0x007FFF) | ((cpuaddr & 0x00FF0000) >> 1)
 

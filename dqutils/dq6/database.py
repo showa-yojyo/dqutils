@@ -1,11 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-u"""dqutils.dq6.database モジュール
+"""dqutils.dq6.database モジュール
 
 利用部と解析部との間にある
 """
 
-from __future__ import with_statement
 from dqutils.database import table
 from dqutils.database.parser import get_struct_info, handle_member
 from dqutils.address import conv_hi
@@ -17,7 +16,7 @@ import mmap
 __all__ = ['process_xml']
 
 def process_xml(xml):
-    u"""構造体情報を読み取る
+    """構造体情報を読み取る
 
     xml: XML ファイル
     """
@@ -27,17 +26,17 @@ def process_xml(xml):
         dom = parsexml(src)
 
         # handle <struct>
-        structnode = dom.getElementsByTagName(u'struct')[0]
+        structnode = dom.getElementsByTagName('struct')[0]
         cpuaddr, recordsize, recordnum = get_struct_info(structnode)
 
-        for mem in structnode.getElementsByTagName(u'member'):
+        for mem in structnode.getElementsByTagName('member'):
             fields.append(handle_member(mem))
 
     read_array(fields, cpuaddr, recordsize, recordnum)
 
 
 def read_array(fields, cpuaddr, recordsize, recordnum):
-    u"""構造体情報を読み取る
+    """構造体情報を読み取る
 
     """
 

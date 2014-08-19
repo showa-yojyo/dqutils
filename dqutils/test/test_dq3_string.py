@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#
+
 """Tests for dqutils.dq3.string
 """
 
@@ -20,19 +20,17 @@ class DQ3StringTestCase(unittest.TestCase):
         from dqutils.dq3.string import load_string
         self._range_check(load_string)
 
-        hinokinobou = u'ひのきのぼう'
+        hinokinobou = 'ひのきのぼう'
         text = load_string(0x0047)
-        self.assert_(hinokinobou in text)
+        self.assertTrue(hinokinobou in text)
 
     def _range_check(self, func):
         from dqutils.dq3.string import ID_FIRST, ID_LAST
         self.assertRaises(RuntimeError, func, ID_FIRST - 1)
         self.assertRaises(RuntimeError, func, ID_LAST)
 
-
 def test_suite():
     return unittest.makeSuite(DQ3StringTestCase)
-
 
 if __name__ == "__main__":
     unittest.main(defaultTest="test_suite")

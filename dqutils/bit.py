@@ -4,10 +4,9 @@
 """
 
 def getbits(bytes, index, mask):
-    """Obtain masked bits value in a byte sequence.
+    """Obtain masked bits in a byte sequence.
 
-    Obtain masked bits value in a byte sequence.
-
+    Obtain masked bits in a byte sequence.
     """
     value = getbytes(bytes, index, 3) & mask
 
@@ -37,12 +36,12 @@ def getbytes(bytes, index, nbyte):
     True
     >>> getbytes(data, 6, 3) == 0x000006
     True
-
     """
     if nbyte == 0:
         return 0
 
     value = bytes[index]
+
     # simple case
     if nbyte == 1:
         return value
@@ -60,11 +59,9 @@ def getbytes(bytes, index, nbyte):
 
     return value
 
-
 def readbytes(fin, nbyte):
-    """read nbyte byte from fin as binaries rather characters"""
-    return [ord(i) for i in fin.read(nbyte)]
-
+    """Read nbyte byte from fin as binaries rather characters."""
+    return [i for i in fin.read(nbyte)]
 
 def _test():
     import doctest, bit

@@ -1,8 +1,4 @@
 # -*- coding: UTF-8 -*-
-#
-"""dqutils 
-あいうえお
-"""
 
 def run_load_strings():
     from dqutils.dq3.stringloader import load_strings
@@ -23,7 +19,6 @@ def run_parse_structs():
     assert rompath
     confpath = 'dqutils/test/conf/dq3-C20000.conf'
     struct.parse_structs(rompath, confpath)
-
 
 def run_dq6_load_strings():
     from dqutils.dq6.string import load_strings
@@ -56,15 +51,6 @@ def test_dq5():
     run_dq5_string()
 
 if __name__ == '__main__':
-    #run_load_strings()
-    #run_load_battle_messages()
-    #run_load_messages()
-    #run_parse_structs()
-    #test_dq6()
-    #test_dq5()
-
-
     from dqutils.test import test_suite
     import unittest
     unittest.main(defaultTest="test_suite")
-

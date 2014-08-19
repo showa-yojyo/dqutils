@@ -10,6 +10,6 @@ def open_rom(mode = 'rb'):
 
     import os.path
     if not os.path.exists(rompath):
-        raise IOError, 'Not found ROM ' + rompath
+        raise IOError('Not found ROM ' + rompath)
 
     return open(rompath, mode)

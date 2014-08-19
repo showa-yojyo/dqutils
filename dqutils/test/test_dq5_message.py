@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#
+
 """Tests for dqutils.dq5.message
 """
 import unittest
@@ -22,7 +22,6 @@ class DQ5MessageTestCase(unittest.TestCase):
         self.assertRaises(RuntimeError, load_msg_code, MSG_ID_LAST, MSG_ID_LAST + 1)
         self.assertRaises(RuntimeError, load_msg_code, MSG_ID_LAST, MSG_ID_FIRST)
 
-
 class DQ5BattleMessageTestCase(unittest.TestCase):
 
     def test_load_battle_msg_code(self):
@@ -37,7 +36,6 @@ class DQ5BattleMessageTestCase(unittest.TestCase):
         self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_FIRST - 1, BATTLE_ID_FIRST)
         self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_LAST + 1)
         self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_FIRST)
-
 
 def test_suite():
     suite = unittest.TestSuite()

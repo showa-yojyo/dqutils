@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#
+
 """Tests for dqutils.dq6.message
 """
 import unittest
@@ -19,7 +19,6 @@ class DQ6BattleMessageTestCase(unittest.TestCase):
         self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_FIRST - 1, BATTLE_ID_FIRST)
         self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_LAST + 1)
         self.assertRaises(RuntimeError, load_battle_msg_code, BATTLE_ID_LAST, BATTLE_ID_FIRST)
-
 
 class DQ6MessageTestCase(unittest.TestCase):
 
@@ -40,17 +39,15 @@ class DQ6MessageTestCase(unittest.TestCase):
                  0x0629, 0x0621, 0x04F7, 0x0200, 
                  0x0629, 0x0621, 0x04F7, 0x0551],)
 
-        for i in xrange(3):
+        for i in range(3):
             # [-1] holds a delimiter character
             self.assertEqual(msgs[i], rawcodes[i][-1][:-1])
-
 
     def _verify_id(self, func):
         from dqutils.dq6.message import MSG_ID_FIRST, MSG_ID_LAST
         self.assertRaises(RuntimeError, func, MSG_ID_FIRST - 1, MSG_ID_FIRST)
         self.assertRaises(RuntimeError, func, MSG_ID_LAST, MSG_ID_LAST + 1)
         self.assertRaises(RuntimeError, func, MSG_ID_LAST, MSG_ID_FIRST)
-
 
 def test_suite():
     suite = unittest.TestSuite()

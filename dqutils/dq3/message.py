@@ -1,22 +1,17 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#
-"""dqutils.dq3.string module
 
-This module implements decoding methods for DQ3 message
-systems.  The original implementation is of course by
-65816 code.  Here is by Python code, via C/C++ code I made
-before.
+"""dqutils.dq3.string module
+This module provides decoding methods for DQ3 message
+systems.  The original implementation is of course written in
+65816 code.  Here are in Python via C/C++ code I wrote before.
 
 DQ3 decoding logic is the same as DQ6.
 """
 
-from __future__ import with_statement
 from dqutils.address import from_hi as CPUADDR
 from dqutils.address import conv_hi as ROMADDR
-from dqutils.bit import readbytes
-from dqutils.parser import getbits, getbytes
-
+from dqutils.bit import readbytes, getbits, getbytes
 from dqutils.dq3 import open_rom
 import mmap
 
@@ -30,7 +25,7 @@ def _is_delimiter(code):
 # Battle message
 #
 
-# where message data of battle scene are stored
+# Address where message data of battle scene are stored.
 LOCATION_MSG_BATTLE = ROMADDR(0xFC9F22)
 
 def _seek_location(fin, id):
@@ -39,7 +34,7 @@ def _seek_location(fin, id):
     fin.seek(LOCATION_MSG_BATTLE)
     ncount = 0
     while ncount < id:
-        code = ord(fin.read(1)[0])
+        code = fin.read(1)[0]
         if _is_delimiter(code):
             ncount += 1
 
@@ -53,12 +48,11 @@ def _verify_input(first, last):
     """Local function"""
 
     if first < BATTLE_ID_FIRST:
-        raise RuntimeError, 'out of range:'
+        raise RuntimeError('out of range:')
     if BATTLE_ID_LAST < last:
-        raise RuntimeError, 'out of range:'
+        raise RuntimeError('out of range:')
     if first > last:
-        raise RuntimeError, 'invalid range:'
-
+        raise RuntimeError('invalid range:')
 
 def load_battle_msg_code(
     idfirst = BATTLE_ID_FIRST,
@@ -66,39 +60,37 @@ def load_battle_msg_code(
     """Help me!"""
     _verify_input(idfirst, idlast)
 
-    # data to be returned, a list of (cpuaddr, codeseq) pairs
+    # Data to be returned, a list of (cpuaddr, codeseq) pairs.
     data = []
     with open_rom() as fin:
-        # create memory-mapped file from fin
+        # Create a memory-mapped file from fin.
         mem = mmap.mmap(fin.fileno(), 0, access = mmap.ACCESS_READ)
         cpuaddr = _seek_location(mem, idfirst)
 
-        for i in xrange(idfirst, idlast):
+        for i in range(idfirst, idlast):
             codeseq = []
             code = 0
             while not _is_delimiter(code):
-                code = ord(mem.read(1)[0])
+                code = mem.read(1)[0]
                 codeseq.append(code)
 
             data.append((cpuaddr, codeseq))
-            # now update cpuaddr
+            # Now update cpuaddr.
             cpuaddr = CPUADDR(mem.tell())
         mem.close()
     return data
-
 
 def make_text_battle(codeseq):
     """Return a legible string.
 
     make_text_battle(codeseq) -> str,
 
-    where codeseq is the list of codes that is obtained by
-    using load_battle_msg_code method and str is text representation.
+    where codeseq is the list of codes that are obtained by
+    using load_battle_msg_code method, and str is a text representation.
     """
     
     from dqutils.dq3.charsmall import charmap
-    return u''.join([charmap.get(c, u'[%02X]' % c) for c in codeseq])
-
+    return ''.join([charmap.get(c, '[%02X]' % c) for c in codeseq])
 
 def load_battle_msg(id):
     """Return a legible string.
@@ -108,19 +100,18 @@ def load_battle_msg(id):
 
     return make_text_battle(load_battle_msg_code(id, id + 1)[0][1])
 
-
 def print_all_battle():
-    """Demonstration method by the author, for the author"""
+    """Demonstration method by the author, for the author."""
     import time
     st = time.clock()
     data = load_battle_msg_code()
     for id, pair in enumerate(data):
-        # remove delimiter code (AC and AE)
+        # Remove delimiter codes (AC and AE).
         codeseq = pair[1]
         codeseq.pop()
-        print u'%04X:%06X:%s' % (id, pair[0], make_text_battle(codeseq))
+        print('{0:04X}:{1:06X}:{2}'.format(id, pair[0], make_text_battle(codeseq)))
     et = time.clock()
-    print et - st, 'sec'
+    print(et - st, 'sec')
 
 #
 # Conversation, dialog, system messages
@@ -163,15 +154,14 @@ def _get_cpuaddr(msgid, fin):
 
     cpuaddr = (getbytes(buffer1, 0, 3) >> 3) + _LOC_DATA
 
-    # msgid % 7 の値によりループ回数が違う
-    for count in xrange(count):
+    # The loop counter depends on msgid % 7.
+    for count in range(count):
         code = 0
         while not _is_delimiter(code):
             # この関数は重いので注意
             code, cpuaddr, shift = _decode(cpuaddr, shift, fin)
 
     return cpuaddr, shift
-
 
 MSG_ID_FIRST = 0
 MSG_ID_LAST  = 0x0FCF
@@ -180,12 +170,11 @@ def _verify_msg_id(first, last):
     """Local function"""
 
     if first < MSG_ID_FIRST:
-        raise RuntimeError, 'out of range:'
+        raise RuntimeError('out of range:')
     if MSG_ID_LAST < last:
-        raise RuntimeError, 'out of range:'
+        raise RuntimeError('out of range:')
     if first > last:
-        raise RuntimeError, 'invalid range:'
-
+        raise RuntimeError('invalid range:')
 
 def load_msg_code(idfirst = MSG_ID_FIRST, idlast = MSG_ID_LAST):
     """Return a list of pairs (cpuaddr, codeseq).
@@ -195,19 +184,19 @@ def load_msg_code(idfirst = MSG_ID_FIRST, idlast = MSG_ID_LAST):
 
     _verify_msg_id(idfirst, idlast)
 
-    # data to be returned, a list of (cpuaddr, codeseq) pairs
+    # Data to be returned, a list of (cpuaddr, codeseq) pairs.
     data = []
     with open_rom() as fin:
-        # create memory-mapped file from fin
+        # Create a memory-mapped file from fin.
         mem = mmap.mmap(fin.fileno(), 0, access = mmap.ACCESS_READ)
 
-        # Obtain the first data location
+        # Obtain the first data location.
         cpuaddr, shift = _get_cpuaddr(idfirst, mem)
 
         if __DEBUG__:
-            print '=' * 80
+            print('=' * 80)
 
-        for i in xrange(idfirst, idlast):
+        for i in range(idfirst, idlast):
             cpuaddr0, shift0 = cpuaddr, shift
             codeseq = []
             code = 0
@@ -217,9 +206,9 @@ def load_msg_code(idfirst = MSG_ID_FIRST, idlast = MSG_ID_LAST):
             data.append((cpuaddr0, shift0, codeseq))
 
             if __DEBUG__:
-                print '=' * 80
+                print('=' * 80)
 
-        # close mmap object
+        # Close mmap object.
         mem.close()
     return data
 
@@ -229,13 +218,12 @@ def make_text(codeseq):
 
     make_text(codeseq) -> str,
 
-    where codeseq is the list of codes that is obtained by
-    using load_msg_code method and str is text representation.
+    where codeseq is the list of codes that are obtained by
+    using load_msg_code method, and str is a text representation.
     """
     from dqutils.dq3.charlarge import charmap
-    return u''.join([charmap.get(c, u'[%02X]' % c) for c in codeseq])
+    return ''.join([charmap.get(c, '[%02X]' % c) for c in codeseq])
 
-    
 def load_msg(id):
     """Return a legible string.
 
@@ -244,24 +232,22 @@ def load_msg(id):
 
     return make_text(load_msg_code(id, id + 1)[0][-1])
 
-
 def print_all():
-    """Demonstration method by the author, for the author"""
+    """Demonstration method by the author, for the author."""
     import time
     st = time.clock()
 
     data = load_msg_code()
 
     for id, tup in enumerate(data):
-        # remove delimiter code (AC and AE)
+        # Remove delimiter codes (AC and AE).
         codeseq = tup[-1]
         shift = tup[1]
         codeseq.pop()
-        print u'%04X:%06X:%02X:%s' % (id, tup[0], shift, make_text(codeseq))
+        print('{0:04X}:{1:06X}:{2:02X}:{3}'.format(id, tup[0], shift, make_text(codeseq)))
 
     et = time.clock()
-    print et - st, 'sec'
-
+    print(et - st, 'sec')
 
 _LOC_BIT_OFF = ROMADDR(0xC159D3)
 _LOC_BIT_ON  = ROMADDR(0xC161A7)
@@ -306,11 +292,11 @@ def _decode(cpuaddr, shift, fin):
         value = getbytes(buffer, 0, 2) & shift
 
         if __DEBUG__:
-            print '%04X' % shift,
+            print('{:04X}'.format(shift), end='')
             if value:
-                print 1,
+                print(1, end='')
             else:
-                print 0,
+                print(0, end='')
 
         shift >>= 1
         if shift == 0:
@@ -324,13 +310,10 @@ def _decode(cpuaddr, shift, fin):
 
         if value & 0x8000 == 0:
             if __DEBUG__:
-                print '%04X\n' % value,
+                print('{:04X}'.format(value))
             return value, cpuaddr, shift
 
         node = value & 0x7FFF
 
-
 if __name__ == '__main__':
-    #print_all_battle()
     print_all()
-    pass
