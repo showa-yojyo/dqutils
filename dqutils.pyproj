@@ -1,0 +1,76 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{1197bc45-3e5f-4ed4-9be5-41ddcb76a2c4}</ProjectGuid>
+    <ProjectHome />
+    <StartupFile>driver.py</StartupFile>
+    <SearchPath />
+    <WorkingDirectory>.</WorkingDirectory>
+    <OutputPath>.</OutputPath>
+    <ProjectTypeGuids>{888888a0-9f3d-457c-b088-3a5042f75d52}</ProjectTypeGuids>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
+    <InterpreterId>{9a7a9026-48c1-4688-9d5d-e5699d47d074}</InterpreterId>
+    <InterpreterVersion>3.4</InterpreterVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" />
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition=" '$(VisualStudioVersion)' == '' ">10.0</VisualStudioVersion>
+    <PtvsTargetsFile>$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets</PtvsTargetsFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="dqutils\address.py" />
+    <Compile Include="dqutils\bit.py" />
+    <Compile Include="dqutils\config.py" />
+    <Compile Include="dqutils\database\format.py" />
+    <Compile Include="dqutils\database\parser.py" />
+    <Compile Include="dqutils\database\table.py" />
+    <Compile Include="dqutils\database\__init__.py" />
+    <Compile Include="dqutils\dq3\charlarge.py" />
+    <Compile Include="dqutils\dq3\charsmall.py" />
+    <Compile Include="dqutils\dq3\database.py" />
+    <Compile Include="dqutils\dq3\message.py" />
+    <Compile Include="dqutils\dq3\string.py" />
+    <Compile Include="dqutils\dq3\__init__.py" />
+    <Compile Include="dqutils\dq5\charlarge.py" />
+    <Compile Include="dqutils\dq5\charsmall.py" />
+    <Compile Include="dqutils\dq5\database.py" />
+    <Compile Include="dqutils\dq5\message.py" />
+    <Compile Include="dqutils\dq5\string.py" />
+    <Compile Include="dqutils\dq5\__init__.py" />
+    <Compile Include="dqutils\dq6\charlarge.py" />
+    <Compile Include="dqutils\dq6\charsmall.py" />
+    <Compile Include="dqutils\dq6\database.py" />
+    <Compile Include="dqutils\dq6\message.py" />
+    <Compile Include="dqutils\dq6\string.py" />
+    <Compile Include="dqutils\dq6\__init__.py" />
+    <Compile Include="dqutils\test\test_address.py" />
+    <Compile Include="dqutils\test\test_bit.py" />
+    <Compile Include="dqutils\test\test_config.py" />
+    <Compile Include="dqutils\test\test_dq3_message.py" />
+    <Compile Include="dqutils\test\test_dq3_string.py" />
+    <Compile Include="dqutils\test\test_dq5_message.py" />
+    <Compile Include="dqutils\test\test_dq5_string.py" />
+    <Compile Include="dqutils\test\test_dq6_message.py" />
+    <Compile Include="dqutils\test\test_dq6_string.py" />
+    <Compile Include="dqutils\test\__init__.py" />
+    <Compile Include="dqutils\__init__.py" />
+    <Compile Include="driver.py" />
+    <Compile Include="setup.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="dqutils" />
+    <Folder Include="dqutils\database" />
+    <Folder Include="dqutils\dq3" />
+    <Folder Include="dqutils\dq5" />
+    <Folder Include="dqutils\dq6" />
+    <Folder Include="dqutils\test" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterpreterReference Include="{9a7a9026-48c1-4688-9d5d-e5699d47d074}\3.4" />
+  </ItemGroup>
+  <Import Project="$(PtvsTargetsFile)" Condition="Exists($(PtvsTargetsFile))" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="!Exists($(PtvsTargetsFile))" />
+</Project>
