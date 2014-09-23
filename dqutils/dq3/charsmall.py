@@ -1,10 +1,9 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""ドラクエ 3 小さいフォントの文字コード辞書
+"""dqutils.dq3.charsmall - The dictionary of small size characters.
 """
 
-charmap = {
+CHARMAP = {
     0x00:"",
     0x01:" ",
     0x02:"/",
@@ -269,8 +268,5 @@ def print_charmap():
     It is much faster to open this file in the text editor.
     """
 
-    for i, v in charmap.items():
-        print('{0:02X}:{1}'.format(i, v))
-
-if __name__ == "__main__":
-    print_charmap()
+    for i in CHARMAP.items():
+        print('{0:04X}:{1}'.format(i[0], i[1]))

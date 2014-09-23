@@ -1,14 +1,13 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-"""dqutils.bit module
+"""dqutils.bit module -- bits and bytes manipulation.
 """
 
-def getbits(bytes, index, mask):
+def getbits(byteseq, index, mask):
     """Obtain masked bits in a byte sequence.
 
     Obtain masked bits in a byte sequence.
     """
-    value = getbytes(bytes, index, 3) & mask
+    value = getbytes(byteseq, index, 3) & mask
 
     while mask & 1 == 0:
         value >>= 1
@@ -16,7 +15,7 @@ def getbits(bytes, index, mask):
 
     return value
 
-def getbytes(bytes, index, nbyte):
+def getbytes(byteseq, index, nbyte):
     """Obtain bytes as an integer in a byte sequence.
 
     Obtain bytes as an integer in a byte sequence.
@@ -40,7 +39,7 @@ def getbytes(bytes, index, nbyte):
     if nbyte == 0:
         return 0
 
-    value = bytes[index]
+    value = byteseq[index]
 
     # simple case
     if nbyte == 1:
@@ -49,11 +48,11 @@ def getbytes(bytes, index, nbyte):
     # general case
 
     indexfirst = index + 1
-    indexlast = min(index + nbyte, len(bytes))
+    indexlast = min(index + nbyte, len(byteseq))
     shiftbit = 8
 
     while indexfirst < indexlast:
-        value += (bytes[indexfirst] << shiftbit)
+        value += (byteseq[indexfirst] << shiftbit)
         indexfirst += 1
         shiftbit += 8
 
@@ -64,8 +63,9 @@ def readbytes(fin, nbyte):
     return [i for i in fin.read(nbyte)]
 
 def _test():
-    import doctest, bit
-    return doctest.testmod(bit)
+    """Test all of the examples in docstrings in this module."""
+    import doctest
+    return doctest.testmod()
 
 if __name__ == '__main__':
     _test()

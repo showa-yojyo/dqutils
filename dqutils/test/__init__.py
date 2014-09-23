@@ -15,13 +15,16 @@ import os
 import sys
 import unittest
 
-here = os.path.dirname(__file__)
+HERE = os.path.dirname(__file__)
 
 def test_suite():
+    """Setup a test suite.
+    """
+
     suite = unittest.TestSuite()
-    for fn in os.listdir(here):
-        if fn.startswith("test") and fn.endswith(".py"):
-            modname = "dqutils.test." + fn[:-3]
+    for name in os.listdir(HERE):
+        if name.startswith("test") and name.endswith(".py"):
+            modname = "dqutils.test." + name[:-3]
             __import__(modname)
             module = sys.modules[modname]
             suite.addTest(module.test_suite())

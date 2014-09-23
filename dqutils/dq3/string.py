@@ -1,12 +1,12 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-#
 
 """Module dqutils.dq3.string -- a string loader for DQ3.
 
-A string is an array of characters that are rendered in windows with the small font.
+A string is an array of characters rendered in windows with the small
+font.
 
-This module has a few functions capable to load strings in the forms of
+This module provides a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
@@ -17,17 +17,18 @@ import mmap
 
 # 0xAC is the only delimiter code.
 def _is_delimiter(code):
+    """Local function"""
     return code == 0xAC
 
 # Location at where string data are stored
 _LOCSTR = ROMADDR(0xFECFB7)
 
-def _seekloc(fin, id):
-    """Local method"""
+def _seekloc(fin, index):
+    """Local function"""
 
     fin.seek(_LOCSTR)
     ncount = 0
-    while ncount < id:
+    while ncount < index:
         code = fin.read(1)[0]
         if _is_delimiter(code):
             ncount += 1
@@ -36,27 +37,27 @@ def _seekloc(fin, id):
 
 # Constants for use in the loading methods arguments:
 ID_FIRST = 0x0000
-ID_LAST  = 0x03BE
+ID_LAST = 0x03BE
 
-def load_code(id):
+def load_code(index):
     """Return a string as an array of raw codes.
 
-    load_code(id) -> (loc, codeseq),
+    load_code(index) -> (loc, codeseq),
 
     where loc is the CPU address (mapped to HiROM) at where the bytes
     locate and codeseq is the list of raw codes that ends with the delimiter
     code 0xAC.
 
-    id MUST in xrange(ID_FIRST, ID_LAST).
+    index MUST in xrange(ID_FIRST, ID_LAST).
     """
 
-    if id < ID_FIRST or ID_LAST <= id:
+    if index < ID_FIRST or ID_LAST <= index:
         raise IndexError('out of range')
 
     loc = 0
     with open_rom() as fin:
-        mem = mmap.mmap(fin.fileno(), 0, access = mmap.ACCESS_READ)
-        loc = _seekloc(mem, id)
+        mem = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
+        loc = _seekloc(mem, index)
 
         codeseq = []
         code = 0
@@ -75,26 +76,26 @@ def make_text(codeseq):
     using load_code method, and str is a text representation.
     """
 
-    from dqutils.dq3.charsmall import charmap
-    return ''.join([charmap.get(c, '[%02X]' % c) for c in codeseq])
+    from dqutils.dq3.charsmall import CHARMAP
+    return ''.join([CHARMAP.get(c, '{:02X}'.format(c)) for c in codeseq])
 
-def load_string(id):
+def load_string(index):
     """Return a legible string.
 
-    load_string(id) <==> make_text(load_code(id)[1])
+    load_string(index) <==> make_text(load_code(index)[1])
     """
-    return make_text(load_code(id)[1])
+    return make_text(load_code(index)[1])
 
 # Demonstration method (by the author, for the author).
 
 def print_all():
     """Print all of the strings in DQ3 to sys.stdout."""
 
-    for id in range(ID_FIRST, ID_LAST):
-        loc, codeseq = load_code(id)
+    for i in range(ID_FIRST, ID_LAST):
+        loc, codeseq = load_code(i)
         codeseq.pop()  # Remove the delimiter code (AC).
         text = make_text(codeseq)
-        print('{0:04X}:{1:06X}:{2}'.format(id, loc, text))
+        print('{0:04X}:{1:06X}:{2}'.format(i, loc, text))
 
 if __name__ == '__main__':
     print_all()

@@ -1,18 +1,9 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-"""dqutils.database.format モジュール
-
-試作版だよ
+"""dqutils.database.format -- (prototype)
 """
 
-# for 'import *'
-__all__ = ['TableFormatter',
-           'CSVFormatter',
-           'XMLFormatter',
-           'ExcelFormatter',
-           ]
-
-class TableFormatter:
+class TableFormatter(object):
     """テーブルを書式化して出力するための抽象クラス。
     クラス Table がこのサブクラスのうちのひとつを用いる。
     ちなみにデフォルトでは CSVFormatter を使う。
@@ -31,7 +22,6 @@ class TableFormatter:
     def write_record(self, value_list):
         """レコード一行分を書式化して標準出力に出力する"""
         raise NotImplementedError("subclasses must implement")
-
 
 class CSVFormatter(TableFormatter):
     """ROM を parse しながら構造体オブジェクト配列を CSV として出力する
@@ -54,24 +44,22 @@ class CSVFormatter(TableFormatter):
 
 # 以下未実装
 
-class XMLFormatter(TableFormatter):
-    """ROM を parse しながら構造体オブジェクト配列を XML として出力する
-
-    """
-    def __init__(self):
-        TableFormatter.__init__(self)
-
-
-class ExcelFormatter(TableFormatter):
-    """ROM を parse しながら構造体オブジェクト配列を
-    Excel スプレッドシートに出力する。
-
-    win32com モジュールを利用するので、Windows 以外では使えない。
-    （だからこのファイルにコードを書いてはいけない）
-    """
-    def __init__(self):
-        TableFormatter.__init__(self)
-        # TODO:
-        #import win32com.client
-        #excel = win32com.client.Dispatch('Excel.Application')
-        #...
+#class XMLFormatter(TableFormatter):
+#    """ROM を parse しながら構造体オブジェクト配列を XML として出力する
+#    """
+#    def __init__(self):
+#        super().__init__()
+#
+#class ExcelFormatter(TableFormatter):
+#    """ROM を parse しながら構造体オブジェクト配列を
+#    Excel スプレッドシートに出力する。
+#
+#    win32com モジュールを利用するので、Windows 以外では使えない。
+#    （だからこのファイルにコードを書いてはいけない）
+#    """
+#    def __init__(self):
+#        super().__init__()
+#        # TODO:
+#        #import win32com.client
+#        #excel = win32com.client.Dispatch('Excel.Application')
+#        #...

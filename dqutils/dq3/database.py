@@ -1,16 +1,13 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-"""dqutils.dq3.database モジュール
-
-利用部と解析部との間にある
+"""dqutils.dq3.database - TBW
 """
 
 from dqutils.database import table
-from dqutils.database.parser import get_struct_info, handle_member
+from dqutils.database.parser import get_struct_info
+from dqutils.database.parser import handle_member
 from dqutils.address import conv_hi
 from dqutils.dq3 import open_rom
 from xml.dom.minidom import parse as parsexml
-import sys
 import mmap
 
 __all__ = ['process_xml']
@@ -43,7 +40,6 @@ def read_array(fields, cpuaddr, recordsize, recordnum):
     with open_rom() as fin:
         rom = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
 
-        # TODO: convert address
         romaddr = conv_hi(cpuaddr)
 
         # [required] 構造体オブジェクト配列オブジェクト

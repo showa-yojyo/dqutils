@@ -1,10 +1,9 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""ドラクエ 5 大きいフォントの文字コード辞書
+"""dqutils.dq5.charlarge - The dictionary of large size characters.
 """
 
-charmap = {
+CHARMAP = {
     #0x0000:"亜",  # dqviewer では「亜」だが、うまくいかない
     0x0000:" ",
     0x0001:"園",
@@ -861,7 +860,7 @@ charmap = {
     0x0354:"つ",
     0x0355:"エ",
     0x0356:"。",
-    0x0357:"，", 
+    0x0357:"，",
     0x0358:"・",
     0x0359:"？",
     0x035A:"！",
@@ -1001,8 +1000,5 @@ def print_charmap():
     It is much faster to open this file in the text editor.
     """
 
-    for i, v in charmap.items():
-        print('{0:04X}:{1}'.format(i, v))
-
-if __name__ == "__main__":
-    print_charmap()
+    for i in CHARMAP.items():
+        print('{0:04X}:{1}'.format(i[0], i[1]))

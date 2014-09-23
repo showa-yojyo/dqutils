@@ -1,10 +1,9 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""ドラクエ 6 大きいフォントの文字コード辞書
+"""dqutils.dq6.charlarge - The dictionary of large size characters.
 """
 
-charmap = {
+CHARMAP = {
     0x0200:" ",
     0x0201:"愛",
     0x0202:"悪",
@@ -1109,8 +1108,5 @@ def print_charmap():
     It is much faster to open this file in the text editor.
     """
 
-    for i, v in charmap.items():
-        print('{0:04X}:{1}'.format(i, v))
-
-if __name__ == "__main__":
-    print_charmap()
+    for i in CHARMAP.items():
+        print('{0:04X}:{1}'.format(i[0], i[1]))

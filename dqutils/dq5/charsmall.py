@@ -1,15 +1,16 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""ドラクエ 5 小さいフォントの文字コード辞書
+"""dqutils.dq5.charsmall - The dictionary of small size characters.
 
-1. See dqviewer.exe <Sonitown, http://www.geocities.jp/sonitown> for the table of small font.
-2. See dq3encode.c of dq_analyzer <Index of ~/s-endo, http://s-endo.skr.jp>
+References:
 
-Both resources are free.
+  [1] See dqviewer.exe <Sonitown, http://www.geocities.jp/sonitown> for the
+        table of small font characters.
+
+  [2] See dq3encode.c of dq_analyzer <Index of ~/s-endo, http://s-endo.skr.jp>
 """
 
-charmap = {
+CHARMAP = {
     0x00:"",
     0x01:" ",
     0x02:"０",
@@ -269,6 +270,8 @@ charmap = {
 }
 
 def process_dakuten(text):
+    """濁点だけの文字を直後のかな文字と結合した文字に置換する。"""
+
     if "゜" in text:
         text = text.replace('゜は', 'ぱ').\
                     replace('゜ひ', 'ぴ').\
@@ -329,8 +332,5 @@ def print_charmap():
     It is much faster to open this file in the text editor.
     """
 
-    for i, v in charmap.items():
-        print('{0:02X}:{1}'.format(i, v))
-
-if __name__ == "__main__":
-    print_charmap()
+    for i in CHARMAP.items():
+        print('{0:04X}:{1}'.format(i[0], i[1]))

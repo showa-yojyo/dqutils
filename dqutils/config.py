@@ -1,39 +1,31 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """dqutils package config manager class
 """
 
 import os.path
 import configparser
 
-_MYCONFIG = None
-
 def get_config():
-    """TODO"""
+    """Return the configuration object."""
 
-    global _MYCONFIG
-    if _MYCONFIG is None:
-        _MYCONFIG = load_conf()
-    return _MYCONFIG
+    if not getattr(get_config, "MYCONFIG", None):
+        get_config.MYCONFIG = load_conf()
+
+    return get_config.MYCONFIG
 
 def load_conf():
-    """TODO"""
+    """Read user's setting file."""
 
     confdir = confdir_home()
-    if not os.path.isdir(confdir):
-        raise IOError('no config ' + confdir)
-
     conffile = os.path.join(confdir, 'config')
-    if not os.path.exists(conffile):
-        raise IOError('no config ' + conffile)
-
     confparser = configparser.ConfigParser()
-    confparser.readfp(open(conffile))
+    with open(conffile) as fin:
+        confparser.read_file(fin)
     return confparser
 
 def confdir_home():
-    """TODO"""
+    """Return the directory that contain the configuration files."""
     return os.path.expanduser('~/.dqutils')
 
 if __name__ == "__main__":

@@ -2,20 +2,21 @@
 # -*- coding: utf-8 -*-
 
 """dqutils.dq3.string module
-This module provides decoding methods for DQ3 message
-systems.  The original implementation is of course written in
-65816 code.  Here are in Python via C/C++ code I wrote before.
 
-DQ3 decoding logic is the same as DQ6.
+This module provides decoding methods for DQ3 message systems.
+The original implementation is of course written in 65816 code.
+Here are in Python version, which is based on C/C++ code version I wrote
+before.
+
+The decoding algorithm of DQ3 is the same as DQ6.
 """
 
 from dqutils.address import from_hi as CPUADDR
 from dqutils.address import conv_hi as ROMADDR
-from dqutils.bit import readbytes, getbits, getbytes
+from dqutils.bit import readbytes
+from dqutils.bit import getbytes
 from dqutils.dq3 import open_rom
 import mmap
-
-__DEBUG__ = True
 
 def _is_delimiter(code):
     """Local function"""
@@ -28,12 +29,12 @@ def _is_delimiter(code):
 # Address where message data of battle scene are stored.
 LOCATION_MSG_BATTLE = ROMADDR(0xFC9F22)
 
-def _seek_location(fin, id):
+def _seek_location(fin, index):
     """Local function"""
 
     fin.seek(LOCATION_MSG_BATTLE)
     ncount = 0
-    while ncount < id:
+    while ncount < index:
         code = fin.read(1)[0]
         if _is_delimiter(code):
             ncount += 1
@@ -42,7 +43,7 @@ def _seek_location(fin, id):
 
 # Constants for use in the loading method arguments:
 BATTLE_ID_FIRST = 0
-BATTLE_ID_LAST  = 0x0177
+BATTLE_ID_LAST = 0x0177
 
 def _verify_input(first, last):
     """Local function"""
@@ -54,9 +55,7 @@ def _verify_input(first, last):
     if first > last:
         raise IndexError('invalid range:')
 
-def load_battle_msg_code(
-    idfirst = BATTLE_ID_FIRST,
-    idlast  = BATTLE_ID_LAST):
+def load_battle_msg_code(idfirst=BATTLE_ID_FIRST, idlast=BATTLE_ID_LAST):
     """Help me!"""
     _verify_input(idfirst, idlast)
 
@@ -64,10 +63,10 @@ def load_battle_msg_code(
     data = []
     with open_rom() as fin:
         # Create a memory-mapped file from fin.
-        mem = mmap.mmap(fin.fileno(), 0, access = mmap.ACCESS_READ)
+        mem = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
         cpuaddr = _seek_location(mem, idfirst)
 
-        for i in range(idfirst, idlast):
+        for _ in range(idfirst, idlast):
             codeseq = []
             code = 0
             while not _is_delimiter(code):
@@ -88,30 +87,26 @@ def make_text_battle(codeseq):
     where codeseq is the list of codes that are obtained by
     using load_battle_msg_code method, and str is a text representation.
     """
-    
-    from dqutils.dq3.charsmall import charmap
-    return ''.join([charmap.get(c, '[%02X]' % c) for c in codeseq])
 
-def load_battle_msg(id):
+    from dqutils.dq3.charsmall import CHARMAP
+    return ''.join([CHARMAP.get(c, '[:02X]'.format(c)) for c in codeseq])
+
+def load_battle_msg(index):
     """Return a legible string.
-
-    load_battle_msg(id) <==> make_text_battle(load_battle_msg_code(id, id + 1)[0][1])
     """
 
-    return make_text_battle(load_battle_msg_code(id, id + 1)[0][1])
+    return make_text_battle(load_battle_msg_code(index, index + 1)[0][1])
 
 def print_all_battle():
     """Demonstration method by the author, for the author."""
-    import time
-    st = time.clock()
+
     data = load_battle_msg_code()
-    for id, pair in enumerate(data):
+    for index, pair in enumerate(data):
         # Remove delimiter codes (AC and AE).
         codeseq = pair[1]
         codeseq.pop()
-        print('{0:04X}:{1:06X}:{2}'.format(id, pair[0], make_text_battle(codeseq)))
-    et = time.clock()
-    print(et - st, 'sec')
+        print('{0:04X}:{1:06X}:{2}'.format(
+            index, pair[0], make_text_battle(codeseq)))
 
 #
 # Conversation, dialog, system messages
@@ -119,8 +114,7 @@ def print_all_battle():
 
 _LOC_GROUP = ROMADDR(0xC15331)
 _LOC_SHIFT = ROMADDR(0xC1B01C)
-_LOC_DATA  = 0xFCC258
-_SHIFTBIT_ARRAY = None
+_LOC_DATA = 0xFCC258
 
 def _get_cpuaddr(msgid, fin):
     """Return the location where the messege data is stored.
@@ -146,16 +140,16 @@ def _get_cpuaddr(msgid, fin):
 
     # from shiftbit array
     # {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80}
-    global _SHIFTBIT_ARRAY
-    if _SHIFTBIT_ARRAY is None:
+    if not getattr(_get_cpuaddr, "SHIFTBIT_ARRAY", None):
         fin.seek(_LOC_SHIFT)
-        _SHIFTBIT_ARRAY = readbytes(fin, 8)
-    shift = _SHIFTBIT_ARRAY[buffer1[0] & 0x07]
+        _get_cpuaddr.SHIFTBIT_ARRAY = readbytes(fin, 8)
+
+    shift = _get_cpuaddr.SHIFTBIT_ARRAY[buffer1[0] & 0x07]
 
     cpuaddr = (getbytes(buffer1, 0, 3) >> 3) + _LOC_DATA
 
     # The loop counter depends on msgid % 7.
-    for count in range(count):
+    for _ in range(count):
         code = 0
         while not _is_delimiter(code):
             # この関数は重いので注意
@@ -164,7 +158,7 @@ def _get_cpuaddr(msgid, fin):
     return cpuaddr, shift
 
 MSG_ID_FIRST = 0
-MSG_ID_LAST  = 0x0FCF
+MSG_ID_LAST = 0x0FCF
 
 def _verify_msg_id(first, last):
     """Local function"""
@@ -176,7 +170,7 @@ def _verify_msg_id(first, last):
     if first > last:
         raise IndexError('invalid range:')
 
-def load_msg_code(idfirst = MSG_ID_FIRST, idlast = MSG_ID_LAST):
+def load_msg_code(idfirst=MSG_ID_FIRST, idlast=MSG_ID_LAST):
     """Return a list of pairs (cpuaddr, codeseq).
 
     load_msg_code(idfirst, idlast) -> a list of (cpuaddr, codeseq).
@@ -188,15 +182,12 @@ def load_msg_code(idfirst = MSG_ID_FIRST, idlast = MSG_ID_LAST):
     data = []
     with open_rom() as fin:
         # Create a memory-mapped file from fin.
-        mem = mmap.mmap(fin.fileno(), 0, access = mmap.ACCESS_READ)
+        mem = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
 
         # Obtain the first data location.
         cpuaddr, shift = _get_cpuaddr(idfirst, mem)
 
-        if __DEBUG__:
-            print('=' * 80)
-
-        for i in range(idfirst, idlast):
+        for _ in range(idfirst, idlast):
             cpuaddr0, shift0 = cpuaddr, shift
             codeseq = []
             code = 0
@@ -204,9 +195,6 @@ def load_msg_code(idfirst = MSG_ID_FIRST, idlast = MSG_ID_LAST):
                 code, cpuaddr, shift = _decode(cpuaddr, shift, mem)
                 codeseq.append(code)
             data.append((cpuaddr0, shift0, codeseq))
-
-            if __DEBUG__:
-                print('=' * 80)
 
         # Close mmap object.
         mem.close()
@@ -221,69 +209,58 @@ def make_text(codeseq):
     where codeseq is the list of codes that are obtained by
     using load_msg_code method, and str is a text representation.
     """
-    from dqutils.dq3.charlarge import charmap
-    return ''.join([charmap.get(c, '[%02X]' % c) for c in codeseq])
 
-def load_msg(id):
+    from dqutils.dq3.charlarge import CHARMAP
+    return ''.join([CHARMAP.get(c, '{:02X}'.format(c)) for c in codeseq])
+
+def load_msg(index):
     """Return a legible string.
 
-    load_msg(id) <==> make_text(load_msg_code(id, id + 1)[0][1])
+    load_msg(index) <==> make_text(load_msg_code(index, index + 1)[0][1])
     """
 
-    return make_text(load_msg_code(id, id + 1)[0][-1])
+    return make_text(load_msg_code(index, index + 1)[0][-1])
 
 def print_all():
     """Demonstration method by the author, for the author."""
-    import time
-    st = time.clock()
 
     data = load_msg_code()
 
-    for id, tup in enumerate(data):
+    for index, tup in enumerate(data):
         # Remove delimiter codes (AC and AE).
         codeseq = tup[-1]
         shift = tup[1]
         codeseq.pop()
-        print('{0:04X}:{1:06X}:{2:02X}:{3}'.format(id, tup[0], shift, make_text(codeseq)))
-
-    et = time.clock()
-    print(et - st, 'sec')
+        print('{0:04X}:{1:06X}:{2:02X}:{3}'.format(
+            index, tup[0], shift, make_text(codeseq)))
 
 _LOC_BIT_OFF = ROMADDR(0xC159D3)
-_LOC_BIT_ON  = ROMADDR(0xC161A7)
+_LOC_BIT_ON = ROMADDR(0xC161A7)
 _ROOT = 0x07D2
-HUFFMAN_OFF = None
-HUFFMAN_ON  = None
 
 def _init_tree(fin):
     """(Local function) Initialize Huffman tree data."""
 
-    # C/C++ の感覚だと、当スコープ？からでもこれらの名前を見つけて
-    # 当然だと思ってしまいがちだが、この global 宣言を欠くと
-    # if 文のある行で UnboundLocalError を生ずる
-    global HUFFMAN_OFF
-    global HUFFMAN_ON
-
-    if HUFFMAN_OFF is None:
+    if not getattr(_init_tree, "HUFFMAN_OFF", None):
         # ファイルからバイト列を抽出
         fin.seek(_LOC_BIT_OFF)
-        HUFFMAN_OFF = readbytes(fin, _ROOT + 2)
+        _init_tree.HUFFMAN_OFF = readbytes(fin, _ROOT + 2)
 
-    if HUFFMAN_ON is None:
-        # 上の if ブロックと統合できるように見えるだろうが
-        # 別の都合により、そうしていないだけだ
+    if not getattr(_init_tree, "HUFFMAN_ON", None):
         fin.seek(_LOC_BIT_ON)
-        HUFFMAN_ON = readbytes(fin, _ROOT + 2)
+        _init_tree.HUFFMAN_ON = readbytes(fin, _ROOT + 2)
 
-    assert len(HUFFMAN_ON) == _ROOT + 2
-    assert len(HUFFMAN_OFF) == _ROOT + 2
+    assert len(_init_tree.HUFFMAN_ON) == _ROOT + 2
+    assert len(_init_tree.HUFFMAN_OFF) == _ROOT + 2
+    return _init_tree.HUFFMAN_ON, _init_tree.HUFFMAN_OFF
 
-def _decode(cpuaddr, shift, fin):
+def _decode(cpuaddr, shift, fin, dump_shift_bit=False):
     """Decoding algorithm of Huffman coding."""
+
     assert cpuaddr & 0xFF000000 == 0
     assert shift & 0xFFFFFF00 == 0
 
-    _init_tree(fin)
+    huffman_on, huffman_off = _init_tree(fin)
 
     node = _ROOT
     while True:
@@ -291,7 +268,7 @@ def _decode(cpuaddr, shift, fin):
         buffer = readbytes(fin, 2)
         value = getbytes(buffer, 0, 2) & shift
 
-        if __DEBUG__:
+        if dump_shift_bit:
             print('{:04X}'.format(shift), end='')
             if value:
                 print(1, end='')
@@ -304,12 +281,12 @@ def _decode(cpuaddr, shift, fin):
             cpuaddr += 1
 
         if value:
-            value = getbytes(HUFFMAN_ON, node, 2)
+            value = getbytes(huffman_on, node, 2)
         else:
-            value = getbytes(HUFFMAN_OFF, node, 2)
+            value = getbytes(huffman_off, node, 2)
 
         if value & 0x8000 == 0:
-            if __DEBUG__:
+            if dump_shift_bit:
                 print('{:04X}'.format(value))
             return value, cpuaddr, shift
 

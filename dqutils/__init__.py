@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""dqutils package - 書き方が不明
+"""dqutils package - TBW: What is dqutils?
 """
 
 __version__ = '1.1.0'

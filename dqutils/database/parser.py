@@ -1,9 +1,6 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""dqutils.database.parser モジュール
-
-利用部と解析部との間にある
+"""dqutils.database.parser - TBW
 """
 
 from dqutils.database import table
@@ -26,6 +23,8 @@ def get_struct_info(structnode):
     return cpuaddr, recordsize, recordnum
 
 def get_int(text):
+    """Cast a text value to numeric."""
+
     if not text:
         return 0
 
@@ -45,17 +44,18 @@ def handle_member(mem):
     attrs = {}
 
     # required
-    name = mem.getAttribute('name')
-    type = mem.getAttribute('type')
+    attr_name = mem.getAttribute('name')
+    attr_type = mem.getAttribute('type')
 
     attrs['offset'] = get_int(mem.getAttribute('offset'))
 
     # optional
-    mask = get_int(mem.getAttribute('mask'))
-    format = mem.getAttribute('format')
-    if mask:
-        attrs['mask'] = mask
+    attr_mask = get_int(mem.getAttribute('mask'))
+    attr_format = mem.getAttribute('format')
+    if attr_mask:
+        attrs['mask'] = attr_mask
     if format:
-        attrs['format'] = format
+        attrs['format'] = attr_format
 
-    return table.make_field(name, type, **attrs)
+    # pylint: disable=star-args
+    return table.make_field(attr_name, attr_type, **attrs)

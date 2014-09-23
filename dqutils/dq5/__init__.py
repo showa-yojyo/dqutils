@@ -1,16 +1,12 @@
 # -*- coding: utf-8 -*-
 #
-"""dqutils package - dq5
+"""dqutils package - dqutils.dq5 __init__ module
 """
 
-def open_rom(mode = 'rb'):
-    """Help me"""
-    from dqutils.config import get_config
-    confparser = get_config()
-    rompath = confparser.get('ROM', 'DRAGONQUEST5')
+from dqutils.config import get_config
 
-    import os.path
-    if not os.path.exists(rompath):
-        raise IOError('Not found ROM ' + rompath)
+def open_rom():
+    """Open the DRAGONQUEST5 ROM image by using the setting file."""
 
-    return open(rompath, mode)
+    rompath = get_config().get('ROM', 'DRAGONQUEST5')
+    return open(rompath, mode='rb')

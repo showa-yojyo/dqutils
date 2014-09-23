@@ -1,52 +1,66 @@
-# -*- coding: UTF-8 -*-
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+"""Run unit tests for dqutils package."""
 
 def run_load_strings():
-    from dqutils.dq3.stringloader import load_strings
-    load_strings(0x23, 0x27)
+    """TBW"""
+    from dqutils.dq3.string import load_string
+    load_string(0x23)
 
 def run_load_battle_messages():
-    from dqutils.dq3.message import load_battle_messages
-    load_battle_messages()
+    """TBW"""
+    from dqutils.dq3.message import print_all_battle
+    print_all_battle()
 
 def run_load_messages():
-    from dqutils.dq3.message import load_messages
+    """TBW"""
+    from dqutils.dq3.message import print_all
     #load_messages(0x0008, 0x000A)
-    load_messages()
+    print_all()
 
 def run_parse_structs():
-    from dqutils import configmanager, struct
-    rompath = configmanager.get_config().get('ROM', 'DRAGONQUEST3')
+    """TBW"""
+    from dqutils import config
+    rompath = config.get_config().get('ROM', 'DRAGONQUEST3')
     assert rompath
-    confpath = 'dqutils/test/conf/dq3-C20000.conf'
-    struct.parse_structs(rompath, confpath)
+    #confpath = 'dqutils/test/conf/dq3-C20000.conf'
+    #struct.parse_structs(rompath, confpath)
 
 def run_dq6_load_strings():
-    from dqutils.dq6.string import load_strings
-    load_strings()
+    """TBW"""
+    from dqutils.dq6.string import print_all
+    print_all()
 
 def run_dq6_message_battle():
-    from dqutils.dq6.message import load_battle_messages
-    load_battle_messages()
+    """TBW"""
+    from dqutils.dq6.message import print_all_battle
+    print_all_battle()
 
 def run_dq6_message():
-    from dqutils.dq6.message import load_messages
-    load_messages(idfirst = 0x1B01)
+    """TBW"""
+    from dqutils.dq6.message import load_msg
+    load_msg(0x1B01)
 
 def test_dq6():
+    """TBW"""
     run_dq6_load_strings()
     run_dq6_message_battle()
     run_dq6_message()
 
 def run_dq5_message():
-    from dqutils.dq5.message import load_messages, load_battle_messages
-    load_messages(idfirst = 0x0C7C)
-    load_battle_messages()
+    """TBW"""
+    from dqutils.dq5.message import load_msg
+    from dqutils.dq5.message import print_all_battle
+    load_msg(0x0C7C)
+    print_all_battle()
 
 def run_dq5_string():
-    from dqutils.dq5.string import load_all_strings
-    load_all_strings()
+    """TBW"""
+    from dqutils.dq5.string import print_all
+    print_all()
 
 def test_dq5():
+    """TBW"""
     #run_dq5_message()
     run_dq5_string()
 

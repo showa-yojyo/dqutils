@@ -1,21 +1,14 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-"""dqutils.database.table モジュール
-
-試作版だよ
+"""dqutils.database.table (prototype)
 """
 
-from dqutils.bit import getbits, getbytes, readbytes
+from dqutils.bit import getbits
+from dqutils.bit import getbytes
+from dqutils.bit import readbytes
 from dqutils.database import format as fmt
-import types
 
-# for 'import *'
-__all__ = ['Field',
-           'make_field',
-           'Table',
-           ]
-
-class Field:
+class Field(object):
     """構造体オブジェクト配列をデータベース的に捉えたときの
     カラム一個に相当するクラス。
 
@@ -28,10 +21,10 @@ class Field:
     """
 
     # optparse のパクリ
-    ATTRS = ['name','type','offset','mask','format']
-    TYPES = ['byte','word','long','bits']
+    ATTRS = ['name', 'type', 'offset', 'mask', 'format']
+    TYPES = ['byte', 'word', 'long', 'bits']
 
-    def __init__(self, name, *opts, **attrs):
+    def __init__(self, name, **attrs):
         """いろいろセットする"""
         self.name = name
 
@@ -39,8 +32,6 @@ class Field:
         self._set_attrs(attrs)
         if not hasattr(self, 'format'):
             self.do_set_fmt()
-
-        assert self.format
 
     def __cmp__(self, other):
         """naive comparison"""
@@ -58,10 +49,10 @@ class Field:
 
     def _set_attrs(self, attrs):
         """メンバーデータをセット"""
-        for a in self.ATTRS:
-            if a in attrs:
-                setattr(self, a, attrs[a])
-                del attrs[a]  # 行儀が悪いが
+        for i in self.ATTRS:
+            if i in attrs:
+                setattr(self, i, attrs[i])
+                del attrs[i]  # 行儀が悪いが
         # TODO: 残りカスをチェック
 
     def do_set_fmt(self):
@@ -70,17 +61,16 @@ class Field:
 
     def process(self, chunk):
         """バイト塊を処理するメソッド"""
-        return ''
+        return chunk
 
     def title(self):
         """フィールド名を返すだけ"""
         return self.name
 
-
 class BitField(Field):
     """メンバーデータがビット列で表現されているものに対応する"""
-    def __init__(self, name, *opts, **attrs):
-        Field.__init__(self, name, *opts, **attrs)
+    def __init__(self, name, **attrs):
+        super().__init__(name, **attrs)
 
     def do_set_fmt(self):
         """書式文字列をセット"""
@@ -90,11 +80,10 @@ class BitField(Field):
         """バイト塊を処理するメソッド"""
         return self.format % getbits(chunk, self.offset, self.mask)
 
-
 class ByteField(Field):
     """メンバーデータが 1byte で表現されているものに対応する"""
-    def __init__(self, name, *opts, **attrs):
-        Field.__init__(self, name, *opts, **attrs)
+    def __init__(self, name, **attrs):
+        super().__init__(name, **attrs)
 
     def do_set_fmt(self):
         """書式文字列をセット"""
@@ -104,11 +93,11 @@ class ByteField(Field):
         """バイト塊を処理するメソッド"""
         return self.format % getbytes(chunk, self.offset, 1)
 
-
 class WordField(Field):
     """メンバーデータが 2byte で表現されているものに対応する"""
-    def __init__(self, name, *opts, **attrs):
-        Field.__init__(self, name, *opts, **attrs)
+
+    def __init__(self, name, **attrs):
+        super().__init__(name, **attrs)
 
     def do_set_fmt(self):
         """書式文字列をセット"""
@@ -118,11 +107,11 @@ class WordField(Field):
         """バイト塊を処理するメソッド"""
         return self.format % getbytes(chunk, self.offset, 2)
 
-
 class LongField(Field):
     """メンバーデータが 3byte で表現されているものに対応する"""
-    def __init__(self, name, *opts, **attrs):
-        Field.__init__(self, name, *opts, **attrs)
+
+    def __init__(self, name, **attrs):
+        super().__init__(name, **attrs)
 
     def do_set_fmt(self):
         """書式文字列をセット"""
@@ -132,35 +121,35 @@ class LongField(Field):
         """バイト塊を処理するメソッド"""
         return self.format % getbytes(chunk, self.offset, 3)
 
-
 class BadFieldType(Exception):
     """フィールドタイプが不明な名前の場合の例外"""
 
-    def __init__(self, type):
-        self.type = type
+    def __init__(self, bad_type):
+        super().__init__()
+        self.bad_type = bad_type
 
     def __str__(self):
-        return "no such field type: %s" % self.type
+        return "no such field type: {0}".format(self.bad_type)
 
-
-def make_field(name, type, *args, **kwargs):
+def make_field(name, field_type, **kwargs):
     """Factory method"""
-    if type in ('bit', 'bits'):
-        return BitField(name, *args, **kwargs)
-    elif type in ('byte', '1byte'):
-        return ByteField(name, *args, **kwargs)
-    elif type in ('word', '2byte'):
-        return WordField(name, *args, **kwargs)
-    elif type in ('long', '3byte'):
-        return LongField(name, *args, **kwargs)
+
+    if field_type in ('bit', 'bits'):
+        return BitField(name, **kwargs)
+    elif field_type in ('byte', '1byte'):
+        return ByteField(name, **kwargs)
+    elif field_type in ('word', '2byte'):
+        return WordField(name, **kwargs)
+    elif field_type in ('long', '3byte'):
+        return LongField(name, **kwargs)
     else:
-        raise BadFieldType(type)
+        raise BadFieldType(field_type)
 
-
-class Table:
+class Table(object):
     """工事中"""
 
-    def __init__(self, 
+    # pylint: disable=too-many-arguments
+    def __init__(self,
                  rom=None,
                  romaddr=0,
                  reclen=0,
@@ -175,10 +164,13 @@ class Table:
             formatter = fmt.CSVFormatter()
         self.formatter = formatter
 
-    def add_field(self, name, *args, **kwargs):
-        self.field_list.append(make_field(name, *args, **kwargs))
+    def add_field(self, name, **kwargs):
+        """TBW"""
+        self.field_list.append(make_field(name, **kwargs))
 
     def parse(self):
+        """TBW"""
+
         if self.rom is None or self.reclen == 0:
             return
 
@@ -188,10 +180,11 @@ class Table:
         # setup table header information
         self.do_make_header()
 
-        for i in range(self.recnum):
+        for _ in range(self.recnum):
             # obtain a byte sequence (list so far)
             chunk = readbytes(self.rom, self.reclen)
-            self.do_write_record([field.process(chunk) for field in self.field_list])
+            self.do_write_record(
+                [field.process(chunk) for field in self.field_list])
 
     def do_make_header(self):
         """テーブルヘッダを書式化して標準出力に出力する"""
@@ -203,6 +196,5 @@ class Table:
 
     def sort_fields(self):
         """フィールドをそのアドレス位置の昇順でソート"""
-        # Field.__cmp__ を実装しておくように
+        # TODO: Field.__cmp__ を実装しておくように
         self.field_list.sort()
-
