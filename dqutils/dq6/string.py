@@ -1,99 +1,38 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""Module dqutils.dq6.string -- a string loader for DQ6.
-
-A string is an array of characters that are rendered in windows with the small
-font.
-
-This module has a few functions capable to load strings in the forms of
-raw bytes and legible texts.
+"""dqutils.dq6.string - DQ6-specific string components.
 """
 
-from dqutils.address import from_hi as CPUADDR
-from dqutils.address import conv_hi as ROMADDR
+import dqutils.string
 from dqutils.dq6 import open_rom
-import mmap
+from dqutils.dq6.charsmall import CHARMAP
 
-# 0xAC is the only delimiter code.
-def _is_delimiter(code):
-    """Local function"""
-    return code == 0xAC
+# Constant variables.
+
+# Delimeter character code.
+DELIMITER_CODE = b'\xac'
 
 # Location at where string data are stored.
-_LOCSTR = ROMADDR(0xFB8703)
+STRING_BASE_ADDRESS = 0xFB8703
 
-def _seekloc(fin, index):
-    """Local function"""
+# Range of the valid indices. [first, last) form.
+STRING_INDEX_FIRST = 0x0000
+STRING_INDEX_LAST = 0x09CA
 
-    fin.seek(_LOCSTR)
-    ncount = 0
-    while ncount < index:
-        code = fin.read(1)[0]
-        if _is_delimiter(code):
-            ncount += 1
+def get_text(code_seq, delim=None):
+    """A transfer function."""
+    return dqutils.string.get_text(code_seq, CHARMAP, delim)
 
-    return CPUADDR(fin.tell())
-
-# Constants for the loading method arguments:
-ID_FIRST = 0x0000
-ID_LAST = 0x09CA
-
-def load_code(index):
-    """Return a string as an array of raw codes.
-
-    load_code(index) -> (loc, codeseq),
-
-    where loc is the CPU address (mapped to HiROM) at where the bytes
-    locate and codeseq is the list of raw codes ends with the delimiter
-    code 0xAC.
-
-    index MUST in xrange(ID_FIRST, ID_LAST).
-    """
-
-    if index < ID_FIRST or ID_LAST <= index:
-        raise IndexError('out of range')
-
-    loc = 0
-    with open_rom() as fin:
-        mem = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
-        loc = _seekloc(mem, index)
-
-        codeseq = []
-        code = 0
-        while not _is_delimiter(code):
-            code = mem.read(1)[0]
-            codeseq.append(code)
-        mem.close()
-    return loc, codeseq
-
-def make_text(codeseq):
-    """Return a legible string.
-
-    make_text(codeseq) -> str,
-
-    where codeseq is the list of raw codes that are obtained by
-    using load_code method, and str is a text representation.
-    """
-
-    from dqutils.dq6.charsmall import CHARMAP
-    return ''.join([CHARMAP.get(c, '{:02X}'.format(c)) for c in codeseq])
-
-def load_string(index):
-    """Return a legible string.
-    """
-    return make_text(load_code(index)[1])
-
-# Demonstration method (by the author, for the author)
+def enum_string(mem, first, last):
+    """A transfer function."""
+    return dqutils.string.enum_string(
+        mem, first, last, STRING_BASE_ADDRESS, DELIMITER_CODE)
 
 def print_all():
-    """Print all of the strings in DQ6 to sys.stdout."""
-
-    for i in range(ID_FIRST, ID_LAST):
-        loc, codeseq = load_code(i)
-        codeseq.pop()  # remove delimiter code (AC)
-        text = make_text(codeseq)
-        print('{0:04X}:{1:06X}:{2}'.format(i, loc, text))
-
-if __name__ == '__main__':
-    print_all()
+    """A transfer function."""
+    dqutils.string.print_string(
+        open_rom,
+        first=STRING_INDEX_FIRST,
+        last=STRING_INDEX_LAST,
+        base_addr=STRING_BASE_ADDRESS,
+        charmap=CHARMAP,
+        delim=DELIMITER_CODE)

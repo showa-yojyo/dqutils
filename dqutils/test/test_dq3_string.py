@@ -1,42 +1,35 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for dqutils.dq3.string
-"""
+"""Tests for dqutils.dq3.string"""
 
 import unittest
-from dqutils.dq3.string import load_code
-from dqutils.dq3.string import load_string
-from dqutils.dq3.string import ID_FIRST
-from dqutils.dq3.string import ID_LAST
+import mmap
+from dqutils.dq3 import open_rom
+from dqutils.dq3.string import enum_string
+from dqutils.dq3.string import get_text
 
 # pylint: disable=too-many-public-methods
 class DQ3StringTestCase(unittest.TestCase):
     """Test functions defined in dqutils.dq3.string."""
 
-    def test_load_code(self):
-        """Test function dqutils.dq3.load_code."""
+    def test_get_text(self):
+        """Test function dqutils.dq3.get_text."""
 
-        self._range_check(load_code)
+        text = get_text(bytearray(b"\x26\x24\x12\x24\xDC\x0E\xAC"))
+        self.assertTrue('ひのきのぼう' in text)
 
-        hinokinobou = [0x26, 0x24, 0x12, 0x24, 0xDC, 0x0E, 0xAC]
-        loc, codes = load_code(0x0047)
-        self.assertEqual(loc, 0xFED0D5)
-        self.assertEqual(codes, hinokinobou)
+    def test_enum_string(self):
+        """Test function dqutils.dq3.enum_string."""
+        with open_rom() as fin:
+            with mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ) as mem:
+                testdata = tuple(enum_string(mem, 0x100, 0x110))
 
-    def test_load_string(self):
-        """Test function dqutils.dq3.load_string."""
+                self.assertEqual(testdata[0][0], 0xFED659)
+                self.assertTrue('せいすい' in get_text(testdata[0][1]))
 
-        self._range_check(load_string)
-
-        hinokinobou = 'ひのきのぼう'
-        text = load_string(0x0047)
-        self.assertTrue(hinokinobou in text)
-
-    def _range_check(self, func):
-        """Helper method."""
-        self.assertRaises(IndexError, func, ID_FIRST - 1)
-        self.assertRaises(IndexError, func, ID_LAST)
+                self.assertEqual(testdata[15][0], 0xFED6CA)
+                self.assertTrue('にじのしずく' in get_text(testdata[15][1]))
 
 def test_suite():
     """Setup a test suite."""

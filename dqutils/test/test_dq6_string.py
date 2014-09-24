@@ -1,46 +1,35 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""Tests for dqutils.dq6.string
-"""
+"""Tests for dqutils.dq6.string"""
 
 import unittest
-from dqutils.dq6.string import load_code
-from dqutils.dq6.string import load_string
-from dqutils.dq6.string import ID_FIRST
-from dqutils.dq6.string import ID_LAST
+import mmap
+from dqutils.dq6 import open_rom
+from dqutils.dq6.string import enum_string
+from dqutils.dq6.string import get_text
 
 # pylint: disable=too-many-public-methods
 class DQ6StringTestCase(unittest.TestCase):
     """Test functions defined in dqutils.dq6.string."""
 
-    def test_load_code(self):
-        """Test function dqutils.dq6.load_code."""
+    def test_get_text(self):
+        """Test function dqutils.dq6.get_text."""
 
-        self._range_check(load_code)
+        text = get_text(bytearray(b"\x2A\x28\x16\x28\xDC\x12\xAC"))
+        self.assertTrue('ひのきのぼう' in text)
 
-        hinokinobou = [0x2a, 0x28, 0x16, 0x28, 0xdc, 0x12, 0xAC]
-        loc, codes = load_code(0x0814)
-        self.assertEqual(loc, 0xFBBD23)
-        self.assertEqual(codes, hinokinobou)
+    def test_enum_string(self):
+        """Test function dqutils.dq6.enum_string."""
+        with open_rom() as fin:
+            with mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ) as mem:
+                testdata = tuple(enum_string(mem, 0x300, 0x310))
 
-        loc, codes = load_code(0x09A6)
-        self.assertEqual(loc, 0xFBC749)
-        self.assertEqual(codes, [0xAC])
+                self.assertEqual(testdata[0][0], 0xFB97DB)
+                self.assertTrue('ムドー' in get_text(testdata[0][1]))
 
-    def test_load_string(self):
-        """Test function dqutils.dq6.load_string."""
-
-        self._range_check(load_string)
-
-        hinokinobou = 'ひのきのぼう'
-        text = load_string(0x0814)
-        self.assertTrue(hinokinobou in text)
-
-    def _range_check(self, func):
-        """Helper method."""
-        self.assertRaises(IndexError, func, ID_FIRST - 1)
-        self.assertRaises(IndexError, func, ID_LAST)
+                self.assertEqual(testdata[15][0], 0xFB9835)
+                self.assertTrue('デュラン' in get_text(testdata[15][1]))
 
 def test_suite():
     """Setup a test suite."""
