@@ -4,8 +4,8 @@
 """Tests for dqutils.dq6.string"""
 
 import unittest
-import mmap
-from dqutils.dq6 import open_rom
+from dqutils.romimage import RomImage
+from dqutils.dq6.string import CONTEXT
 from dqutils.dq6.string import enum_string
 from dqutils.dq6.string import get_text
 
@@ -16,20 +16,20 @@ class DQ6StringTestCase(unittest.TestCase):
     def test_get_text(self):
         """Test function dqutils.dq6.get_text."""
 
-        text = get_text(bytearray(b"\x2A\x28\x16\x28\xDC\x12\xAC"))
+        text = get_text(b"\x2A\x28\x16\x28\xDC\x12\xAC")
         self.assertTrue('ひのきのぼう' in text)
 
     def test_enum_string(self):
         """Test function dqutils.dq6.enum_string."""
-        with open_rom() as fin:
-            with mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ) as mem:
-                testdata = tuple(enum_string(mem, 0x300, 0x310))
 
-                self.assertEqual(testdata[0][0], 0xFB97DB)
-                self.assertTrue('ムドー' in get_text(testdata[0][1]))
+        with RomImage(CONTEXT["TITLE"]) as mem:
+            testdata = tuple(enum_string(mem, 0x300, 0x310))
 
-                self.assertEqual(testdata[15][0], 0xFB9835)
-                self.assertTrue('デュラン' in get_text(testdata[15][1]))
+            self.assertEqual(testdata[0][0], 0xFB97DB)
+            self.assertTrue('ムドー' in get_text(testdata[0][1]))
+
+            self.assertEqual(testdata[15][0], 0xFB9835)
+            self.assertTrue('デュラン' in get_text(testdata[15][1]))
 
 def test_suite():
     """Setup a test suite."""
