@@ -46,6 +46,7 @@
     <Compile Include="dqutils\dq6\message.py" />
     <Compile Include="dqutils\dq6\string.py" />
     <Compile Include="dqutils\dq6\__init__.py" />
+    <Compile Include="dqutils\string.py" />
     <Compile Include="dqutils\test\test_address.py" />
     <Compile Include="dqutils\test\test_bit.py" />
     <Compile Include="dqutils\test\test_config.py" />
