@@ -261,12 +261,3 @@ CHARMAP = {
     #0xFE:"[FE]",
     #0xFF:"[FF]",
 }
-
-def print_charmap():
-    """Print the symbol table.
-
-    It is much faster to open this file in the text editor.
-    """
-
-    for i in CHARMAP.items():
-        print('{0:04X}:{1}'.format(i[0], i[1]))

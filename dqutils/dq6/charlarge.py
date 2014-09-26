@@ -1101,12 +1101,3 @@ CHARMAP = {
     0x0646:"ヨ",
     0x0647:"了",
 }
-
-def print_charmap():
-    """Print the symbol table.
-
-    It is much faster to open this file in the text editor.
-    """
-
-    for i in CHARMAP.items():
-        print('{0:04X}:{1}'.format(i[0], i[1]))

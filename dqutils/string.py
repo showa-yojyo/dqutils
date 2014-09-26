@@ -14,6 +14,22 @@ from dqutils.address import from_hi as CPUADDR
 from dqutils.address import conv_hi as ROMADDR
 import mmap
 
+def print_charmap(charmap):
+    """Print the symbol table.
+
+    It is much faster to open this file in the text editor.
+
+    Args:
+      charmap: The character dictionary.
+
+    Returns:
+      None.
+    """
+    assert isinstance(charmap, dict)
+
+    for i in charmap.items():
+        print('{0:04X}:{1}'.format(i[0], i[1]))
+
 def get_text(code_seq, charmap, delim=None):
     """Return a text representation of a string.
 
