@@ -5,9 +5,9 @@
 """
 
 import unittest
-from dqutils.dq3.message import load_battle_msg_code
-from dqutils.dq3.message import BATTLE_ID_FIRST
-from dqutils.dq3.message import BATTLE_ID_LAST
+from dqutils.romimage import RomImage
+from dqutils.dq3.message import CONTEXT_MESSAGE_BATTLE
+from dqutils.dq3.message import enum_battle_message
 from dqutils.dq3.message import load_msg_code
 from dqutils.dq3.message import MSG_ID_FIRST
 from dqutils.dq3.message import MSG_ID_LAST
@@ -16,27 +16,19 @@ from dqutils.dq3.message import MSG_ID_LAST
 class DQ3BattleMessageTestCase(unittest.TestCase):
     """Test functions defined in dqutils.dq3.message."""
 
-    def test_load_battle_msg_code(self):
-        """Test function dqutils.dq3.load_battle_msg_code."""
+    def test_enum_battle_message(self):
+        """Test function dqutils.dq3.enum_battle_message."""
 
-        cpuaddr, codes = load_battle_msg_code(0x0141, 0x0142)[0]
+        with RomImage(CONTEXT_MESSAGE_BATTLE["TITLE"]) as mem:
+            cpuaddr, codes = tuple(enum_battle_message(mem, 0x0141, 0x0142))[0]
 
-        # [BD]しかし なにも おこらなかった！[B1]
-        however_nothing_happened = [
-            0xBD, 0x17, 0x11, 0x17, 0x01,
-            0x20, 0x21, 0x2E, 0x01,
-            0x10, 0x15, 0x32, 0x20, 0x11, 0x3F, 0x1B, 0x7F, 0xB1, 0xAC]
-        self.assertEqual(however_nothing_happened, codes)
+            # [BD]しかし なにも おこらなかった！[B1]
+            however_nothing_happened =\
+                b'\xBD\x17\x11\x17\x01' +\
+                b'\x20\x21\x2E\x01' +\
+                b'\x10\x15\x32\x20\x11\x3F\x1B\x7F\xB1\xAC'
 
-        self.assertRaises(
-            IndexError, load_battle_msg_code,
-            BATTLE_ID_FIRST - 1, BATTLE_ID_FIRST)
-        self.assertRaises(
-            IndexError, load_battle_msg_code,
-            BATTLE_ID_LAST, BATTLE_ID_LAST + 1)
-        self.assertRaises(
-            IndexError, load_battle_msg_code,
-            BATTLE_ID_LAST, BATTLE_ID_FIRST)
+            self.assertEqual(however_nothing_happened, codes)
 
 # pylint: disable=too-many-public-methods
 class DQ3MessageTestCase(unittest.TestCase):

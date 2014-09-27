@@ -30,25 +30,25 @@ def print_charmap(charmap):
     for i in charmap.items():
         print('{0:04X}:{1}'.format(i[0], i[1]))
 
-def get_text(code_seq, charmap, delim=None):
+def get_text(code_seq, charmap, delims=None):
     """Return a text representation of a string.
 
     Args:
       code_seq: A string (instance of bytearray).
       charmap: The character dictionary.
-      delim: The code of the delimiter character.
+      delims: The code of the delimiter character(s).
 
     Returns:
       string: e.g. "ひのきのぼう"
     """
     assert isinstance(code_seq, bytes) or isinstance(code_seq, bytearray)
     assert isinstance(charmap, dict)
-    assert delim is None or isinstance(delim, bytes)
+    assert delims is None or isinstance(delims, bytes)
 
-    if delim and code_seq.endswith(delim):
+    if delims and code_seq[-1] in delims:
         code_seq = code_seq[0:-1]
 
-    return ''.join(charmap.get(c, '{:02X}'.format(c)) for c in code_seq)
+    return ''.join(charmap.get(c, '[{0:02X}]'.format(c)) for c in code_seq)
 
 def get_hex(code_seq):
     """Return a hex representation of a string.
@@ -65,7 +65,7 @@ def get_hex(code_seq):
     assert isinstance(code_seq, bytes) or isinstance(code_seq, bytearray)
     return ' '.join('{:02X}'.format(c) for c in code_seq)
 
-def enum_string(mem, first, last, base_addr, delim):
+def enum_string(mem, first, last, base_addr, delims):
     """Generate string data in a range of indices.
 
     String data that indices in [`first`, `last`) will be generated.
@@ -75,7 +75,7 @@ def enum_string(mem, first, last, base_addr, delim):
       first: The first index of the indices range you want.
       last: The last index + 1 of the indices range you want.
       base_addr: The CPU address of the 0-th string data.
-      delim: The code of the delimiter character, i.e. 0xAC.
+      delims: The code of the delimiter characters.
 
     Yields:
       int: The next CPU address of data in the range of 0 to `last` - 1.
@@ -83,17 +83,20 @@ def enum_string(mem, first, last, base_addr, delim):
     """
 
     assert first < last
-    assert isinstance(delim, bytes)
+    assert isinstance(delims, bytes)
 
     mem.seek(ROMADDR(base_addr))
 
     for i in range(0, last):
+        code_seq = bytearray()
         addr = CPUADDR(mem.tell())
-        addr_next = CPUADDR(mem.find(delim, mem.tell()))
-        code_seq = mem.read(addr_next - addr + 1)
+        code = b'\xFFFF' # dummy value
+        while code not in delims:
+            code = mem.read_byte()
+            code_seq.append(code)
 
         if first <= i:
-            assert code_seq.endswith(delim)
+            assert code_seq[-1] in delims
             yield (addr, code_seq)
 
 def get_string(mem, index, base_addr, delim):
@@ -128,6 +131,7 @@ def print_string(context, first=None, last=None):
     """
 
     # Test preconditions.
+    assert "TITLE" in context
     assert "STRING_INDEX_FIRST" in context or first is not None
     assert "STRING_INDEX_LAST" in context or last is not None
 

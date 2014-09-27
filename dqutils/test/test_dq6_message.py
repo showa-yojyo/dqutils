@@ -5,9 +5,9 @@
 """
 
 import unittest
-from dqutils.dq6.message import load_battle_msg_code
-from dqutils.dq6.message import BATTLE_ID_FIRST
-from dqutils.dq6.message import BATTLE_ID_LAST
+from dqutils.romimage import RomImage
+from dqutils.dq6.message import CONTEXT_MESSAGE_BATTLE
+from dqutils.dq6.message import enum_battle_message
 from dqutils.dq6.message import load_msg_code
 from dqutils.dq6.message import MSG_ID_FIRST
 from dqutils.dq6.message import MSG_ID_LAST
@@ -16,32 +16,19 @@ from dqutils.dq6.message import MSG_ID_LAST
 class DQ6BattleMessageTestCase(unittest.TestCase):
     """Test functions defined in dqutils.dq6.message."""
 
-    def test_load_battle_msg_code(self):
-        """Test function dqutils.dq3.load_battle_msg_code."""
+    def test_enum_battle_message(self):
+        """Test function dqutils.dq6.enum_battle_message."""
 
-        cpuaddr, codes = load_battle_msg_code(0x0140, 0x0141)[0]
+        with RomImage(CONTEXT_MESSAGE_BATTLE["TITLE"]) as mem:
+            cpuaddr, codes = tuple(enum_battle_message(mem, 0x0140, 0x0141))[0]
 
-        # [BD]しかし なにも おこらなかった！[B1]
-        however_nothing_happened = [
-            0xBD, 0x1B, 0x15, 0x1B, 0x01,
-            0x24, 0x25, 0x32, 0x01,
-            0x14, 0x19, 0x36, 0x24, 0x15, 0x3E, 0x1F, 0x7A, 0xB1,
-            0xAC]
+            # [BD]しかし なにも おこらなかった！[B1]
+            however_nothing_happened =\
+                b'\xBD\x1B\x15\x1B\x01' +\
+                b'\x24\x25\x32\x01' +\
+                b'\x14\x19\x36\x24\x15\x3E\x1F\x7A\xB1' +\
+                b'\xAC'
         self.assertEqual(however_nothing_happened, codes)
-
-    # pylint: disable=invalid-name
-    def test_load_battle_msg_code_exceptions(self):
-        """Test function dqutils.dq3.load_battle_msg_code."""
-
-        self.assertRaises(
-            IndexError, load_battle_msg_code,
-            BATTLE_ID_FIRST - 1, BATTLE_ID_FIRST)
-        self.assertRaises(
-            IndexError, load_battle_msg_code,
-            BATTLE_ID_LAST, BATTLE_ID_LAST + 1)
-        self.assertRaises(
-            IndexError, load_battle_msg_code,
-            BATTLE_ID_LAST, BATTLE_ID_FIRST)
 
 # pylint: disable=too-many-public-methods
 class DQ6MessageTestCase(unittest.TestCase):

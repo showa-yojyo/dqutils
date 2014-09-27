@@ -16,99 +16,41 @@ from dqutils.address import from_hi as CPUADDR
 from dqutils.address import conv_hi as ROMADDR
 from dqutils.bit import readbytes
 from dqutils.bit import getbytes
+from dqutils.string import enum_string
+from dqutils.string import print_string
 from dqutils.dq6 import open_rom
+from dqutils.dq6.charsmall import CHARMAP as CHARMAP_SMALL
 import mmap
+
+CONTEXT_MESSAGE_BATTLE = dict(
+    TITLE="DRAGONQUEST6",
+
+    # Delimeter character codes.
+    STRING_DELIMITER=b'\xAC\xAE',
+    STRING_CHARMAP=CHARMAP_SMALL,
+
+    # Address where message data of battle scene are stored.
+    STRING_ADDRESS=0xF6DEBD,
+
+    # Range of the valid indices. [first, last) form.
+    STRING_INDEX_FIRST=0x0000,
+    STRING_INDEX_LAST=0x025B,)
+
+def enum_battle_message(mem, first, last):
+    """A transfer function."""
+    return enum_string(
+        mem, first, last,
+        CONTEXT_MESSAGE_BATTLE["STRING_ADDRESS"],
+        CONTEXT_MESSAGE_BATTLE["STRING_DELIMITER"])
+
+def print_all_battle():
+    """A transfer function."""
+
+    print_string(CONTEXT_MESSAGE_BATTLE)
 
 def _is_delimiter(code):
     """Local function"""
     return code == 0xAC or code == 0xAE
-
-#
-# Battle message
-#
-
-# Address where message data of battle scenes are stored.
-LOCATION_MSG_BATTLE = ROMADDR(0xF6DEBD)
-
-def _seek_location(fin, index):
-    """Local function"""
-
-    fin.seek(LOCATION_MSG_BATTLE)
-    ncount = 0
-    while ncount < index:
-        code = fin.read(1)[0]
-        if _is_delimiter(code):
-            ncount += 1
-
-    return CPUADDR(fin.tell())
-
-# Constants for use in the loading methods arguments:
-BATTLE_ID_FIRST = 0x0000
-BATTLE_ID_LAST = 0x025B
-
-def _verify_input(first, last):
-    """Local function"""
-
-    if first < BATTLE_ID_FIRST:
-        raise IndexError('out of range:')
-    if BATTLE_ID_LAST < last:
-        raise IndexError('out of range:')
-    if first > last:
-        raise IndexError('invalid range:')
-
-def load_battle_msg_code(idfirst=BATTLE_ID_FIRST, idlast=BATTLE_ID_LAST):
-    """Help me!"""
-
-    _verify_input(idfirst, idlast)
-
-    # Data to be returned; a list of (cpuaddr, codeseq) pairs.
-    data = []
-    with open_rom() as fin:
-        # Create a memory-mapped file from fin.
-        mem = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
-        cpuaddr = _seek_location(mem, idfirst)
-
-        for _ in range(idfirst, idlast):
-            # Huffman codewords of a message
-            codeseq = []
-            code = 0
-            while not _is_delimiter(code):
-                code = mem.read(1)[0]
-                codeseq.append(code)
-
-            data.append((cpuaddr, codeseq))
-            # Now update cpuaddr.
-            cpuaddr = CPUADDR(mem.tell())
-        mem.close()
-    return data
-
-def make_text_battle(codeseq):
-    """Return a legible string.
-
-    make_text_battle(codeseq) -> str,
-
-    where codeseq is the list of codes that are obtained by
-    using load_battle_msg_code method, and str is a text representation.
-    """
-
-    from dqutils.dq6.charsmall import CHARMAP
-    return ''.join([CHARMAP.get(c, '{:02X}'.format(c)) for c in codeseq])
-
-def load_battle_msg(index):
-    """Return a legible string.
-    """
-
-    return make_text_battle(load_battle_msg_code(index, index + 1)[0][1])
-
-def print_all_battle():
-    """Demonstration method by the author, for the author."""
-
-    data = load_battle_msg_code()
-    for i, pair in enumerate(data):
-        # Remove delimiter codes (AC and AE).
-        codeseq = pair[1]
-        codeseq.pop()
-        print('{0:04X}:{1:06X}:{2}'.format(i, pair[0], make_text(codeseq)))
 
 #
 # Conversation, dialog, system messages

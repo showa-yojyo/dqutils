@@ -5,32 +5,19 @@
 import dqutils.string
 from dqutils.dq3.charsmall import CHARMAP as CHARMAP_SMALL
 
-# pylint: disable=too-few-public-methods
-class Context(object):
-    """TBW"""
+CONTEXT = dict(
+    TITLE="DRAGONQUEST3",
 
-    def __init__(self):
-        self.entries = dict(
-            TITLE="DRAGONQUEST3",
+    # Delimeter character code.
+    STRING_DELIMITER=b'\xAC',
+    STRING_CHARMAP=CHARMAP_SMALL,
 
-            # Delimeter character code.
-            STRING_DELIMITER=b'\xAC',
-            STRING_CHARMAP=CHARMAP_SMALL,
+    # Location at where string data are stored.
+    STRING_ADDRESS=0xFECFB7,
 
-            # Location at where string data are stored.
-            STRING_ADDRESS=0xFECFB7,
-
-            # Range of the valid indices. [first, last) form.
-            STRING_INDEX_FIRST=0x0000,
-            STRING_INDEX_LAST=0x03BE,)
-
-    def __contains__(self, key):
-        return key in self.entries
-
-    def __getitem__(self, key):
-        return self.entries[key]
-
-CONTEXT = Context()
+    # Range of the valid indices. [first, last) form.
+    STRING_INDEX_FIRST=0x0000,
+    STRING_INDEX_LAST=0x03BE,)
 
 def get_text(code_seq, delim=None):
     """A transfer function."""
