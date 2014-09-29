@@ -13,6 +13,7 @@ raw bytes and legible texts.
 from dqutils.address import from_hi as CPUADDR
 from dqutils.address import conv_hi as ROMADDR
 from dqutils.romimage import RomImage
+from array import array
 
 def print_charmap(charmap):
     """Print the symbol table.
@@ -41,9 +42,11 @@ def get_text(code_seq, charmap, delims=None):
     Returns:
       string: e.g. "ひのきのぼう"
     """
-    assert isinstance(code_seq, bytes) or isinstance(code_seq, bytearray)
+    assert any(
+        isinstance(code_seq, i) for i in (bytes, bytearray, array))
     assert isinstance(charmap, dict)
-    assert delims is None or isinstance(delims, bytes)
+    assert delims is None or any(
+        isinstance(code_seq, i) for i in (bytes, bytearray, array))
 
     if delims and code_seq[-1] in delims:
         code_seq = code_seq[0:-1]
