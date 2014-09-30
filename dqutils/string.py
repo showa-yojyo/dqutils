@@ -12,7 +12,7 @@ raw bytes and legible texts.
 
 from dqutils.address import from_hi as CPUADDR
 from dqutils.address import conv_hi as ROMADDR
-from dqutils.romimage import RomImage
+from dqutils.rom_image import RomImage
 from array import array
 
 def print_charmap(charmap):

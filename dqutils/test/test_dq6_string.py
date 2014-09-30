@@ -4,7 +4,7 @@
 """Tests for dqutils.dq6.string"""
 
 import unittest
-from dqutils.romimage import RomImage
+from dqutils.rom_image import RomImage
 from dqutils.dq6.string import CONTEXT
 from dqutils.dq6.string import enum_string
 from dqutils.dq6.string import get_text

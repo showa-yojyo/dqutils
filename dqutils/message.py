@@ -6,7 +6,7 @@
 from dqutils.string import get_text
 from dqutils.string import get_hex
 from dqutils.string import enum_string
-from dqutils.romimage import RomImage
+from dqutils.rom_image import RomImage
 from dqutils.message_decoder import MessageDecoder
 from array import array
 

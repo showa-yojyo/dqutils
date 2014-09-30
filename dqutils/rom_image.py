@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-""" dqutils.romimage module - TBW
+""" dqutils.rom_image module - TBW
 """
 
 import mmap
