@@ -3,33 +3,20 @@
 """
 
 import dqutils.string
-from dqutils.dq6.charsmall import CHARMAP as CHARMAP_SMALL
+from dqutils.dq6.charsmall import CHARMAP
 
 CONTEXT = dict(
-    TITLE="DRAGONQUEST6",
+    title="DRAGONQUEST6",
+    delimiter=b'\xAC',
+    charmap=CHARMAP,
+    addr_string=0xFB8703,
+    string_id_first=0x0000,
+    string_id_last=0x09CA,)
 
-    # Delimeter character code.
-    STRING_DELIMITER=b'\xAC',
-    STRING_CHARMAP=CHARMAP_SMALL,
-
-    # Location at where string data are stored.
-    STRING_ADDRESS=0xFB8703,
-
-    # Range of the valid indices. [first, last) form.
-    STRING_INDEX_FIRST=0x0000,
-    STRING_INDEX_LAST=0x09CA,)
-
-def get_text(code_seq, delim=None):
-    """A transfer function."""
-    return dqutils.string.get_text(
-        code_seq, CONTEXT["STRING_CHARMAP"], delim)
-
-def enum_string(mem, first, last):
-    """A transfer function."""
-    return dqutils.string.enum_string(
-        mem, first, last,
-        CONTEXT["STRING_ADDRESS"],
-        CONTEXT["STRING_DELIMITER"])
+def enum_string(first=None, last=None):
+    """A transfer generator."""
+    for i in dqutils.string.enum_string(CONTEXT, first, last):
+        yield i
 
 def print_all():
     """A transfer function."""

@@ -15,22 +15,6 @@ from dqutils.address import conv_hi as ROMADDR
 from dqutils.rom_image import RomImage
 from array import array
 
-def print_charmap(charmap):
-    """Print the symbol table.
-
-    It is much faster to open this file in the text editor.
-
-    Args:
-      charmap: The character dictionary.
-
-    Returns:
-      None.
-    """
-    assert isinstance(charmap, dict)
-
-    for i in charmap.items():
-        print('{0:04X}:{1}'.format(i[0], i[1]))
-
 def get_text(code_seq, charmap, delims=None):
     """Return a text representation of a string.
 
@@ -68,56 +52,50 @@ def get_hex(code_seq):
     assert isinstance(code_seq, bytes) or isinstance(code_seq, bytearray)
     return ' '.join('{:02X}'.format(c) for c in code_seq)
 
-def enum_string(mem, first, last, base_addr, delims):
+def enum_string(context, first=None, last=None):
     """Generate string data in a range of indices.
 
     String data that indices in [`first`, `last`) will be generated.
 
     Args:
-      mem: The ROM image.
+      context: TBW
       first: The first index of the indices range you want.
       last: The last index + 1 of the indices range you want.
-      base_addr: The CPU address of the 0-th string data.
-      delims: The code of the delimiter characters.
 
     Yields:
       int: The next CPU address of data in the range of 0 to `last` - 1.
       bytearray: The next bytes of data in the range of 0 to `last` - 1.
     """
 
+    # Test preconditions.
+    assert "title" in context
+
+    if not first:
+        first = context.get("string_id_first") or context.get("message_id_first")
+    if not last:
+        last = context.get("string_id_last") or context.get("message_id_last")
     assert first < last
-    assert isinstance(delims, bytes)
 
-    mem.seek(ROMADDR(base_addr))
+    addr = context.get("addr_string") or context.get("addr_message")
+    assert addr
 
-    for i in range(0, last):
-        code_seq = bytearray()
-        addr = CPUADDR(mem.tell())
-        code = b'\xFFFF' # dummy value
-        while code not in delims:
-            code = mem.read_byte()
-            code_seq.append(code)
+    delims = context.get("delimiter") or context.get("delimiters")
+    assert delims is None or isinstance(delims, bytes)
 
-        if first <= i:
-            assert code_seq[-1] in delims
-            yield (addr, code_seq)
+    with RomImage(context["title"]) as mem:
+        mem.seek(ROMADDR(addr))
 
-def get_string(mem, index, base_addr, delim):
-    """Return the address and code sequence of given index.
+        for i in range(0, last):
+            code_seq = bytearray()
+            addr = CPUADDR(mem.tell())
+            code = b'\xFFFF' # dummy value
+            while code not in delims:
+                code = mem.read_byte()
+                code_seq.append(code)
 
-    Args:
-      mem: The ROM image.
-      index: The index of the string data you want.
-      base_addr: The CPU address of the 0-th string data.
-      delim: The code of the delimiter character, i.e. 0xAC.
-
-    Returns:
-      int: The CPU address of data in the range of 0 to `last_index` - 1.
-      bytearray: The bytes of data in the range of 0 to `last_index` - 1.
-    """
-
-    assert isinstance(delim, bytes)
-    return next(enum_string(mem, index, index + 1, base_addr, delim))
+            if first <= i:
+                assert code_seq[-1] in delims
+                yield (addr, code_seq)
 
 def print_string(context, first=None, last=None):
     """Print string data to sys.stdout.
@@ -134,36 +112,19 @@ def print_string(context, first=None, last=None):
     """
 
     # Test preconditions.
-    assert "TITLE" in context
-    assert "STRING_INDEX_FIRST" in context or first is not None
-    assert "STRING_INDEX_LAST" in context or last is not None
-
-    if not first:
-        first = context["STRING_INDEX_FIRST"]
-    if not last:
-        last = context["STRING_INDEX_LAST"]
-    assert first < last
-
-    assert "STRING_DELIMITER" in context
-    assert "STRING_CHARMAP" in context
-    assert "STRING_ADDRESS" in context
-    base_addr = context["STRING_ADDRESS"]
-
-    delim = context["STRING_DELIMITER"]
+    delim = context["delimiter"]
     assert isinstance(delim, bytes)
 
-    charmap = context["STRING_CHARMAP"]
+    charmap = context["charmap"]
     assert isinstance(charmap, dict)
 
-    with RomImage(context["TITLE"]) as mem:
-        data = enumerate(enum_string(mem, first, last, base_addr, delim))
-        for i, item in data:
-            if charmap:
-                text = get_text(item[1], charmap, delim)
-            else:
-                text = get_hex(item[1])
+    for i, item in enumerate(enum_string(context, first, last)):
+        if charmap:
+            text = get_text(item[1], charmap, delim)
+        else:
+            text = get_hex(item[1])
 
-            print("{index:04X}:{address:06X}:{data}".format(
-                index=i,
-                address=item[0],
-                data=text))
+        print("{index:04X}:{address:06X}:{data}".format(
+            index=i,
+            address=item[0],
+            data=text))

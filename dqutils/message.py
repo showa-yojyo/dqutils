@@ -41,9 +41,8 @@ def enum_battle(context, first=None, last=None):
     delims = context["delimiters"]
     assert delims is None or isinstance(delims, bytes)
 
-    with RomImage(context["title"]) as mem:
-        for i in enum_string(mem, first, last, addr, delims):
-            yield i
+    for i in enum_string(context, first, last):
+        yield i
 
 def print_battle(context, first=None, last=None):
     """Print message data to sys.stdout.
