@@ -3,7 +3,7 @@
 """
 
 def from_hi(romaddr):
-    """Convert from ROM image to CPU address for HiROM.
+    """Convert from a ROM address to a CPU address for HiROM.
 
     >>> cpuaddr = from_hi(0x020000)
     >>> print('0x{:06X}'.format(cpuaddr))
@@ -12,7 +12,7 @@ def from_hi(romaddr):
     return 0x00C00000 | (romaddr & 0x003FFFFF)
 
 def from_lo(romaddr):
-    """Convert from ROM image to CPU address for LoROM.
+    """Convert from a ROM address to a CPU address for LoROM.
 
     >>> cpuaddr = from_lo(0x008000)
     >>> print('0x{:06X}'.format(cpuaddr))
@@ -22,7 +22,7 @@ def from_lo(romaddr):
             | (((romaddr & 0x007F8000) << 1) | 0x00008000))
 
 def conv_hi(cpuaddr):
-    """Convert from CPU address to ROM address for HiROM.
+    """Convert from a CPU address to a ROM address for HiROM.
 
     To convert from a CPU address to a ROM address, first, remove bit 15.
     Second, moving all bits after it down one.
@@ -34,7 +34,7 @@ def conv_hi(cpuaddr):
     return cpuaddr & 0x003FFFFF
 
 def conv_lo(cpuaddr):
-    """Convert from CPU address to ROM address for LoROM.
+    """Convert from a CPU address to a ROM address for LoROM.
 
     >>> romaddr = conv_lo(0x018000)
     >>> print('0x{:06X}'.format(romaddr))
