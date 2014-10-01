@@ -3,6 +3,10 @@
 """Tests for dqutils.address module."""
 
 import unittest
+from dqutils.address import from_hi
+from dqutils.address import from_lo
+from dqutils.address import conv_hi
+from dqutils.address import conv_lo
 
 # pylint: disable=too-many-public-methods
 class AddressingTestCase(unittest.TestCase):
@@ -12,28 +16,23 @@ class AddressingTestCase(unittest.TestCase):
         """Test function dqutils.address.from_hi."""
 
         # ROMADDR --> CPUADDR HiROM
-        from dqutils.address import from_hi
-        self.assertEqual(from_hi(0x020000, fast=True), 0xC20000)
-        self.assertEqual(from_hi(0x020000, fast=False), 0x420000)
+        self.assertEqual(from_hi(0x020000), 0xC20000)
 
     def test_from_lo(self):
         """Test function dqutils.address.from_lo."""
 
         # ROMADDR --> CPUADDR LoROM
-        from dqutils.address import from_lo
-        self.assertEqual(from_lo(0x000000, fast=False), 0x008000)
-        self.assertEqual(from_lo(0x008000, fast=False), 0x018000)
-        self.assertEqual(from_lo(0x010000, fast=False), 0x028000)
-        self.assertEqual(from_lo(0x018000, fast=False), 0x038000)
-        self.assertEqual(from_lo(0x1F0000, fast=False), 0x3E8000)
-        self.assertEqual(from_lo(0x1F8000, fast=False), 0x3F8000)
+        self.assertEqual(from_lo(0x000000), 0x008000)
+        self.assertEqual(from_lo(0x008000), 0x018000)
+        self.assertEqual(from_lo(0x010000), 0x028000)
+        self.assertEqual(from_lo(0x018000), 0x038000)
+        self.assertEqual(from_lo(0x1F0000), 0x3E8000)
+        self.assertEqual(from_lo(0x1F8000), 0x3F8000)
 
     def test_conv_hi(self):
         """Test function dqutils.address.conv_hi."""
 
         # ROMADDR <-- CPUADDR HiROM
-        from dqutils.address import conv_hi
-
         # SlowROM
 
         self.assertEqual(conv_hi(0x408000), 0x008000)
@@ -57,7 +56,6 @@ class AddressingTestCase(unittest.TestCase):
     def test_conv_lo(self):
         """Test function dqutils.address.conv_lo."""
 
-        from dqutils.address import conv_lo
         # ROMADDR <-- CPUADDR LoROM
         self.assertEqual(conv_lo(0x008000), 0x000000)
         self.assertEqual(conv_lo(0x018000), 0x008000)
