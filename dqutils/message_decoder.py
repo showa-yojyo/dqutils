@@ -11,7 +11,7 @@ before.
 from array import array
 from dqutils.address import from_hi as CPUADDR
 from dqutils.address import conv_hi as ROMADDR
-from dqutils.bit import getbytes
+from dqutils.bit import get_int
 
 class MessageDecoder(object):
     """TBW"""
@@ -107,7 +107,7 @@ class MessageDecoder(object):
         # {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80}.
         shift = self.shiftbit_array[buffer1[0] & 0x07]
 
-        addr = (getbytes(buffer1, 0, 3) >> 3) + ROMADDR(self.addr_message)
+        addr = (get_int(buffer1, 0, 3) >> 3) + ROMADDR(self.addr_message)
 
         delims = self.delimiters
 
@@ -140,9 +140,9 @@ class MessageDecoder(object):
                 addr += 1
 
             if value:
-                value = getbytes(huffman_on, node, 2)
+                value = get_int(huffman_on, node, 2)
             else:
-                value = getbytes(huffman_off, node, 2)
+                value = get_int(huffman_off, node, 2)
 
             if value & 0x8000 == 0:
                 return addr, shift, value

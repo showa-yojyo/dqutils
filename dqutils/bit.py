@@ -2,12 +2,12 @@
 """dqutils.bit module -- bits and bytes manipulation.
 """
 
-def getbits(byteseq, index, mask):
+def getbits(byte_seq, index, mask):
     """Obtain masked bits in a byte sequence.
 
     Obtain masked bits in a byte sequence.
     """
-    value = getbytes(byteseq, index, 3) & mask
+    value = get_int(byte_seq, index, 3) & mask
 
     while mask & 1 == 0:
         value >>= 1
@@ -15,57 +15,36 @@ def getbits(byteseq, index, mask):
 
     return value
 
-def getbytes(byteseq, index, nbyte):
-    """Obtain bytes as an integer in a byte sequence.
-
-    Obtain bytes as an integer in a byte sequence.
+def get_int(byte_seq, index, length):
+    """Obtain the integer from a subsequence in the given sequence.
 
     >>> data = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06]
-    >>> getbytes(data, 0, 1) == 0x00
+    >>> get_int(data, 0, 1) == 0x00
     True
-    >>> getbytes(data, 1, 1) == 0x01
+    >>> get_int(data, 1, 1) == 0x01
     True
-    >>> getbytes(data, 0, 2) == 0x0100
+    >>> get_int(data, 0, 2) == 0x0100
     True
-    >>> getbytes(data, 6, 2) == 0x0006
+    >>> get_int(data, 6, 2) == 0x0006
     True
-    >>> getbytes(data, 0, 3) == 0x020100
+    >>> get_int(data, 0, 3) == 0x020100
     True
-    >>> getbytes(data, 5, 3) == 0x000605
+    >>> get_int(data, 5, 3) == 0x000605
     True
-    >>> getbytes(data, 6, 3) == 0x000006
+    >>> get_int(data, 6, 3) == 0x000006
     True
+
+    Args:
+      byte_seq: An instance of class bytes, bytearray, or iterable of ints.
+      index: The index from which to obtain byte items.
+      length: The size of byte items to obtain from `byte_seq`.
+
+    Returns:
+      int: The integer represented by `byte_seq[index:index + length]`.
     """
-    if nbyte == 0:
-        return 0
 
-    value = byteseq[index]
+    return int.from_bytes(byte_seq[index:index + length], 'little')
 
-    # simple case
-    if nbyte == 1:
-        return value
-
-    # general case
-
-    indexfirst = index + 1
-    indexlast = min(index + nbyte, len(byteseq))
-    shiftbit = 8
-
-    while indexfirst < indexlast:
-        value += (byteseq[indexfirst] << shiftbit)
-        indexfirst += 1
-        shiftbit += 8
-
-    return value
-
-def readbytes(fin, nbyte):
-    """Read nbyte byte from fin as binaries rather characters."""
-    return [i for i in fin.read(nbyte)]
-
-def _test():
-    """Test all of the examples in docstrings in this module."""
-    import doctest
-    return doctest.testmod()
-
-if __name__ == '__main__':
-    _test()
+def readbytes(fin, length):
+    """Read `length` byte from fin as binaries rather characters."""
+    return [i for i in fin.read(length)]

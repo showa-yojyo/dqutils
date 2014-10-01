@@ -4,7 +4,7 @@
 """
 
 from dqutils.bit import getbits
-from dqutils.bit import getbytes
+from dqutils.bit import get_int
 from dqutils.bit import readbytes
 from dqutils.database import format as fmt
 
@@ -91,7 +91,7 @@ class ByteField(Field):
 
     def process(self, chunk):
         """バイト塊を処理するメソッド"""
-        return self.format % getbytes(chunk, self.offset, 1)
+        return self.format % get_int(chunk, self.offset, 1)
 
 class WordField(Field):
     """メンバーデータが 2byte で表現されているものに対応する"""
@@ -105,7 +105,7 @@ class WordField(Field):
 
     def process(self, chunk):
         """バイト塊を処理するメソッド"""
-        return self.format % getbytes(chunk, self.offset, 2)
+        return self.format % get_int(chunk, self.offset, 2)
 
 class LongField(Field):
     """メンバーデータが 3byte で表現されているものに対応する"""
@@ -119,7 +119,7 @@ class LongField(Field):
 
     def process(self, chunk):
         """バイト塊を処理するメソッド"""
-        return self.format % getbytes(chunk, self.offset, 3)
+        return self.format % get_int(chunk, self.offset, 3)
 
 class BadFieldType(Exception):
     """フィールドタイプが不明な名前の場合の例外"""

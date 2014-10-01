@@ -16,7 +16,7 @@ Special thanks to Mr. kobun_c.
 from dqutils.address import conv_lo as ROMADDR
 from dqutils.bit import readbytes
 from dqutils.bit import getbits
-from dqutils.bit import getbytes
+from dqutils.bit import get_int
 from dqutils.dq5 import open_rom
 import mmap
 
@@ -172,20 +172,20 @@ def _decode(cpuaddr, shift, fin, dump_shift_bit=False):
     while True:
         fin.seek(ROMADDR(cpuaddr))   # cpuaddr <- [$F0]
         buffer = readbytes(fin, 2)
-        value = getbytes(buffer, 0, 2) & shiftbit_array[shift]
+        value = get_int(buffer, 0, 2) & shiftbit_array[shift]
 
         if dump_shift_bit:
             print('{0:02X}={1:02X}'.format(
-                getbytes(buffer, 0, 1), shiftbit_array[shift]), end='')
+                get_int(buffer, 0, 1), shiftbit_array[shift]), end='')
             if value:
                 print(1, end='')
             else:
                 print(0, end='')
 
         if value:
-            value = getbytes(huffman_on, node, 2)
+            value = get_int(huffman_on, node, 2)
         else:
-            value = getbytes(huffman_off, node, 2)
+            value = get_int(huffman_off, node, 2)
 
         shift += 1
         if shift >= 8:
@@ -273,20 +273,20 @@ def _decode_battle(cpuaddr, shift, fin, dump_shift_bit=False):
     while True:
         fin.seek(ROMADDR(cpuaddr))   # cpuaddr <- [$F0]
         buffer = readbytes(fin, 1)
-        value = getbytes(buffer, 0, 1) & shiftbit_array[shift]
+        value = get_int(buffer, 0, 1) & shiftbit_array[shift]
 
         if dump_shift_bit:
             print('{0:02X}={1:02X}'.format(
-                getbytes(buffer, 0, 1), shiftbit_array[shift]), end='')
+                get_int(buffer, 0, 1), shiftbit_array[shift]), end='')
             if value:
                 print(1, end='')
             else:
                 print(0, end='')
 
         if value:
-            value = getbytes(huffman_on, node, 2)
+            value = get_int(huffman_on, node, 2)
         else:
-            value = getbytes(huffman_off, node, 2)
+            value = get_int(huffman_off, node, 2)
 
         shift += 1
         if shift >= 8:
