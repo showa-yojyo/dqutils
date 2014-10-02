@@ -7,6 +7,7 @@ from dqutils.dq3.charsmall import CHARMAP
 
 CONTEXT = dict(
     title="DRAGONQUEST3",
+    mapper='HiROM',
     delimiter=b'\xAC',
     charmap=CHARMAP,
     addr_string=0xFECFB7,

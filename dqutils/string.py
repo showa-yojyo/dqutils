@@ -10,8 +10,10 @@ This module provides a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
-from dqutils.address import from_hi as CPUADDR
-from dqutils.address import conv_hi as ROMADDR
+from dqutils.address import from_hi
+from dqutils.address import from_lo
+from dqutils.address import conv_hi
+from dqutils.address import conv_lo
 from dqutils.rom_image import RomImage
 from array import array
 
@@ -82,12 +84,20 @@ def enum_string(context, first=None, last=None):
     delims = context.get("delimiter") or context.get("delimiters")
     assert delims is None or isinstance(delims, bytes)
 
+    mapper = context["mapper"]
+    if mapper == 'HiROM':
+        from_rom_addr = from_hi
+        from_cpu_addr = conv_hi
+    elif mapper == 'LoROM':
+        from_rom_addr = from_lo
+        from_cpu_addr = conv_lo
+
     with RomImage(context["title"]) as mem:
-        mem.seek(ROMADDR(addr))
+        mem.seek(from_cpu_addr(addr))
 
         for i in range(0, last):
             code_seq = bytearray()
-            addr = CPUADDR(mem.tell())
+            addr = from_rom_addr(mem.tell())
             code = b'\xFFFF' # dummy value
             while code not in delims:
                 code = mem.read_byte()
