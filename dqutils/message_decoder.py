@@ -9,8 +9,11 @@ before.
 """
 
 from array import array
-from dqutils.address import from_hi as CPUADDR
-from dqutils.address import conv_hi as ROMADDR
+from dqutils.address import from_hi
+from dqutils.address import from_lo
+from dqutils.address import conv_hi
+from dqutils.address import conv_lo
+from dqutils.bit import getbits
 from dqutils.bit import get_int
 
 class MessageDecoder(object):
@@ -19,6 +22,14 @@ class MessageDecoder(object):
     # pylint: disable=too-many-instance-attributes
     def __init__(self, **kwargs):
         """Constructor."""
+
+        mapper = kwargs["mapper"]
+        if mapper == 'HiROM':
+            self.func_addr_cpu = from_hi
+            self.func_addr_rom = conv_hi
+        elif mapper == 'LoROM':
+            self.func_addr_cpu = from_lo
+            self.func_addr_rom = conv_lo
 
         self.delimiters = kwargs["delimiters"]
         self.message_id_first = kwargs["message_id_first"]
@@ -37,6 +48,7 @@ class MessageDecoder(object):
 
     def assert_valid(self):
         """Test if this instance is valid."""
+        assert self.func_addr_cpu and self.func_addr_rom
         assert isinstance(self.delimiters, array) and self.delimiters.typecode == 'H'
         assert 0 < self.addr_group
         assert 0 < self.addr_shiftbit_array
@@ -66,11 +78,11 @@ class MessageDecoder(object):
         assert self.addr_huffman_on
 
         if not self.huffman_off:
-            mem.seek(ROMADDR(self.addr_huffman_off))
+            mem.seek(self.func_addr_rom(self.addr_huffman_off))
             self.huffman_off = mem.read(self.huffman_root + 2)
 
         if not self.huffman_on:
-            mem.seek(ROMADDR(self.addr_huffman_on))
+            mem.seek(self.func_addr_rom(self.addr_huffman_on))
             self.huffman_on = mem.read(self.huffman_root + 2)
 
         # Test postconditions.
@@ -82,7 +94,7 @@ class MessageDecoder(object):
 
         assert self.addr_shiftbit_array
 
-        mem.seek(ROMADDR(self.addr_shiftbit_array))
+        mem.seek(self.func_addr_rom(self.addr_shiftbit_array))
         self.shiftbit_array = mem.read(8)
 
         assert len(self.shiftbit_array) == 8
@@ -100,18 +112,18 @@ class MessageDecoder(object):
         group = message_id >> 3
         group += (group << 1)
 
-        mem.seek(ROMADDR(self.addr_group) + group)
+        mem.seek(self.func_addr_rom(self.addr_group) + group)
         buffer1 = mem.read(3)
 
         # In fact, the array in RHS is
         # {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80}.
         shift = self.shiftbit_array[buffer1[0] & 0x07]
 
-        addr = (get_int(buffer1, 0, 3) >> 3) + ROMADDR(self.addr_message)
+        addr = getbits(buffer1, 0, 0xFFFFF8) + self.func_addr_rom(self.addr_message)
 
         delims = self.delimiters
 
-        # The loop counter depends on msgid % 7.
+        # The loop counter depends on message id & 0x0007.
         for _ in range(count):
             code = b'\xFFFF' # dummy value
             while not code in delims:
@@ -128,11 +140,11 @@ class MessageDecoder(object):
 
         huffman_on, huffman_off = self.huffman_on, self.huffman_off
         node = self.huffman_root
+        from_cpu_addr = self.func_addr_rom
 
         while True:
-            mem.seek(ROMADDR(addr))
-            buffer = mem.read(2)
-            value = int.from_bytes(buffer, byteorder='little') & shift
+            mem.seek(from_cpu_addr(addr))
+            value = get_int(mem.read(2), 0, 2) & shift
 
             shift >>= 1
             if shift == 0:
@@ -163,6 +175,7 @@ class MessageDecoder(object):
 
         delims = self.delimiters
         assert isinstance(delims, array) and delims.typecode == 'H'
+        from_rom_addr = self.func_addr_cpu
 
         for _ in range(first, last):
             addr, shift = addr_cur, shift_cur
@@ -175,4 +188,4 @@ class MessageDecoder(object):
                     mem, addr_cur, shift_cur)
                 code_seq.append(code)
 
-            yield CPUADDR(addr), shift, code_seq
+            yield from_rom_addr(addr), shift, code_seq
