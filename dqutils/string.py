@@ -51,7 +51,8 @@ def get_hex(code_seq):
       string: e.g. "26 24 12 24 DC 0E AC"
     """
 
-    assert isinstance(code_seq, bytes) or isinstance(code_seq, bytearray)
+    assert any(
+        isinstance(code_seq, i) for i in (bytes, bytearray, array))
     return ' '.join('{:02X}'.format(c) for c in code_seq)
 
 def enum_string(context, first=None, last=None):
