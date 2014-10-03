@@ -32,15 +32,18 @@ class DQ3MessageTestCase(unittest.TestCase):
         # 0160:FCD9D7:08:ぐがー ぐがー！
         # 0161:FCD9E0:80:ぐごー ぐごー！
         # 0162:FCD9E9:20:ぐがー ぐがー。
+        addrs = (0xFCD9D7, 0xFCD9E0, 0xFCD9E9)
+
         # pylint: disable=line-too-long
-        targets = (
+        codes = (
             array('H', [0x05DA, 0x053A, 0x0535, 0x0200, 0x05DA, 0x053A, 0x0535, 0x052E]),
             array('H', [0x05DA, 0x05DB, 0x0535, 0x0200, 0x05DA, 0x05DB, 0x0535, 0x052E]),
             array('H', [0x05DA, 0x053A, 0x0535, 0x0200, 0x05DA, 0x053A, 0x0535, 0x0529]),)
 
-        for lhs, rhs in zip(enum_scenario(0x0160, 0x0163), targets):
+        for result, addr, code in zip(enum_scenario(0x0160, 0x0163), addrs, codes):
+            self.assertEqual(result[0], addr)
             # [-1] is one of the delimiter characters.
-            self.assertEqual(lhs[-1][:-1], rhs)
+            self.assertEqual(result[-1][:-1], code)
 
 def test_suite():
     """Setup a test suite."""

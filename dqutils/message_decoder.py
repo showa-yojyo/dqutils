@@ -118,9 +118,7 @@ class MessageDecoder(object):
         # In fact, the array in RHS is
         # {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80}.
         shift = self.shiftbit_array[buffer1[0] & 0x07]
-
-        addr = getbits(buffer1, 0, 0xFFFFF8) + self.func_addr_rom(self.addr_message)
-
+        addr = getbits(buffer1, 0, 0xFFFFF8) + self.addr_message
         delims = self.delimiters
 
         # The loop counter depends on message id & 0x0007.
@@ -188,4 +186,4 @@ class MessageDecoder(object):
                     mem, addr_cur, shift_cur)
                 code_seq.append(code)
 
-            yield from_rom_addr(addr), shift, code_seq
+            yield addr, shift, code_seq
