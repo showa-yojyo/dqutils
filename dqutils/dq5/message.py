@@ -18,6 +18,13 @@ from dqutils.bit import readbytes
 from dqutils.bit import getbits
 from dqutils.bit import get_int
 from dqutils.dq5 import open_rom
+from dqutils.dq5.charsmall import CHARMAP as CHARMAP_SMALL
+from dqutils.dq5.charsmall import process_dakuten
+from dqutils.dq5.charlarge import CHARMAP as CHARMAP_LARGE
+import dqutils.message
+from dqutils.message import MessageDecoder
+from dqutils.string import get_text
+from array import array
 import mmap
 
 #
@@ -213,173 +220,107 @@ def _decode(cpuaddr, shift, fin, dump_shift_bit=False):
 # Battle message
 #
 
-def _is_delimiter_battle(code):
-    """Local function"""
+CONTEXT_MESSAGE_BATTLE = dict(
+    title="DRAGONQUEST5",
+    mapper='LoROM',
+    delimiters=array('H', (0x00E7, 0x00EF, 0x00FE)),
+    charmap=CHARMAP_SMALL,
+    message_id_first=0x0000,
+    message_id_last=0x01A3,
+    addr_group=0x24AECD, #
+    addr_shiftbit_array=0x249E8C,
+    addr_message=0x24AECD, #
+    addr_huffman_off=0x249D18,
+    addr_huffman_on=0x249C2E,
+    huffman_root=0x00E8,)
 
-    return code == 0x00FE or code == 0x00E7 or code == 0x00EF
-
-LOCATION_MSG_BATTLE = ROMADDR(0x24AECD)
-
-def _seek_location_battle(msgid, fin):
-    """Local function dq5 $248C39"""
-
-    group = msgid // 16 * 3
-    fin.seek(LOCATION_MSG_BATTLE + group)
-    buffer1 = readbytes(fin, 3)
-
-    # inline subroutine $248C8D here
-    cpuaddr = getbits(buffer1, 0, 0xFFFFF8)
-    shift = getbits(buffer1, 0, 0x000007)
-
-    count = msgid & 0x000F
-    while count:
-        code, cpuaddr, shift = _decode_battle(cpuaddr, shift, fin)
-        if _is_delimiter_battle(code):
-            count -= 1
-
-    return cpuaddr, shift
-
-# emulate subroutine $249E47
-
-_LOC_BIT_ON_B = 0x249C2E
-_LOC_BIT_OFF_B = 0x249D18
-_ROOT_B = 0x00E8
-
-def _init_tree_battle(fin):
-    """(Local function) Initialize Huffman tree data."""
-
-    if not getattr(_init_tree_battle, "HUFFMAN_OFF", None):
-        fin.seek(ROMADDR(_LOC_BIT_OFF_B))
-        _init_tree_battle.HUFFMAN_OFF = readbytes(fin, _ROOT_B + 2)
-
-    if not getattr(_init_tree_battle, "HUFFMAN_ON", None):
-        fin.seek(ROMADDR(_LOC_BIT_ON_B))
-        _init_tree_battle.HUFFMAN_ON = readbytes(fin, _ROOT_B + 2)
-
-    assert len(_init_tree_battle.HUFFMAN_ON) == _ROOT_B + 2
-    assert len(_init_tree_battle.HUFFMAN_OFF) == _ROOT_B + 2
-    return _init_tree_battle.HUFFMAN_ON, _init_tree_battle.HUFFMAN_OFF
-
-def _decode_battle(cpuaddr, shift, fin, dump_shift_bit=False):
-    """Huffman routine"""
-
-    assert cpuaddr & 0xFF000000 == 0
-    assert shift & 0xFFFFFF00 == 0
-
-    shiftbit_array = _init_maskbit_array(fin)
-    huffman_on, huffman_off = _init_tree_battle(fin)
-
-    node = _ROOT_B
-    while True:
-        fin.seek(ROMADDR(cpuaddr))   # cpuaddr <- [$F0]
-        buffer = readbytes(fin, 1)
-        value = get_int(buffer, 0, 1) & shiftbit_array[shift]
-
-        if dump_shift_bit:
-            print('{0:02X}={1:02X}'.format(
-                get_int(buffer, 0, 1), shiftbit_array[shift]), end='')
-            if value:
-                print(1, end='')
-            else:
-                print(0, end='')
-
-        if value:
-            value = get_int(huffman_on, node, 2)
-        else:
-            value = get_int(huffman_off, node, 2)
-
-        shift += 1
-        if shift >= 8:
-            shift = 0
-            cpuaddr += 1
-            if cpuaddr & 0xFFFF == 0:
-                # LoROM nextbank
-                cpuaddr = (cpuaddr & 0xFF0000) | 0x8000
-
-        if value & 0x8000:
-            break
-
-        value &= 0x1FFF
-        node = value << 1
-        # endwhile
-
-    value &= 0xFF
-    if dump_shift_bit:
-        print(':{:02X}'.format(value))
-
-    return value, cpuaddr, shift
-
-BATTLE_ID_FIRST = 0
-BATTLE_ID_LAST = 0x01A3
-
-def _verify_input(first, last):
-    """Local function"""
-
-    if first < BATTLE_ID_FIRST:
-        raise IndexError('out of range:')
-    if BATTLE_ID_LAST < last:
-        raise IndexError('out of range:')
-    if first > last:
-        raise IndexError('invalid range:')
-
-def load_battle_msg_code(idfirst=BATTLE_ID_FIRST, idlast=BATTLE_ID_LAST):
-
-    """Help me!"""
-    _verify_input(idfirst, idlast)
-
-    # Data to be returned, a list of (cpuaddr, codeseq) pairs.
-    data = []
-    with open_rom() as fin:
-        # Create a memory-mapped file from fin.
-        mem = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
-
-        shiftbit_array = _init_maskbit_array(mem)
-
-        # Obtain the first data location.
-        cpuaddr, shift = _seek_location_battle(idfirst, mem)
-        for _ in range(idfirst, idlast):
-            cpuaddr0, mask0 = cpuaddr, shiftbit_array[shift]
-            codeseq = [] # codewords of a message
-            code = 0 # a codeword
-            while not _is_delimiter_battle(code):
-                code, cpuaddr, shift = _decode_battle(cpuaddr, shift, mem)
-                codeseq.append(code)
-
-            data.append((cpuaddr0, mask0, codeseq))
-        mem.close()
-    return data
-
-def make_text_battle(codeseq):
-    """Return a legible string.
-
-    make_text_battle(codeseq) -> str,
-
-    where codeseq is the list of codes that are obtained by
-    using load_battle_msg_code method, and str is a text representation.
-    """
-
-    from dqutils.dq5.charsmall import CHARMAP
-    from dqutils.dq5.charsmall import process_dakuten
-    return process_dakuten(
-        ''.join([CHARMAP.get(c, '{:02X}'.format(c)) for c in codeseq]))
-
-def load_battle_msg(index):
-    """Return a legible string.
-    """
-
-    return make_text_battle(load_battle_msg_code(index, index + 1)[0][1])
+def enum_battle(first=None, last=None):
+    """A transfer generator."""
+    for i in dqutils.message.enum_scenario(
+        CONTEXT_MESSAGE_BATTLE, first, last, MessageDecoderBattle):
+        yield i
 
 def print_all_battle():
-    """Demonstration method by the author, for the author"""
+    context = CONTEXT_MESSAGE_BATTLE
 
-    data = load_battle_msg_code()
-    for i, tup in enumerate(data):
-        # Remove delimiter codes (AC and AE).
-        codeseq = tup[-1]
-        shift = tup[1]
-        codeseq.pop()
-        print('{0:04X}:{1:06X}:{2:02X}:{3}'.format(
-            i, tup[0], shift, make_text_battle(codeseq)))
+    first = context["message_id_first"]
+    last = context["message_id_last"]
+    assert first < last
 
-if __name__ == '__main__':
-    print_all()
+    charmap = context["charmap"]
+    assert charmap is None or isinstance(charmap, dict)
+
+    delims = context["delimiters"]
+    assert delims is None or isinstance(delims, array)
+
+    for i, item in enumerate(enum_battle(first, last)):
+        address, shift, code_seq = item
+        text = process_dakuten(get_text(code_seq, charmap, delims))
+        print("{index:04X}:{address:06X}:{shift:02X}:{message}".format(
+            index=i,
+            address=address,
+            shift=shift,
+            message=text))
+
+class MessageDecoderBattle(MessageDecoder):
+
+    def locate_message(self, mem, message_id):
+        """TBW""" # $248C39, $248C8D
+
+        count = message_id & 0x00F # DIFF-
+        group = message_id // 16 * 3 # DIFF
+
+        mem.seek(self.func_addr_rom(self.addr_message) + group) # DIFF - 多分吸収可能
+        buffer1 = mem.read(3)
+
+        shift = self.shiftbit_array[buffer1[0] & 0x07]
+
+        addr = getbits(buffer1, 0, 0xFFFFF8) # DIFF - 多分吸収可能
+
+        delims = self.delimiters
+
+        for _ in range(count):
+            code = b'\xFFFF' # dummy value
+            while not code in delims:
+                addr, shift, code = self.decode(mem, addr, shift)
+
+        return addr, shift
+
+    def decode(self, mem, addr, shift):
+        """TBW""" # $249E47
+
+        # Test preconditions
+        assert addr & 0xFF000000 == 0
+        assert shift & 0xFFFFFF00 == 0
+
+        huffman_on, huffman_off = self.huffman_on, self.huffman_off
+        node = self.huffman_root
+        from_cpu_addr = self.func_addr_rom
+
+        while True:
+            mem.seek(from_cpu_addr(addr))
+            buffer = mem.read(1) # DIFF
+            value = get_int(buffer, 0, 1) & shift # DIFF-
+
+            # DIFF-
+            shift <<= 1
+            if shift > 0x80:
+                shift = 0x01
+                addr += 1
+                if addr & 0xFFFF == 0:
+                    # LoROM nextbank
+                    addr = (addr & 0xFF0000) | 0x8000
+
+            if value:
+                value = get_int(huffman_on, node, 2)
+            else:
+                value = get_int(huffman_off, node, 2)
+
+            # DIFF
+            if value & 0x8000:
+                value &= 0xFF
+                return addr, shift, value
+
+            # DIFF
+            value &= 0x1FFF
+            node = value << 1

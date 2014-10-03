@@ -76,7 +76,7 @@ def print_battle(context, first=None, last=None):
             address=item[0],
             message=text))
 
-def enum_scenario(context, first=None, last=None):
+def enum_scenario(context, first=None, last=None, decorder_t=MessageDecoder):
     """Generate scenario message data.
 
     Message data that indices in [`first`, `last`) will be output.
@@ -103,7 +103,7 @@ def enum_scenario(context, first=None, last=None):
 
     with RomImage(context["title"]) as mem:
         # pylint: disable=star-args
-        decoder = MessageDecoder(**context)
+        decoder = decorder_t(**context)
         decoder.setup(mem)
         for message in decoder.enumerate(mem, first, last):
             yield message
