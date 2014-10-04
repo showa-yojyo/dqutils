@@ -5,10 +5,8 @@
 """
 
 import unittest
-from dqutils.dq5.message import load_msg_code
 from dqutils.dq5.message import enum_battle
-from dqutils.dq5.message import MSG_ID_FIRST
-from dqutils.dq5.message import MSG_ID_LAST
+from dqutils.dq5.message import enum_scenario
 from array import array
 
 # TODO: test dakuten
@@ -16,27 +14,6 @@ from array import array
 # pylint: disable=too-many-public-methods
 class DQ5MessageTestCase(unittest.TestCase):
     """Test functions defined in dqutils.dq5.message."""
-
-    def test_load_msg_code(self):
-        """Test function dqutils.dq5.load_msg_code."""
-
-        cpuaddr, shift, codeseq = load_msg_code(0x0B95, 0x0B96)[0]
-
-        # :0B95:わーい わーい！[1001]
-        wai = [
-            0x031B, 0x0360, 0x0398, 0x0000,
-            0x031B, 0x0360, 0x0398, 0x035A, 0x1001]
-        self.assertEqual(wai, codeseq)
-
-    def test_load_msg_code_exceptions(self):
-        """Test function dqutils.dq5.load_msg_code."""
-
-        self.assertRaises(
-            IndexError, load_msg_code, MSG_ID_FIRST - 1, MSG_ID_FIRST)
-        self.assertRaises(
-            IndexError, load_msg_code, MSG_ID_LAST, MSG_ID_LAST + 1)
-        self.assertRaises(
-            IndexError, load_msg_code, MSG_ID_LAST, MSG_ID_FIRST)
 
     def test_enum_battle(self):
         """Test function dqutils.dq5.enum_battle."""
@@ -51,6 +28,19 @@ class DQ5MessageTestCase(unittest.TestCase):
 
         self.assertEqual(cpu_addr, 0x078647)
         self.assertEqual(however_nothing_happened, code_seq)
+
+    def test_enum_scenario(self):
+        """Test function dqutils.dq5.enum_scenario."""
+
+        cpu_addr, shift, code_seq = tuple(enum_scenario(0x0B95, 0x0B96))[0]
+
+        # 0B95:0BCCD8:02:わーい わーい！
+        wai = array('H',
+            (0x031B, 0x0360, 0x0398, 0x0000,
+             0x031B, 0x0360, 0x0398, 0x035A, 0x1001))
+
+        self.assertEqual(cpu_addr, 0x0BCCD8)
+        self.assertEqual(wai, code_seq)
 
 def test_suite():
     """Setup a test suite."""
