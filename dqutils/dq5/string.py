@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """Module dqutils.dq5.string -- a string loader for DQ5.
@@ -10,81 +9,103 @@ This module has a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
-from dqutils.address import from_lo as CPUADDR
-from dqutils.address import conv_lo as ROMADDR
-from dqutils.bit import readbytes
-from dqutils.dq5 import open_rom
-import mmap
+from dqutils.address import from_hi
+from dqutils.address import from_lo
+from dqutils.address import conv_hi
+from dqutils.address import conv_lo
+from dqutils.rom_image import RomImage
+from dqutils.string import get_text
+from dqutils.dq5.charsmall import CHARMAP
+from dqutils.dq5.charsmall import process_dakuten
 
 # the string table map at $21955B
-GROUPS = (
-    (0x23C5CE, 8), # 仲間の名前
-    (0x23C5F9, 17), # 職業名
-    (0x23C690, 3), # 性別
-    (0x228000, 171), # じゅもん・とくぎの名前
-    (0x23C69C, 236), # モンスター名
-    (0x23CE0E, 216), # アイテム名
-    (0x23D5B5, 6), # さくせん名
-    (0x308000, 0), # 不明 1
-    (0x23D6A1, 0), # 不明 2
-    (0x23D6A1, 0), # 同上
-    (0x23C242, 168), # 仲間モンスターの名前
-    (0x23D5F3, 23), # ルーラ行き先
-)
+CONTEXT_GROUP = [
+    # 仲間の名前
+    dict(addr_string=0x23C5CE, string_id_first=0, string_id_last=8),
+    # 職業名
+    dict(addr_string=0x23C5F9, string_id_first=0, string_id_last=17),
+    # 性別
+    dict(addr_string=0x23C690, string_id_first=0, string_id_last=3),
+    # じゅもん・とくぎの名前
+    dict(addr_string=0x228000, string_id_first=0, string_id_last=171),
+    # モンスター名
+    dict(addr_string=0x23C69C, string_id_first=0, string_id_last=236),
+    # アイテム名
+    dict(addr_string=0x23CE0E, string_id_first=0, string_id_last=216),
+    # さくせん名
+    dict(addr_string=0x23D5B5, string_id_first=0, string_id_last=6),
+    # 不明 1
+    dict(addr_string=0x308000, string_id_first=0, string_id_last=0),
+    # 不明 2
+    dict(addr_string=0x23D6A1, string_id_first=0, string_id_last=0),
+    # 同上
+    dict(addr_string=0x23D6A1, string_id_first=0, string_id_last=0),
+    # 仲間モンスターの名前
+    dict(addr_string=0x23C242, string_id_first=0, string_id_last=168),
+    # ルーラ行き先
+    dict(addr_string=0x23D5F3, string_id_first=0, string_id_last=23),
+    ]
 
-# Constants for use in the loading methods arguments:
-GROUP_FIRST = 0
-GROUP_LAST = len(GROUPS)
+CONTEXT_PROTOTYPE = dict(
+    title="DRAGONQUEST5",
+    mapper='LoROM',
+    charmap=CHARMAP,)
 
-def load_code(group):
-    """Obtain all raw codes of a section of string table.
+for group in CONTEXT_GROUP:
+    group.update(CONTEXT_PROTOTYPE)
+
+def enum_string(context, first=None, last=None):
+    """Generate string data in a range of indices.
+
+    String data that indices in [`first`, `last`) will be generated.
+
+    Args:
+      context: TBW
+      first: The first index of the indices range you want.
+      last: The last index + 1 of the indices range you want.
+
+    Yields:
+      int: The next CPU address of data in the range of 0 to `last` - 1.
+      bytearray: The next bytes of data in the range of 0 to `last` - 1.
     """
 
-    if group < GROUP_FIRST or group >= GROUP_LAST:
-        raise IndexError('invalid group: ' + repr(group))
+    if not first:
+        first = context["string_id_first"]
+    if not last:
+        last = context["string_id_last"]
+    if first == last:
+        raise StopIteration
 
-    # Data to be returned.
-    data = []
+    mapper = context["mapper"]
+    if mapper == 'HiROM':
+        from_rom_addr = from_hi
+        from_cpu_addr = conv_hi
+    elif mapper == 'LoROM':
+        from_rom_addr = from_lo
+        from_cpu_addr = conv_lo
 
-    with open_rom() as fin:
-        mem = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
-        cpuaddr = GROUPS[group][0]
-        mem.seek(ROMADDR(cpuaddr))
+    addr = context["addr_string"]
 
-        ncount = GROUPS[group][1]
-        for _ in range(ncount):
-            nchar = mem.read(1)[0]
-            if nchar:
-                loc = CPUADDR(mem.tell())
-                codes = readbytes(mem, nchar)
-                data.append((loc, codes))
-        mem.close()
-    return data
-
-def make_text(codeseq):
-    """Return a legible string.
-
-    make_text(codeseq) -> str,
-
-    where codeseq is the list of raw codes that are obtained by
-    using load_code method, and str is a text representation.
-    """
-    from dqutils.dq5.charsmall import CHARMAP
-    from dqutils.dq5.charsmall import process_dakuten
-    return process_dakuten(
-        ''.join([CHARMAP.get(c, '{:02X}'.format(c)) for c in codeseq]))
-
-# Demonstration method (by the author, for the author).
+    with RomImage(context["title"]) as mem:
+        mem.seek(from_cpu_addr(addr))
+        for _ in range(0, last):
+            size = mem.read(1)[0]
+            if size:
+                yield (addr, mem.read(size))
+            addr += size + 1
 
 def print_all():
     """Print all of the strings in DQ5 to sys.stdout."""
 
-    for group in range(GROUP_FIRST, GROUP_LAST):
-        print('Group #{0:d} ({1:06X})'.format(group, GROUPS[group][0]))
-        pairs = load_code(group) # A list of (location, codeseq) pairs.
-        for i, pair in enumerate(pairs):
-            # Print id, location, and legible text.
-            print('{0:04X}:{1:06X}:{2}'.format(i, pair[0], make_text(pair[1])))
+    for i, context in enumerate(CONTEXT_GROUP):
+        print('Group #{0:d}'.format(i))
 
-if __name__ == '__main__':
-    print_all()
+        charmap = context["charmap"]
+        assert charmap is None or isinstance(charmap, dict)
+
+        for j, item in enumerate(enum_string(context)):
+            text = process_dakuten(get_text(item[1], charmap, None))
+            print('{index:04X}:{address:06X}:{data}'.format(
+                index=j,
+                address=item[0],
+                data=text))
