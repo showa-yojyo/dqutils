@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 """dqutils.database.table (prototype)
 """
@@ -6,7 +5,7 @@
 from dqutils.bit import getbits
 from dqutils.bit import get_int
 from dqutils.bit import readbytes
-from dqutils.database import format as fmt
+import dqutils.database.format
 
 class Field(object):
     """構造体オブジェクト配列をデータベース的に捉えたときの
@@ -30,7 +29,7 @@ class Field(object):
 
         # Set all other attrs (action, type, etc.) from 'attrs' dict
         self._set_attrs(attrs)
-        if not hasattr(self, 'format'):
+        if not self.format:
             self.do_set_fmt()
 
     def __cmp__(self, other):
@@ -174,17 +173,21 @@ class Table(object):
         if self.rom is None or self.reclen == 0:
             return
 
-        # locate the address of the array on ROM image
-        self.rom.seek(self.romaddr)  # TODO: seekptr を元に戻す
+        saved_ptr = self.rom.tell()
+        try:
+            # locate the address of the array on ROM image
+            self.rom.seek(self.romaddr)
 
-        # setup table header information
-        self.do_make_header()
+            # setup table header information
+            self.do_make_header()
 
-        for _ in range(self.recnum):
-            # obtain a byte sequence (list so far)
-            chunk = readbytes(self.rom, self.reclen)
-            self.do_write_record(
-                [field.process(chunk) for field in self.field_list])
+            for _ in range(self.recnum):
+                # obtain a byte sequence (list so far)
+                chunk = self.rom.read(self.reclen)
+                self.do_write_record(
+                    [field.process(chunk) for field in self.field_list])
+        finally:
+            self.rom.seek(saved_ptr)
 
     def do_make_header(self):
         """テーブルヘッダを書式化して標準出力に出力する"""
