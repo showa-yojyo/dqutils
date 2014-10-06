@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
+"""This is the dqutils (Dragon Quest Utilities) dq6 sub-package.
 
-"""dqutils package - dqutils.dq6 __init__ module
+It contains a few modules for access to data stored in ROM of DRAGONQUEST 6.
 """
-
-from dqutils.config import get_config
-
-def open_rom():
-    """Open the DRAGONQUEST6 ROM image by using the setting file."""
-
-    rompath = get_config().get('ROM', 'DRAGONQUEST6')
-    return open(rompath, mode='rb')

@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
+"""This is the dqutils (Dragon Quest Utilities) dq3 sub-package.
 
-"""dqutils package - dqutils.dq3 __init__ module
+It contains a few modules for access to data stored in ROM of DRAGONQUEST 3.
 """
-
-from dqutils.config import get_config
-
-def open_rom():
-    """Open the DRAGONQUEST3 ROM image by using the setting file."""
-
-    rompath = get_config().get('ROM', 'DRAGONQUEST3')
-    return open(rompath, mode='rb')
