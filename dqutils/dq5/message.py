@@ -29,9 +29,9 @@ CONTEXT_MESSAGE_BATTLE = dict(
     charmap=CHARMAP_SMALL,
     message_id_first=0x0000,
     message_id_last=0x01A3,
-    addr_group=0x24AECD, #
+    addr_group=0x24AECD,
     addr_shiftbit_array=0x249E8C,
-    addr_message=0x24AECD, #
+    addr_message=0x000000,
     addr_huffman_off=0x249D18,
     addr_huffman_on=0x249C2E,
     huffman_root=0x00E8,
@@ -45,9 +45,9 @@ CONTEXT_MESSAGE_SCENARIO = dict(
     charmap=CHARMAP_LARGE,
     message_id_first=0x0000,
     message_id_last=0x0C7E,
-    addr_group=0x24AF1E, #
+    addr_group=0x24AF1E,
     addr_shiftbit_array=0x249E8C,
-    addr_message=0x24AF1E, #
+    addr_message=0x000000,
     addr_huffman_off=0x249472,
     addr_huffman_on=0x248CB6,
     huffman_root=0x07BA,
@@ -117,73 +117,29 @@ def print_all_scenario():
 class MessageDecoderV(MessageDecoder):
     """TBW"""
 
-    def __init__(self, **kwargs):
-        """Constructor."""
+    def _select_message_group(self, message_id):
+        """TBW"""
+        count = message_id & 0x000F
+        group = message_id // 16 * 3
+        return count, group
 
-        super().__init__(**kwargs)
-        self.decoding_mask = kwargs["decoding_mask"]
-        self.decoding_read_size = kwargs["decoding_read_size"]
-
-    def locate_message(self, mem, message_id):
-        """Return the location where the messege data is stored."""
-        # $248BAF, $248C39, $248C8D
-
-        count = message_id & 0x000F # DIFF-
-        group = message_id // 16 * 3 # DIFF
-
-        mem.seek(self.func_addr_rom(self.addr_message) + group)
-        buffer1 = mem.read(3)
-
-        shift = self.shiftbit_array[buffer1[0] & 0x07]
-        addr = getbits(buffer1, 0, 0xFFFFF8)
-        delims = self.delimiters
-
-        for _ in range(count):
-            code = b'\xFFFF' # dummy value
-            while not code in delims:
-                addr, shift, code = self.decode(mem, addr, shift)
-
+    def _next_location(self, addr, shift):
+        """TBW"""
+        shift <<= 1
+        if shift > 0x80:
+            shift = 0x01
+            addr += 1
+            if addr & 0xFFFF == 0:
+                # LoROM next bank
+                addr = (addr & 0xFF0000) | 0x8000
         return addr, shift
 
-    def decode(self, mem, addr, shift):
-        """Decoding algorithm of Huffman coding."""
-        # $249E47
+    def _next_node(self, node):
+        """TBW"""
+        node &= 0x1FFF
+        node <<= 1
+        return node
 
-        # Test preconditions
-        assert addr & 0xFF000000 == 0
-        assert shift & 0xFFFFFF00 == 0
-
-        huffman_on, huffman_off = self.huffman_on, self.huffman_off
-        node = self.huffman_root
-        from_cpu_addr = self.func_addr_rom
-
-        read_size = self.decoding_read_size
-        mask = self.decoding_mask
-
-        while True:
-            mem.seek(from_cpu_addr(addr))
-            buffer = mem.read(read_size)
-            value = get_int(buffer, 0, read_size) & shift
-
-            # DIFF-
-            shift <<= 1
-            if shift > 0x80:
-                shift = 0x01
-                addr += 1
-                if addr & 0xFFFF == 0:
-                    # LoROM nextbank
-                    addr = (addr & 0xFF0000) | 0x8000
-
-            if value:
-                value = get_int(huffman_on, node, 2)
-            else:
-                value = get_int(huffman_off, node, 2)
-
-            if value & 0x8000:
-                # DIFF
-                value &= mask
-                return addr, shift, value
-
-            # DIFF
-            value &= 0x1FFF
-            node = value << 1
+    def _is_leaf_node(self, node):
+        """TBW"""
+        return node & 0x8000

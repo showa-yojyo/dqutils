@@ -46,17 +46,20 @@ class MessageDecoder(object):
         self.huffman_off = None
         self.huffman_on = None
 
+        self.decoding_read_size = kwargs.get("decoding_read_size", 2)
+        self.decoding_mask = kwargs.get("decoding_mask", 0xFFFF)
+
     def assert_valid(self):
         """Test if this instance is valid."""
         assert self.func_addr_cpu and self.func_addr_rom
         assert isinstance(self.delimiters, array) and self.delimiters.typecode == 'H'
-        assert 0 < self.addr_group
-        assert 0 < self.addr_shiftbit_array
+        assert 0 <= self.addr_group
+        assert 0 <= self.addr_shiftbit_array
         assert len(self.shiftbit_array) == 8
-        assert 0 < self.addr_message
+        assert 0 <= self.addr_message
         assert 0 <= self.message_id_first < self.message_id_last
-        assert 0 < self.addr_huffman_off
-        assert 0 < self.addr_huffman_on
+        assert 0 <= self.addr_huffman_off
+        assert 0 <= self.addr_huffman_on
         assert 0 < self.huffman_root
         assert len(self.huffman_off) == self.huffman_root + 2
         assert len(self.huffman_on) == self.huffman_root + 2
@@ -64,12 +67,12 @@ class MessageDecoder(object):
     def setup(self, mem):
         """TBW"""
 
-        self.setup_huffman_tree(mem)
-        self.setup_shiftbit_array(mem)
+        self._setup_huffman_tree(mem)
+        self._setup_shiftbit_array(mem)
 
         self.assert_valid()
 
-    def setup_huffman_tree(self, mem):
+    def _setup_huffman_tree(self, mem):
         """Initialize the Huffman trees."""
 
         # Test preconditions.
@@ -89,7 +92,7 @@ class MessageDecoder(object):
         assert len(self.huffman_off) == self.huffman_root + 2
         assert len(self.huffman_on) == self.huffman_root + 2
 
-    def setup_shiftbit_array(self, mem):
+    def _setup_shiftbit_array(self, mem):
         """Initialize the shiftbit array."""
 
         assert self.addr_shiftbit_array
@@ -102,15 +105,7 @@ class MessageDecoder(object):
     def locate_message(self, mem, message_id):
         """Return the location where the messege data is stored."""
 
-        # メッセージ ID から取得できるデータは二つ:
-        # 1. 0007h = AEh を検出する回数
-        #          = $C1B01C shift 配列 (1byte * 8) のインデックス
-        # 2. FFF8h = $C15331 構造体 (3byte) のインデックス
-        #            $FCC258 からのオフセット
-
-        count = message_id & 0x0007
-        group = message_id >> 3
-        group += (group << 1)
+        count, group = self._select_message_group(message_id)
 
         mem.seek(self.func_addr_rom(self.addr_group) + group)
         buffer1 = mem.read(3)
@@ -129,8 +124,36 @@ class MessageDecoder(object):
 
         return addr, shift
 
+    def _select_message_group(self, message_id):
+        """TBW"""
+
+        # The message ID gives the folowing information:
+        # 1. 0007h bits: the number of AEh occurences,
+        #    e.g., in DQ3, the index of the array $C1B01C (1byte * 8)
+        # 2. FFF8h bits: in DQ3, the index of the array $C15331 (3byte * N),
+        #    which contains offset values from address $FCC258.
+
+        count = message_id & 0x0007
+        group = message_id >> 3
+        group += (group << 1)
+        return count, group
+
     def decode(self, mem, addr, shift):
-        """Decoding algorithm of Huffman coding."""
+        """Decoding algorithm of Huffman coding.
+
+        Decode a Huffman-encoded bit string and return a decoded character.
+
+        Args:
+          mem (mmap): The ROM image.
+          addr (int): The initial address to read the variable length-bit
+            string.
+          shift (int): The initial shift bit of the address.
+
+        Returns:
+          An instance of tuple (addr, shift, value), where `addr` and 
+          `shift` is the next location to read, and `value` is the
+          character code decoded from the Huffman tree.
+        """
 
         # Test preconditions
         assert addr & 0xFF000000 == 0
@@ -139,25 +162,45 @@ class MessageDecoder(object):
         huffman_on, huffman_off = self.huffman_on, self.huffman_off
         node = self.huffman_root
         from_cpu_addr = self.func_addr_rom
+        read_size = self.decoding_read_size
 
+        # Traverse the Huffman tree downward beginning at the root node.
         while True:
+            # The message is a variable length-bit string.
+            # We take successive bits from the initial `addr`.
             mem.seek(from_cpu_addr(addr))
-            value = get_int(mem.read(2), 0, 2) & shift
 
-            shift >>= 1
-            if shift == 0:
-                shift = 0x0080
-                addr += 1
+            bit = get_int(mem.read(read_size), 0, read_size) & shift
+            addr, shift = self._next_location(addr, shift)
 
-            if value:
-                value = get_int(huffman_on, node, 2)
+            if bit:
+                node = get_int(huffman_on, node, 2)
             else:
-                value = get_int(huffman_off, node, 2)
+                node = get_int(huffman_off, node, 2)
 
-            if value & 0x8000 == 0:
-                return addr, shift, value
+            if self._is_leaf_node(node):
+                break
 
-            node = value & 0x7FFF
+            node = self._next_node(node)
+
+        return addr, shift, node & self.decoding_mask
+
+    def _is_leaf_node(self, node):
+        """TBW"""
+        return node & 0x8000 == 0
+
+    def _next_location(self, addr, shift):
+        """TBW"""
+
+        shift >>= 1
+        if shift == 0:
+            shift = 0x80
+            addr += 1
+        return addr, shift
+
+    def _next_node(self, value):
+        """TBW"""
+        return value & 0x7FFF
 
     def enumerate(self, mem, first=None, last=None):
         """Generate a tuple of (address, shift bits, code)."""

@@ -14,7 +14,8 @@ CONTEXT_MESSAGE_BATTLE = dict(
     charmap=CHARMAP_SMALL,
     message_id_first=0x0000,
     message_id_last=0x0177,
-    addr_message=0xFC9F22,)
+    addr_message=0xFC9F22,
+    decoding_read_size=2,)
 
 CONTEXT_MESSAGE_SCENARIO = dict(
     title="DRAGONQUEST3",
@@ -28,7 +29,8 @@ CONTEXT_MESSAGE_SCENARIO = dict(
     addr_message=0xFCC258,
     addr_huffman_off=0xC159D3,
     addr_huffman_on=0xC161A7,
-    huffman_root=0x07D2,)
+    huffman_root=0x07D2,
+    decoding_read_size=2,)
 
 def enum_battle(first=None, last=None):
     """A transfer generator."""
