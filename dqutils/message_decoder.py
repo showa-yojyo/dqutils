@@ -128,7 +128,7 @@ class MessageDecoder(object):
         """TBW"""
 
         # The message ID gives the folowing information:
-        # 1. 0007h bits: the number of AEh occurences,
+        # 1. 0007h bits: the number of AEh occurrences,
         #    e.g., in DQ3, the index of the array $C1B01C (1byte * 8)
         # 2. FFF8h bits: in DQ3, the index of the array $C15331 (3byte * N),
         #    which contains offset values from address $FCC258.
