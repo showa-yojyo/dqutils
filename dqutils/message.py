@@ -41,8 +41,7 @@ def enum_battle(context, first=None, last=None):
     delims = context["delimiters"]
     assert delims is None or isinstance(delims, bytes)
 
-    for i in enum_string(context, first, last):
-        yield i
+    yield from enum_string(context, first, last)
 
 def print_battle(context, first=None, last=None):
     """Print message data to sys.stdout.
@@ -105,8 +104,7 @@ def enum_scenario(context, first=None, last=None, decorder_t=MessageDecoder):
         # pylint: disable=star-args
         decoder = decorder_t(**context)
         decoder.setup(mem)
-        for message in decoder.enumerate(mem, first, last):
-            yield message
+        yield from decoder.enumerate(mem, first, last)
 
 def print_scenario(context, first=None, last=None):
     """Print message data to sys.stdout.

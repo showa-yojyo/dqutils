@@ -12,7 +12,6 @@ These decoding functions are based on classical Huffman's algorithm.
 Special thanks to Mr. kobun_c.
 """
 
-from dqutils.bit import getbits
 from dqutils.bit import get_int
 from dqutils.dq5.charsmall import CHARMAP as CHARMAP_SMALL
 from dqutils.dq5.charsmall import process_dakuten
@@ -55,10 +54,20 @@ CONTEXT_MESSAGE_SCENARIO = dict(
     decoding_read_size=2)
 
 def enum_battle(first=None, last=None):
-    """A transfer generator."""
-    for i in dqutils.message.enum_scenario(
-        CONTEXT_MESSAGE_BATTLE, first, last, MessageDecoderV):
-        yield i
+    """A delegating generator.
+
+    See dqutils.message.enum_battle for details.
+
+    Args:
+      first (optional): The beginning of the range to enumerate messages.
+      last (optional): The end of the range to enumerate messages.
+
+    Yields:
+      A tuple of (address, shift-bits, character-code).
+    """
+    yield from dqutils.message.enum_scenario(
+        CONTEXT_MESSAGE_BATTLE, first, last,
+        MessageDecoderV)
 
 def print_all_battle():
     """Print message data to sys.stdout."""
@@ -85,10 +94,19 @@ def print_all_battle():
             message=text))
 
 def enum_scenario(first=None, last=None):
-    """A transfer generator."""
-    for i in dqutils.message.enum_scenario(
-        CONTEXT_MESSAGE_SCENARIO, first, last, MessageDecoderV):
-        yield i
+    """A delegating generator.
+
+    See dqutils.message.enum_scenario for details.
+
+    Args:
+      first (optional): The beginning of the range to enumerate messages.
+      last (optional): The end of the range to enumerate messages.
+
+    Yields:
+      A tuple of (address, shift-bits, character-code).
+    """
+    yield from dqutils.message.enum_scenario(
+        CONTEXT_MESSAGE_SCENARIO, first, last, MessageDecoderV)
 
 def print_all_scenario():
     """Print message data to sys.stdout."""

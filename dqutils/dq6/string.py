@@ -15,9 +15,18 @@ CONTEXT = dict(
     string_id_last=0x09CA,)
 
 def enum_string(first=None, last=None):
-    """A transfer generator."""
-    for i in dqutils.string.enum_string(CONTEXT, first, last):
-        yield i
+    """A delegating generator.
+
+    See dqutils.string.enum_string for details.
+
+    Args:
+      first (optional): The beginning of the range to enumerate strings.
+      last (optional): The end of the range to enumerate strings.
+
+    Yields:
+      A tuple of (address, shift-bits, character-code).
+    """
+    yield from dqutils.string.enum_string(CONTEXT, first, last)
 
 def print_all():
     """A transfer function."""

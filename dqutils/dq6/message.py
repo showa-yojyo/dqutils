@@ -33,20 +33,38 @@ CONTEXT_MESSAGE_SCENARIO = dict(
     decoding_read_size=2,)
 
 def enum_battle(first=None, last=None):
-    """A transfer generator."""
-    for i in dqutils.message.enum_battle(
-        CONTEXT_MESSAGE_BATTLE, first, last):
-        yield i
+    """A delegating generator.
+
+    See dqutils.message.enum_battle for details.
+
+    Args:
+      first (optional): The beginning of the range to enumerate messages.
+      last (optional): The end of the range to enumerate messages.
+
+    Yields:
+      A tuple of (address, shift-bits, character-code).
+    """
+    yield from dqutils.message.enum_battle(
+        CONTEXT_MESSAGE_BATTLE, first, last)
 
 def print_all_battle():
     """A transfer function."""
-    print_string(CONTEXT_MESSAGE_BATTLE)
+    dqutils.message.print_battle(CONTEXT_MESSAGE_BATTLE)
 
 def enum_scenario(first=None, last=None):
-    """A transfer generator."""
-    for i in dqutils.message.enum_scenario(
-        CONTEXT_MESSAGE_SCENARIO, first, last):
-        yield i
+    """A delegating generator.
+
+    See dqutils.message.enum_scenario for details.
+
+    Args:
+      first (optional): The beginning of the range to enumerate messages.
+      last (optional): The end of the range to enumerate messages.
+
+    Yields:
+      A tuple of (address, shift-bits, character-code).
+    """
+    yield from dqutils.message.enum_scenario(
+        CONTEXT_MESSAGE_SCENARIO, first, last)
 
 def print_all_scenario():
     """A transfer function."""
