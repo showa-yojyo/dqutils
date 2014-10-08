@@ -74,12 +74,12 @@ def enum_string(context, first=None, last=None):
     assert "title" in context
 
     if not first:
-        first = context.get("string_id_first") or context.get("message_id_first")
+        first = context.get("string_id_first", context.get("message_id_first"))
     if not last:
-        last = context.get("string_id_last") or context.get("message_id_last")
+        last = context.get("string_id_last", context.get("message_id_last"))
     assert first < last
 
-    addr = context.get("addr_string") or context.get("addr_message")
+    addr = context.get("addr_string", context.get("addr_message"))
     assert addr
 
     delims = context.get("delimiters")
