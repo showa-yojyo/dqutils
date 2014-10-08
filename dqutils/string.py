@@ -82,7 +82,7 @@ def enum_string(context, first=None, last=None):
     addr = context.get("addr_string") or context.get("addr_message")
     assert addr
 
-    delims = context.get("delimiter") or context.get("delimiters")
+    delims = context.get("delimiters")
     assert delims is None or isinstance(delims, bytes)
 
     mapper = context["mapper"]
@@ -123,7 +123,7 @@ def print_string(context, first=None, last=None):
     """
 
     # Test preconditions.
-    delim = context["delimiter"]
+    delim = context["delimiters"]
     assert isinstance(delim, bytes)
 
     charmap = context["charmap"]

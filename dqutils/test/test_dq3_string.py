@@ -18,7 +18,7 @@ class DQ3StringTestCase(unittest.TestCase):
         text = get_text(
             b"\x26\x24\x12\x24\xDC\x0E\xAC",
             CONTEXT["charmap"],
-            CONTEXT["delimiter"])
+            CONTEXT["delimiters"])
         self.assertTrue('ひのきのぼう' in text)
 
     def test_enum_string(self):
@@ -28,11 +28,11 @@ class DQ3StringTestCase(unittest.TestCase):
 
         self.assertEqual(testdata[0][0], 0xFED659)
         self.assertTrue('せいすい' in get_text(
-            testdata[0][1], CONTEXT["charmap"], CONTEXT["delimiter"]))
+            testdata[0][1], CONTEXT["charmap"], CONTEXT["delimiters"]))
 
         self.assertEqual(testdata[15][0], 0xFED6CA)
         self.assertTrue('にじのしずく' in get_text(
-            testdata[15][1], CONTEXT["charmap"], CONTEXT["delimiter"]))
+            testdata[15][1], CONTEXT["charmap"], CONTEXT["delimiters"]))
 
 def test_suite():
     """Setup a test suite."""
