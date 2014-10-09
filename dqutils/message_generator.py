@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""dqutils.MessageDecoder module
+"""dqutils.message_generator module
 
 This module provides decoding methods for both DQ3 and DQ6 message systems.
 The original implementation is of course written in 65816 code.
@@ -16,7 +16,7 @@ from dqutils.address import conv_lo
 from dqutils.bit import getbits
 from dqutils.bit import get_int
 
-class MessageDecoder(object):
+class MessageGenerator(object):
     """TBW"""
 
     # pylint: disable=too-many-instance-attributes

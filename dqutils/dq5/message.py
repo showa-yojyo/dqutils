@@ -17,7 +17,7 @@ from dqutils.dq5.charsmall import CHARMAP as CHARMAP_SMALL
 from dqutils.dq5.charsmall import process_dakuten
 from dqutils.dq5.charlarge import CHARMAP as CHARMAP_LARGE
 import dqutils.message
-from dqutils.message import MessageDecoder
+from dqutils.message import MessageGenerator
 from dqutils.string import get_text
 from array import array
 
@@ -67,7 +67,7 @@ def enum_battle(first=None, last=None):
     """
     yield from dqutils.message.enum_scenario(
         CONTEXT_MESSAGE_BATTLE, first, last,
-        MessageDecoderV)
+        MessageGeneratorV)
 
 def print_all_battle():
     """Print message data to sys.stdout."""
@@ -106,7 +106,7 @@ def enum_scenario(first=None, last=None):
       A tuple of (address, shift-bits, character-code).
     """
     yield from dqutils.message.enum_scenario(
-        CONTEXT_MESSAGE_SCENARIO, first, last, MessageDecoderV)
+        CONTEXT_MESSAGE_SCENARIO, first, last, MessageGeneratorV)
 
 def print_all_scenario():
     """Print message data to sys.stdout."""
@@ -132,7 +132,7 @@ def print_all_scenario():
             shift=shift,
             message=text))
 
-class MessageDecoderV(MessageDecoder):
+class MessageGeneratorV(MessageGenerator):
     """TBW"""
 
     def _select_message_group(self, message_id):
