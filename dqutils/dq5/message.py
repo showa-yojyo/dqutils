@@ -17,7 +17,7 @@ from dqutils.dq5.charsmall import CHARMAP as CHARMAP_SMALL
 from dqutils.dq5.charsmall import process_dakuten
 from dqutils.dq5.charlarge import CHARMAP as CHARMAP_LARGE
 import dqutils.message
-from dqutils.message import MessageGenerator
+from dqutils.message_generator import MessageGeneratorV
 from dqutils.string import get_text
 from array import array
 
@@ -66,8 +66,7 @@ def enum_battle(first=None, last=None):
       A tuple of (address, shift-bits, character-code).
     """
     yield from dqutils.message.enum_scenario(
-        CONTEXT_MESSAGE_BATTLE, first, last,
-        MessageGeneratorV)
+        CONTEXT_MESSAGE_BATTLE, MessageGeneratorV, first, last)
 
 def print_all_battle():
     """Print message data to sys.stdout."""
@@ -106,7 +105,7 @@ def enum_scenario(first=None, last=None):
       A tuple of (address, shift-bits, character-code).
     """
     yield from dqutils.message.enum_scenario(
-        CONTEXT_MESSAGE_SCENARIO, first, last, MessageGeneratorV)
+        CONTEXT_MESSAGE_SCENARIO, MessageGeneratorV, first, last)
 
 def print_all_scenario():
     """Print message data to sys.stdout."""
@@ -131,33 +130,3 @@ def print_all_scenario():
             address=address,
             shift=shift,
             message=text))
-
-class MessageGeneratorV(MessageGenerator):
-    """TBW"""
-
-    def _select_message_group(self, message_id):
-        """TBW"""
-        count = message_id & 0x000F
-        group = message_id // 16 * 3
-        return count, group
-
-    def _next_location(self, addr, shift):
-        """TBW"""
-        shift <<= 1
-        if shift > 0x80:
-            shift = 0x01
-            addr += 1
-            if addr & 0xFFFF == 0:
-                # LoROM next bank
-                addr = (addr & 0xFF0000) | 0x8000
-        return addr, shift
-
-    def _next_node(self, node):
-        """TBW"""
-        node &= 0x1FFF
-        node <<= 1
-        return node
-
-    def _is_leaf_node(self, node):
-        """TBW"""
-        return node & 0x8000

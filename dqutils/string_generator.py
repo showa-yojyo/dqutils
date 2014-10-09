@@ -73,7 +73,7 @@ class StringGenerator(metaclass=ABCMeta):
             yield from self._do_iterate(mem, addr)
 
     def assert_valid(self):
-        """TBW"""
+        """Test if this instance is valid."""
         assert self.title
         assert 0 <= self.first < self.last
         assert 0 <= self.addr

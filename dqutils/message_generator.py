@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-
 """dqutils.message_generator module
 
 This module provides decoding methods for both DQ3 and DQ6 message systems.
@@ -15,8 +14,10 @@ from dqutils.address import conv_hi
 from dqutils.address import conv_lo
 from dqutils.bit import getbits
 from dqutils.bit import get_int
+from abc import ABCMeta
+from abc import abstractmethod
 
-class MessageGenerator(object):
+class AbstractMessageGenerator(metaclass=ABCMeta):
     """TBW"""
 
     # pylint: disable=too-many-instance-attributes
@@ -52,7 +53,8 @@ class MessageGenerator(object):
     def assert_valid(self):
         """Test if this instance is valid."""
         assert self.func_addr_cpu and self.func_addr_rom
-        assert isinstance(self.delimiters, array) and self.delimiters.typecode == 'H'
+        assert isinstance(self.delimiters, array)
+        assert self.delimiters.typecode == 'H'
         assert 0 <= self.addr_group
         assert 0 <= self.addr_shiftbit_array
         assert len(self.shiftbit_array) == 8
@@ -65,7 +67,11 @@ class MessageGenerator(object):
         assert len(self.huffman_on) == self.huffman_root + 2
 
     def setup(self, mem):
-        """TBW"""
+        """Setup this instance.
+
+        Args:
+          mem (mmap): The input stream of ROM.
+        """
 
         self._setup_huffman_tree(mem)
         self._setup_shiftbit_array(mem)
@@ -73,7 +79,14 @@ class MessageGenerator(object):
         self.assert_valid()
 
     def _setup_huffman_tree(self, mem):
-        """Initialize the Huffman trees."""
+        """Initialize the Huffman trees.
+
+        Args:
+          mem (mmap): The input stream of ROM.
+
+        Returns:
+          None.
+        """
 
         # Test preconditions.
         assert self.huffman_root
@@ -93,7 +106,14 @@ class MessageGenerator(object):
         assert len(self.huffman_on) == self.huffman_root + 2
 
     def _setup_shiftbit_array(self, mem):
-        """Initialize the shiftbit array."""
+        """Initialize the shiftbit array.
+
+        Args:
+          mem (mmap): The input stream of ROM.
+
+        Returns:
+          None.
+        """
 
         assert self.addr_shiftbit_array
 
@@ -103,9 +123,17 @@ class MessageGenerator(object):
         assert len(self.shiftbit_array) == 8
 
     def locate_message(self, mem, message_id):
-        """Return the location where the messege data is stored."""
+        """Return the location where the messege data is stored.
 
-        count, group = self._select_message_group(message_id)
+        Args:
+          mem (mmap): The input stream of ROM.
+          message_id: An ID.
+
+        Returns:
+          TBW
+        """
+
+        count, group = self._do_select_message_group(message_id)
 
         mem.seek(self.func_addr_rom(self.addr_group) + group)
         buffer1 = mem.read(3)
@@ -124,20 +152,6 @@ class MessageGenerator(object):
 
         return addr, shift
 
-    def _select_message_group(self, message_id):
-        """TBW"""
-
-        # The message ID gives the folowing information:
-        # 1. 0007h bits: the number of AEh occurrences,
-        #    e.g., in DQ3, the index of the array $C1B01C (1byte * 8)
-        # 2. FFF8h bits: in DQ3, the index of the array $C15331 (3byte * N),
-        #    which contains offset values from address $FCC258.
-
-        count = message_id & 0x0007
-        group = message_id >> 3
-        group += (group << 1)
-        return count, group
-
     def decode(self, mem, addr, shift):
         """Decoding algorithm of Huffman coding.
 
@@ -150,7 +164,7 @@ class MessageGenerator(object):
           shift (int): The initial shift bit of the address.
 
         Returns:
-          An instance of tuple (addr, shift, value), where `addr` and 
+          An instance of tuple (addr, shift, value), where `addr` and
           `shift` is the next location to read, and `value` is the
           character code decoded from the Huffman tree.
         """
@@ -171,39 +185,33 @@ class MessageGenerator(object):
             mem.seek(from_cpu_addr(addr))
 
             bit = get_int(mem.read(read_size), 0, read_size) & shift
-            addr, shift = self._next_location(addr, shift)
+            addr, shift = self._do_next_location(addr, shift)
 
             if bit:
                 node = get_int(huffman_on, node, 2)
             else:
                 node = get_int(huffman_off, node, 2)
 
-            if self._is_leaf_node(node):
+            if self._do_is_leaf_node(node):
                 break
 
-            node = self._next_node(node)
+            node = self._do_next_node(node)
 
         return addr, shift, node & self.decoding_mask
 
-    def _is_leaf_node(self, node):
-        """TBW"""
-        return node & 0x8000 == 0
-
-    def _next_location(self, addr, shift):
-        """TBW"""
-
-        shift >>= 1
-        if shift == 0:
-            shift = 0x80
-            addr += 1
-        return addr, shift
-
-    def _next_node(self, value):
-        """TBW"""
-        return value & 0x7FFF
-
     def enumerate(self, mem, first=None, last=None):
-        """Generate a tuple of (address, shift bits, code)."""
+        """Generate a tuple of (address, shift bits, code).
+
+        String data that indices in [`first`, `last`) will be generated.
+
+        Args:
+          mem (mmap): The ROM image.
+          first (int): The first index of the range you want.
+          last (int): The last index + 1 of the range you want.
+
+        Yields:
+          A tuple of (address, shift-bits, character-code).
+        """
 
         if not first:
             first = self.message_id_first
@@ -216,7 +224,6 @@ class MessageGenerator(object):
 
         delims = self.delimiters
         assert isinstance(delims, array) and delims.typecode == 'H'
-        from_rom_addr = self.func_addr_cpu
 
         for _ in range(first, last):
             addr, shift = addr_cur, shift_cur
@@ -230,3 +237,107 @@ class MessageGenerator(object):
                 code_seq.append(code)
 
             yield addr, shift, code_seq
+
+    @abstractmethod
+    def _do_select_message_group(self, message_id):
+        """TBW
+
+        Args:
+          message_id (int): A message ID.
+
+        Returns:
+          A tuple (int, int), where:
+            int: count TBW
+            int: group TBW
+        """
+        pass
+
+    @abstractmethod
+    def _do_is_leaf_node(self, node):
+        """Determine if `node` is a leaf node.
+
+        Args:
+          node (int): 2-byte value.
+
+        Returns:
+          bool: True if `node` is a leaf, False otherwise.
+        """
+        pass
+
+    @abstractmethod
+    def _do_next_location(self, addr, shift):
+        """Returns the next address to read data encoded.
+
+        Args:
+          addr (int): The current CPU address.
+          shift (int): An 1-byte value for mask.
+
+        Returns:
+          (tuple of int): The next address and shift-bit.
+        """
+        pass
+
+    @abstractmethod
+    def _do_next_node(self, node):
+        """Returns the next node to traverse in the Huffman tree.
+
+        Args:
+          node (int): The current node, represented by 2-byte value.
+
+        Returns:
+          (int): The next node, represented by 2-byte value.
+        """
+        pass
+
+class MessageGeneratorW(AbstractMessageGenerator):
+    """For DQ3 and DQ6."""
+
+    def _do_select_message_group(self, message_id):
+        # The message ID gives the folowing information:
+        # 1. 0007h bits: the number of AEh occurrences,
+        #    e.g., in DQ3, the index of the array $C1B01C (1byte * 8)
+        # 2. FFF8h bits: in DQ3, the index of the array $C15331 (3byte * N),
+        #    which contains offset values from address $FCC258.
+        count = message_id & 0x0007
+        group = message_id >> 3
+        group += (group << 1)
+        return count, group
+
+    def _do_is_leaf_node(self, node):
+        return node & 0x8000 == 0
+
+    def _do_next_location(self, addr, shift):
+        shift >>= 1
+        if shift == 0:
+            shift = 0x80
+            addr += 1
+        return addr, shift
+
+    def _do_next_node(self, value):
+        return value & 0x7FFF
+
+class MessageGeneratorV(AbstractMessageGenerator):
+    """For DQ5."""
+
+    def _do_select_message_group(self, message_id):
+        count = message_id & 0x000F
+        group = message_id // 16 * 3
+        return count, group
+
+    def _do_is_leaf_node(self, node):
+        return node & 0x8000
+
+    def _do_next_location(self, addr, shift):
+        shift <<= 1
+        if shift > 0x80:
+            shift = 0x01
+            addr += 1
+            if addr & 0xFFFF == 0:
+                # LoROM next bank
+                addr = (addr & 0xFF0000) | 0x8000
+        return addr, shift
+
+    def _do_next_node(self, node):
+        node &= 0x1FFF
+        node <<= 1
+        return node

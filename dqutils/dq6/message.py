@@ -5,6 +5,7 @@
 from dqutils.dq6.charsmall import CHARMAP as CHARMAP_SMALL
 from dqutils.dq6.charlarge import CHARMAP as CHARMAP_LARGE
 import dqutils.message
+from dqutils.message_generator import MessageGeneratorW
 from array import array
 
 CONTEXT_MESSAGE_BATTLE = dict(
@@ -64,8 +65,9 @@ def enum_scenario(first=None, last=None):
       A tuple of (address, shift-bits, character-code).
     """
     yield from dqutils.message.enum_scenario(
-        CONTEXT_MESSAGE_SCENARIO, first, last)
+        CONTEXT_MESSAGE_SCENARIO, MessageGeneratorW, first, last)
 
 def print_all_scenario():
     """A transfer function."""
-    dqutils.message.print_scenario(CONTEXT_MESSAGE_SCENARIO)
+    dqutils.message.print_scenario(
+        CONTEXT_MESSAGE_SCENARIO, MessageGeneratorW)
