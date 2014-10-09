@@ -55,13 +55,15 @@ def get_hex(code_seq):
         isinstance(code_seq, i) for i in (bytes, bytearray, array))
     return ' '.join('{:02X}'.format(c) for c in code_seq)
 
-def enum_string(context, first=None, last=None):
+def enum_string(context, generator_t, first=None, last=None):
     """Generate string data in a range of indices.
 
     String data that indices in [`first`, `last`) will be generated.
 
     Args:
       context: TBW
+      generator_t: The type of string generator.
+        See the module dqutils.string_generator for details.
       first: The first index of the indices range you want.
       last: The last index + 1 of the indices range you want.
 
@@ -70,51 +72,17 @@ def enum_string(context, first=None, last=None):
       bytearray: The next bytes of data in the range of 0 to `last` - 1.
     """
 
-    # Test preconditions.
-    assert "title" in context
+    yield from generator_t(context, first, last)
 
-    if not first:
-        first = context.get("string_id_first", context.get("message_id_first"))
-    if not last:
-        last = context.get("string_id_last", context.get("message_id_last"))
-    assert first < last
-
-    addr = context.get("addr_string", context.get("addr_message"))
-    assert addr
-
-    delims = context.get("delimiters")
-    assert delims is None or isinstance(delims, bytes)
-
-    mapper = context["mapper"]
-    if mapper == 'HiROM':
-        from_rom_addr = from_hi
-        from_cpu_addr = conv_hi
-    elif mapper == 'LoROM':
-        from_rom_addr = from_lo
-        from_cpu_addr = conv_lo
-
-    with RomImage(context["title"]) as mem:
-        mem.seek(from_cpu_addr(addr))
-
-        for i in range(0, last):
-            code_seq = bytearray()
-            addr = from_rom_addr(mem.tell())
-            code = b'\xFFFF' # dummy value
-            while code not in delims:
-                code = mem.read_byte()
-                code_seq.append(code)
-
-            if first <= i:
-                assert code_seq[-1] in delims
-                yield (addr, code_seq)
-
-def print_string(context, first=None, last=None):
+def print_string(context, generator_t, first=None, last=None):
     """Print string data to sys.stdout.
 
     String data that indices in [`first`, `last`) will be output.
 
     Args:
       context: TBW
+      generator_t: The type of string generator.
+        See the module dqutils.string_generator for details.
       first: The first index of the range you want.
       last: The last index + 1 of the range you want.
 
@@ -129,7 +97,7 @@ def print_string(context, first=None, last=None):
     charmap = context["charmap"]
     assert isinstance(charmap, dict)
 
-    for i, item in enumerate(enum_string(context, first, last)):
+    for i, item in enumerate(generator_t(context, first, last)):
         if charmap:
             text = get_text(item[1], charmap, delim)
         else:

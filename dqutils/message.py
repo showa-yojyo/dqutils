@@ -1,13 +1,12 @@
 # -*- coding: utf-8 -*-
-
 """dqutils.message module
 """
 
 from dqutils.string import get_text
 from dqutils.string import get_hex
-from dqutils.string import enum_string
 from dqutils.rom_image import RomImage
 from dqutils.message_decoder import MessageDecoder
+from dqutils.string_generator import StringGeneratorCStyle
 from array import array
 
 def enum_battle(context, first=None, last=None):
@@ -21,27 +20,9 @@ def enum_battle(context, first=None, last=None):
       last: The last index + 1 of the range you want.
 
     Yields:
-      TBW
+      A tuple of (address, shift-bits, character-code).
     """
-
-    # Test preconditions.
-    assert "title" in context
-    assert "message_id_first" in context or first is not None
-    assert "message_id_last" in context or last is not None
-
-    if not first:
-        first = context["message_id_first"]
-    if not last:
-        last = context["message_id_last"]
-    assert first < last
-
-    assert "addr_message" in context
-    addr = context["addr_message"]
-
-    delims = context["delimiters"]
-    assert delims is None or isinstance(delims, bytes)
-
-    yield from enum_string(context, first, last)
+    yield from StringGeneratorCStyle(context, first, last)
 
 def print_battle(context, first=None, last=None):
     """Print message data to sys.stdout.
@@ -86,7 +67,7 @@ def enum_scenario(context, first=None, last=None, decorder_t=MessageDecoder):
       last: The last index + 1 of the range you want.
 
     Yields:
-      address, shift, code_seq
+      A tuple of (address, shift-bits, character-code).
     """
 
     # Test preconditions.

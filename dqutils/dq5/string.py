@@ -17,34 +17,36 @@ from dqutils.rom_image import RomImage
 from dqutils.string import get_text
 from dqutils.dq5.charsmall import CHARMAP
 from dqutils.dq5.charsmall import process_dakuten
+from dqutils.string_generator import StringGeneratorPascalStyle
+import dqutils.string
 
-# the string table map at $21955B
 CONTEXT_GROUP = [
-    # 仲間の名前
+    # Partners (human beings).
     dict(addr_string=0x23C5CE, string_id_first=0, string_id_last=8),
-    # 職業名
+    # Classes.
     dict(addr_string=0x23C5F9, string_id_first=0, string_id_last=17),
-    # 性別
+    # Distinction (male/female/others!).
     dict(addr_string=0x23C690, string_id_first=0, string_id_last=3),
-    # じゅもん・とくぎの名前
+    # Spells and skills.
     dict(addr_string=0x228000, string_id_first=0, string_id_last=171),
-    # モンスター名
+    # Monsters.
     dict(addr_string=0x23C69C, string_id_first=0, string_id_last=236),
-    # アイテム名
+    # Items.
     dict(addr_string=0x23CE0E, string_id_first=0, string_id_last=216),
-    # さくせん名
+    # Strategies.
     dict(addr_string=0x23D5B5, string_id_first=0, string_id_last=6),
-    # 不明 1
+    # Unknown 1.
     dict(addr_string=0x308000, string_id_first=0, string_id_last=0),
-    # 不明 2
+    # Unknown 2.
     dict(addr_string=0x23D6A1, string_id_first=0, string_id_last=0),
-    # 同上
+    # Ditto.
     dict(addr_string=0x23D6A1, string_id_first=0, string_id_last=0),
-    # 仲間モンスターの名前
+    # Partners (monsters).
     dict(addr_string=0x23C242, string_id_first=0, string_id_last=168),
-    # ルーラ行き先
+    # Destination list.
     dict(addr_string=0x23D5F3, string_id_first=0, string_id_last=23),
     ]
+"""the string table located at $21955B."""
 
 CONTEXT_PROTOTYPE = dict(
     title="DRAGONQUEST5",
@@ -55,44 +57,20 @@ for group in CONTEXT_GROUP:
     group.update(CONTEXT_PROTOTYPE)
 
 def enum_string(context, first=None, last=None):
-    """Generate string data in a range of indices.
+    """A delegating generator.
 
-    String data that indices in [`first`, `last`) will be generated.
+    See dqutils.string.enum_string for details.
 
     Args:
-      context: TBW
-      first: The first index of the indices range you want.
-      last: The last index + 1 of the indices range you want.
+      context: The information of the string table to enumerate.
+      first (optional): The beginning of the range to enumerate strings.
+      last (optional): The end of the range to enumerate strings.
 
     Yields:
-      int: The next CPU address of data in the range of 0 to `last` - 1.
-      bytearray: The next bytes of data in the range of 0 to `last` - 1.
+      A tuple of (address, shift-bits, character-code).
     """
-
-    if not first:
-        first = context["string_id_first"]
-    if not last:
-        last = context["string_id_last"]
-    if first == last:
-        raise StopIteration
-
-    mapper = context["mapper"]
-    if mapper == 'HiROM':
-        from_rom_addr = from_hi
-        from_cpu_addr = conv_hi
-    elif mapper == 'LoROM':
-        from_rom_addr = from_lo
-        from_cpu_addr = conv_lo
-
-    addr = context["addr_string"]
-
-    with RomImage(context["title"]) as mem:
-        mem.seek(from_cpu_addr(addr))
-        for _ in range(0, last):
-            size = mem.read(1)[0]
-            if size:
-                yield (addr, mem.read(size))
-            addr += size + 1
+    yield from dqutils.string.enum_string(
+        context, StringGeneratorPascalStyle, first, last)
 
 def print_all():
     """Print all of the strings in DQ5 to sys.stdout."""
@@ -103,7 +81,7 @@ def print_all():
         charmap = context["charmap"]
         assert charmap is None or isinstance(charmap, dict)
 
-        for j, item in enumerate(enum_string(context)):
+        for j, item in enumerate(StringGeneratorPascalStyle(context)):
             text = process_dakuten(get_text(item[1], charmap, None))
             print('{index:04X}:{address:06X}:{data}'.format(
                 index=j,

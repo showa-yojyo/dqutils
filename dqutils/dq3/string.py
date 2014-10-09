@@ -4,6 +4,7 @@
 
 import dqutils.string
 from dqutils.dq3.charsmall import CHARMAP
+from dqutils.string_generator import StringGeneratorCStyle
 
 CONTEXT = dict(
     title="DRAGONQUEST3",
@@ -26,8 +27,12 @@ def enum_string(first=None, last=None):
     Yields:
       A tuple of (address, shift-bits, character-code).
     """
-    yield from dqutils.string.enum_string(CONTEXT, first, last)
+    yield from dqutils.string.enum_string(
+        CONTEXT, StringGeneratorCStyle, first, last)
 
 def print_all():
-    """A transfer function."""
-    dqutils.string.print_string(CONTEXT)
+    """A delegating function.
+
+    See dqutils.string.print_string for details.
+    """
+    dqutils.string.print_string(CONTEXT, StringGeneratorCStyle)
