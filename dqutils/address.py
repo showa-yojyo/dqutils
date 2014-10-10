@@ -1,22 +1,47 @@
 # -*- coding: utf-8 -*-
 """dqutils.address - SNES address conversion functions.
+
+LoROM or HiROM is used to map between ROM offsets and SNES addresses.
+
+LoROM maps each ROM bank into the upper half (being addresses $8000 to $ffff)
+of each SNES bank, starting with SNES bank $00, and starting again with SNES
+bank $80. HiROM maps each ROM bank into the whole (being addresses $0000 to
+$ffff) of each SNES bank, starting with SNES bank $40, and starting again
+with SNES bank $80.
+
+See http://romhack.wikia.com/wiki/SNES_ROM_layout for more details
+(Especially, the section "Formulas to convert addresses" is useful.)
 """
 
 def from_hi(romaddr):
     """Convert from a ROM address to a CPU address for HiROM.
 
-    >>> cpuaddr = from_hi(0x020000)
-    >>> print('0x{:06X}'.format(cpuaddr))
-    0xC20000
+    Args:
+      romaddr (int): A ROM address, i.e. offsets in headerless ROM image.
+
+    Returns:
+      (int) CPU address.
+
+    Examples:
+      >>> cpuaddr = from_hi(0x020000)
+      >>> print('0x{:06X}'.format(cpuaddr))
+      0xC20000
     """
     return 0x00C00000 | (romaddr & 0x003FFFFF)
 
 def from_lo(romaddr):
     """Convert from a ROM address to a CPU address for LoROM.
 
-    >>> cpuaddr = from_lo(0x008000)
-    >>> print('0x{:06X}'.format(cpuaddr))
-    0x018000
+    Args:
+      romaddr (int): A ROM address, i.e. offsets in headerless ROM image.
+
+    Returns:
+      (int) CPU address.
+
+    Examples:
+      >>> cpuaddr = from_lo(0x008000)
+      >>> print('0x{:06X}'.format(cpuaddr))
+      0x018000
     """
     return ((romaddr & 0x00007FFF)
             | (((romaddr & 0x007F8000) << 1) | 0x00008000))
@@ -27,17 +52,31 @@ def conv_hi(cpuaddr):
     To convert from a CPU address to a ROM address, first, remove bit 15.
     Second, moving all bits after it down one.
 
-    >>> romaddr = conv_hi(0xC20000)
-    >>> print('0x{:06X}'.format(romaddr))
-    0x020000
+    Args:
+      cpuaddr (int): A CPU address.
+
+    Returns:
+      (int) ROM address.
+
+    Examples:
+      >>> romaddr = conv_hi(0xC20000)
+      >>> print('0x{:06X}'.format(romaddr))
+      0x020000
     """
     return cpuaddr & 0x003FFFFF
 
 def conv_lo(cpuaddr):
     """Convert from a CPU address to a ROM address for LoROM.
 
-    >>> romaddr = conv_lo(0x018000)
-    >>> print('0x{:06X}'.format(romaddr))
-    0x008000
+    Args:
+      cpuaddr (int): A CPU address.
+
+    Returns:
+      (int) ROM address.
+
+    Examples:
+      >>> romaddr = conv_lo(0x018000)
+      >>> print('0x{:06X}'.format(romaddr))
+      0x008000
     """
     return (cpuaddr & 0x007FFF) | ((cpuaddr & 0x007F0000) >> 1)
