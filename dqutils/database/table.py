@@ -2,9 +2,8 @@
 """dqutils.database.table (prototype)
 """
 
-from dqutils.bit import getbits
+from dqutils.bit import get_bits
 from dqutils.bit import get_int
-from dqutils.bit import readbytes
 import dqutils.database.format
 
 class Field(object):
@@ -77,7 +76,7 @@ class BitField(Field):
 
     def process(self, chunk):
         """バイト塊を処理するメソッド"""
-        return self.format % getbits(chunk, self.offset, self.mask)
+        return self.format % get_bits(chunk, self.offset, self.mask)
 
 class ByteField(Field):
     """メンバーデータが 1byte で表現されているものに対応する"""

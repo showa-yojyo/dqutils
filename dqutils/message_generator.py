@@ -14,7 +14,7 @@ from dqutils.address import from_hi
 from dqutils.address import from_lo
 from dqutils.address import conv_hi
 from dqutils.address import conv_lo
-from dqutils.bit import getbits
+from dqutils.bit import get_bits
 from dqutils.bit import get_int
 from dqutils.rom_image import RomImage
 
@@ -150,7 +150,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         # In fact, the array in RHS is
         # {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80}.
         shift = self.shiftbit_array[buffer1[0] & 0x07]
-        addr = getbits(buffer1, 0, 0xFFFFF8) + self.addr_message
+        addr = get_bits(buffer1, 0, 0xFFFFF8) + self.addr_message
         delims = self.delimiters
 
         # The loop counter depends on message id & 0x0007.

@@ -3,7 +3,7 @@
 """Tests for dqutils.bit module."""
 
 import unittest
-from dqutils.bit import getbits
+from dqutils.bit import get_bits
 from dqutils.bit import get_int
 
 # pylint: disable=too-many-public-methods
@@ -32,12 +32,12 @@ class BitTestCase(unittest.TestCase):
         self.assertEqual(get_int(b'', 6, 3), 0)
         self.assertEqual(get_int([], 6, 3), 0)
 
-    def test_getbits(self):
-        """Test function dqutils.bit.getbits."""
-        data = (0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06)
-        self.assertEqual(getbits(data, 0, 0xFF00), 0x0001)
-        self.assertEqual(getbits(data, 1, 0xFFFF), 0x0201)
-        self.assertEqual(getbits(data, 0, 0x0100), 0x0001)
+    def test_get_bits(self):
+        """Test function dqutils.bit.get_bits."""
+        data = [i for i in range(0x06)]
+        self.assertEqual(get_bits(data, 0, 0xFF00), 0x0001)
+        self.assertEqual(get_bits(data, 1, 0xFFFF), 0x0201)
+        self.assertEqual(get_bits(data, 0, 0x0100), 0x0001)
 
 def test_suite():
     """Setup a test suite."""
