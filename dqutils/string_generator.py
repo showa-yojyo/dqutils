@@ -19,7 +19,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 # pylint: disable=too-few-public-methods
-class StringGenerator(metaclass=ABCMeta):
+class AbstractStringGenerator(metaclass=ABCMeta):
     """TBW"""
 
     def __init__(self, context, first=None, last=None):
@@ -86,7 +86,7 @@ class StringGenerator(metaclass=ABCMeta):
         """TBW"""
         raise StopIteration
 
-class StringGeneratorPascalStyle(StringGenerator):
+class StringGeneratorPascalStyle(AbstractStringGenerator):
     """For DQ5"""
 
     def _do_iterate(self, mem, addr):
@@ -99,7 +99,7 @@ class StringGeneratorPascalStyle(StringGenerator):
                 yield (addr, mem.read(size))
             addr += size + 1
 
-class StringGeneratorCStyle(StringGenerator):
+class StringGeneratorCStyle(AbstractStringGenerator):
     """For DQ3 and DQ6"""
 
     def _do_iterate(self, mem, addr):
