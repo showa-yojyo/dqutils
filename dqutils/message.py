@@ -4,7 +4,6 @@
 
 from dqutils.string import get_text
 from dqutils.string import get_hex
-from dqutils.rom_image import RomImage
 from dqutils.string_generator import StringGeneratorCStyle
 from array import array
 
@@ -64,29 +63,13 @@ def enum_scenario(context, generator_t, first=None, last=None):
       context: TBW
       generator_t: The type of message generator.
         See the module dqutils.message_generator for details.
-      first: The first index of the range you want.
-      last: The last index + 1 of the range you want.
+      first (optional): The first index of the range you want.
+      last (optional): The last index + 1 of the range you want.
 
     Yields:
       A tuple of (address, shift-bits, character-code).
     """
-
-    # Test preconditions.
-    assert "title" in context
-    assert "message_id_first" in context or first is not None
-    assert "message_id_last" in context or last is not None
-
-    if not first:
-        first = context["message_id_first"]
-    if not last:
-        last = context["message_id_last"]
-    assert first < last
-
-    with RomImage(context["title"]) as mem:
-        # pylint: disable=star-args
-        decoder = generator_t(**context)
-        decoder.setup(mem)
-        yield from decoder.enumerate(mem, first, last)
+    yield from generator_t(context, first, last)
 
 def print_scenario(context, generator_t, first=None, last=None):
     """Print message data to sys.stdout.

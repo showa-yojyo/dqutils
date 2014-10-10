@@ -7,6 +7,8 @@ Here are in Python version, which is based on C/C++ code version I wrote
 before.
 """
 
+from abc import ABCMeta
+from abc import abstractmethod
 from array import array
 from dqutils.address import from_hi
 from dqutils.address import from_lo
@@ -14,17 +16,18 @@ from dqutils.address import conv_hi
 from dqutils.address import conv_lo
 from dqutils.bit import getbits
 from dqutils.bit import get_int
-from abc import ABCMeta
-from abc import abstractmethod
+from dqutils.rom_image import RomImage
 
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """TBW"""
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self, **kwargs):
+    def __init__(self, context, first=None, last=None):
         """Constructor."""
 
-        mapper = kwargs["mapper"]
+        self.title = context["title"]
+
+        mapper = context["mapper"]
         if mapper == 'HiROM':
             self.func_addr_cpu = from_hi
             self.func_addr_rom = conv_hi
@@ -32,26 +35,32 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             self.func_addr_cpu = from_lo
             self.func_addr_rom = conv_lo
 
-        self.delimiters = kwargs["delimiters"]
-        self.message_id_first = kwargs["message_id_first"]
-        self.message_id_last = kwargs["message_id_last"]
+        self.delimiters = context["delimiters"]
 
-        self.addr_group = kwargs["addr_group"]
-        self.addr_shiftbit_array = kwargs["addr_shiftbit_array"]
-        self.addr_message = kwargs["addr_message"]
-        self.addr_huffman_off = kwargs["addr_huffman_off"]
-        self.addr_huffman_on = kwargs["addr_huffman_on"]
-        self.huffman_root = kwargs["huffman_root"]
+        if not first:
+            first = context["message_id_first"]
+        if not last:
+            last = context["message_id_last"]
+        self.first = first
+        self.last = last
+
+        self.addr_group = context["addr_group"]
+        self.addr_shiftbit_array = context["addr_shiftbit_array"]
+        self.addr_message = context["addr_message"]
+        self.addr_huffman_off = context["addr_huffman_off"]
+        self.addr_huffman_on = context["addr_huffman_on"]
+        self.huffman_root = context["huffman_root"]
 
         self.shiftbit_array = None
         self.huffman_off = None
         self.huffman_on = None
 
-        self.decoding_read_size = kwargs.get("decoding_read_size", 2)
-        self.decoding_mask = kwargs.get("decoding_mask", 0xFFFF)
+        self.decoding_read_size = context.get("decoding_read_size", 2)
+        self.decoding_mask = context.get("decoding_mask", 0xFFFF)
 
     def assert_valid(self):
         """Test if this instance is valid."""
+        assert self.title
         assert self.func_addr_cpu and self.func_addr_rom
         assert isinstance(self.delimiters, array)
         assert self.delimiters.typecode == 'H'
@@ -59,7 +68,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         assert 0 <= self.addr_shiftbit_array
         assert len(self.shiftbit_array) == 8
         assert 0 <= self.addr_message
-        assert 0 <= self.message_id_first < self.message_id_last
+        assert 0 <= self.first < self.last
         assert 0 <= self.addr_huffman_off
         assert 0 <= self.addr_huffman_on
         assert 0 < self.huffman_root
@@ -199,44 +208,39 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         return addr, shift, node & self.decoding_mask
 
-    def enumerate(self, mem, first=None, last=None):
-        """Generate a tuple of (address, shift bits, code).
-
-        String data that indices in [`first`, `last`) will be generated.
-
-        Args:
-          mem (mmap): The ROM image.
-          first (int): The first index of the range you want.
-          last (int): The last index + 1 of the range you want.
+    def __iter__(self):
+        """Generate message data.
 
         Yields:
           A tuple of (address, shift-bits, character-code).
         """
+        with RomImage(self.title) as mem:
+            self.setup(mem)
 
-        if not first:
-            first = self.message_id_first
-        if not last:
-            last = self.message_id_last
-        assert first < last
+            first = self.first
+            last = self.last
+            assert 0 <= first <= last
+            if self.first == self.last:
+                raise StopIteration
 
-        # Yield the first data location.
-        addr_cur, shift_cur = self.locate_message(mem, first)
+            # Locate the first data location.
+            addr_cur, shift_cur = self.locate_message(mem, first)
 
-        delims = self.delimiters
-        assert isinstance(delims, array) and delims.typecode == 'H'
+            delims = self.delimiters
+            assert isinstance(delims, array) and delims.typecode == 'H'
 
-        for _ in range(first, last):
-            addr, shift = addr_cur, shift_cur
+            for _ in range(first, last):
+                addr, shift = addr_cur, shift_cur
 
-            # Array of unsigned short values.
-            code_seq = array('H')
-            code = b'\xFFFF' # dummy value
-            while not code in delims:
-                addr_cur, shift_cur, code = self.decode(
-                    mem, addr_cur, shift_cur)
-                code_seq.append(code)
+                # Array of unsigned short values.
+                code_seq = array('H')
+                code = b'\xFFFF' # dummy value
+                while not code in delims:
+                    addr_cur, shift_cur, code = self.decode(
+                        mem, addr_cur, shift_cur)
+                    code_seq.append(code)
 
-            yield addr, shift, code_seq
+                yield addr, shift, code_seq
 
     @abstractmethod
     def _do_select_message_group(self, message_id):
