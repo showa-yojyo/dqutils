@@ -10,10 +10,7 @@ This module provides a few functions capable to load strings in the forms of
 raw bytes.
 """
 
-from dqutils.address import from_hi
-from dqutils.address import from_lo
-from dqutils.address import conv_hi
-from dqutils.address import conv_lo
+from dqutils.address import make_mapper
 from dqutils.rom_image import RomImage
 from abc import ABCMeta
 from abc import abstractmethod
@@ -42,21 +39,12 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         delims = context.get("delimiters")
         assert delims is None or isinstance(delims, bytes)
 
-        mapper = context["mapper"]
-        if mapper == 'HiROM':
-            from_rom_addr = from_hi
-            from_cpu_addr = conv_hi
-        elif mapper == 'LoROM':
-            from_rom_addr = from_lo
-            from_cpu_addr = conv_lo
-
         self.title = title
         self.first = first
         self.last = last
         self.addr = addr
         self.delims = delims
-        self.from_rom_addr = from_rom_addr
-        self.from_cpu_addr = from_cpu_addr
+        self.mapper = make_mapper(context["mapper"])
 
         self.assert_valid()
 
@@ -69,7 +57,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
 
         with RomImage(self.title) as mem:
             addr = self.addr
-            mem.seek(self.from_cpu_addr(addr))
+            mem.seek(self.mapper.from_cpu(addr))
             yield from self._do_iterate(mem, addr)
 
     def assert_valid(self):
@@ -78,8 +66,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         assert 0 <= self.first < self.last
         assert 0 <= self.addr
         assert self.delims is None or isinstance(self.delims, bytes)
-        assert self.from_rom_addr
-        assert self.from_cpu_addr
+        assert self.mapper
 
     @abstractmethod
     def _do_iterate(self, mem, addr):
@@ -107,7 +94,7 @@ class StringGeneratorCStyle(AbstractStringGenerator):
 
         first, last = self.first, self.last
         delims = self.delims
-        from_rom_addr = self.from_rom_addr
+        from_rom_addr = self.mapper.from_rom
         for i in range(0, last):
             code_seq = bytearray()
             addr = from_rom_addr(mem.tell())

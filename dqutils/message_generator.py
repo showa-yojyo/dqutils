@@ -10,10 +10,7 @@ before.
 from abc import ABCMeta
 from abc import abstractmethod
 from array import array
-from dqutils.address import from_hi
-from dqutils.address import from_lo
-from dqutils.address import conv_hi
-from dqutils.address import conv_lo
+from dqutils.address import make_mapper
 from dqutils.bit import get_bits
 from dqutils.bit import get_int
 from dqutils.rom_image import RomImage
@@ -26,15 +23,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         """Constructor."""
 
         self.title = context["title"]
-
-        mapper = context["mapper"]
-        if mapper == 'HiROM':
-            self.func_addr_cpu = from_hi
-            self.func_addr_rom = conv_hi
-        elif mapper == 'LoROM':
-            self.func_addr_cpu = from_lo
-            self.func_addr_rom = conv_lo
-
+        self.mapper = make_mapper(context["mapper"])
         self.delimiters = context["delimiters"]
 
         if not first:
@@ -61,7 +50,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     def assert_valid(self):
         """Test if this instance is valid."""
         assert self.title
-        assert self.func_addr_cpu and self.func_addr_rom
+        assert self.mapper
         assert isinstance(self.delimiters, array)
         assert self.delimiters.typecode == 'H'
         assert 0 <= self.addr_group
@@ -103,11 +92,11 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         assert self.addr_huffman_on
 
         if not self.huffman_off:
-            mem.seek(self.func_addr_rom(self.addr_huffman_off))
+            mem.seek(self.mapper.from_cpu(self.addr_huffman_off))
             self.huffman_off = mem.read(self.huffman_root + 2)
 
         if not self.huffman_on:
-            mem.seek(self.func_addr_rom(self.addr_huffman_on))
+            mem.seek(self.mapper.from_cpu(self.addr_huffman_on))
             self.huffman_on = mem.read(self.huffman_root + 2)
 
         # Test postconditions.
@@ -126,7 +115,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         assert self.addr_shiftbit_array
 
-        mem.seek(self.func_addr_rom(self.addr_shiftbit_array))
+        mem.seek(self.mapper.from_cpu(self.addr_shiftbit_array))
         self.shiftbit_array = mem.read(8)
 
         assert len(self.shiftbit_array) == 8
@@ -144,7 +133,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         count, group = self._do_select_message_group(message_id)
 
-        mem.seek(self.func_addr_rom(self.addr_group) + group)
+        mem.seek(self.mapper.from_cpu(self.addr_group) + group)
         buffer1 = mem.read(3)
 
         # In fact, the array in RHS is
@@ -184,7 +173,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         huffman_on, huffman_off = self.huffman_on, self.huffman_off
         node = self.huffman_root
-        from_cpu_addr = self.func_addr_rom
+        from_cpu_addr = self.mapper.from_cpu
         read_size = self.decoding_read_size
 
         # Traverse the Huffman tree downward beginning at the root node.

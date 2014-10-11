@@ -5,8 +5,7 @@
 from dqutils.database.table import Table
 from dqutils.database.parser import get_struct_info
 from dqutils.database.parser import handle_member
-from dqutils.address import conv_hi
-from dqutils.address import conv_lo
+from dqutils.address import make_mapper
 from dqutils.rom_image import RomImage
 from xml.dom.minidom import parse as parse_xml
 
@@ -38,16 +37,12 @@ def read_array(context, fields, cpuaddr, record_size, record_num):
     assert "title" in context
     assert "mapper" in context
 
-    mapper = context["mapper"]
-    if mapper == 'HiROM':
-        from_cpu = conv_hi
-    elif mapper == 'LoROM':
-        from_cpu = conv_lo
+    mapper = make_mapper(context["mapper"])
 
     # create table
     with RomImage(context["title"]) as mem:
         # [required] 構造体オブジェクト配列オブジェクト
-        record_seq = Table(mem, from_cpu(cpuaddr), record_size, record_num)
+        record_seq = Table(mem, mapper.from_cpu(cpuaddr), record_size, record_num)
         record_seq.field_list = fields
 
         # [optional] フィールドをそのアドレス位置の昇順でソート

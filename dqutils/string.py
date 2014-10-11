@@ -10,11 +10,6 @@ This module provides a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
-from dqutils.address import from_hi
-from dqutils.address import from_lo
-from dqutils.address import conv_hi
-from dqutils.address import conv_lo
-from dqutils.rom_image import RomImage
 from array import array
 
 def get_text(code_seq, charmap, delims=None):

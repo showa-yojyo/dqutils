@@ -9,11 +9,6 @@ This module has a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
-from dqutils.address import from_hi
-from dqutils.address import from_lo
-from dqutils.address import conv_hi
-from dqutils.address import conv_lo
-from dqutils.rom_image import RomImage
 from dqutils.string import get_text
 from dqutils.dq5.charsmall import CHARMAP
 from dqutils.dq5.charsmall import process_dakuten
