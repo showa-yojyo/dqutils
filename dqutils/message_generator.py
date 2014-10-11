@@ -10,7 +10,7 @@ before.
 from abc import ABCMeta
 from abc import abstractmethod
 from array import array
-from dqutils.address import make_mapper
+from dqutils.mapper import make_mapper
 from dqutils.bit import get_bits
 from dqutils.bit import get_int
 from dqutils.rom_image import RomImage

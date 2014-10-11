@@ -5,7 +5,7 @@
 from dqutils.database.table import Table
 from dqutils.database.parser import get_struct_info
 from dqutils.database.parser import handle_member
-from dqutils.address import make_mapper
+from dqutils.mapper import make_mapper
 from dqutils.rom_image import RomImage
 from xml.dom.minidom import parse as parse_xml
 

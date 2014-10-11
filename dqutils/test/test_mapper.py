@@ -3,8 +3,8 @@
 """Tests for dqutils.address module."""
 
 import unittest
-from dqutils.address import HiROM
-from dqutils.address import LoROM
+from dqutils.mapper import HiROM
+from dqutils.mapper import LoROM
 
 # pylint: disable=too-many-public-methods
 class HiROMTestCase(unittest.TestCase):

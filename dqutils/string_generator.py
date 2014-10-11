@@ -10,7 +10,7 @@ This module provides a few functions capable to load strings in the forms of
 raw bytes.
 """
 
-from dqutils.address import make_mapper
+from dqutils.mapper import make_mapper
 from dqutils.rom_image import RomImage
 from abc import ABCMeta
 from abc import abstractmethod
