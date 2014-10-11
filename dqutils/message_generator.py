@@ -303,7 +303,7 @@ class MessageGeneratorW(AbstractMessageGenerator):
         shift >>= 1
         if shift == 0:
             shift = 0x80
-            addr += 1
+            addr = self.mapper.increment_address(addr)
         return addr, shift
 
     def _do_next_node(self, value):
@@ -324,10 +324,7 @@ class MessageGeneratorV(AbstractMessageGenerator):
         shift <<= 1
         if shift > 0x80:
             shift = 0x01
-            addr += 1
-            if addr & 0xFFFF == 0:
-                # LoROM next bank
-                addr = (addr & 0xFF0000) | 0x8000
+            addr = self.mapper.increment_address(addr)
         return addr, shift
 
     def _do_next_node(self, node):

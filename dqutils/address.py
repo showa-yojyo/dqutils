@@ -37,6 +37,18 @@ class AbstractMapper(metaclass=ABCMeta):
         """
         pass
 
+    @abstractmethod
+    def increment_address(self, addr):
+        """Increment given CPU address.
+
+        Args:
+          addr (int): A CPU address.
+
+        Returns:
+          (int) CPU address.
+        """
+        pass
+
 class HiROM(AbstractMapper):
     """HiROM mapper.
 
@@ -82,6 +94,17 @@ class HiROM(AbstractMapper):
         """
         return cpuaddr & 0x003FFFFF
 
+    def increment_address(self, addr):
+        """Increment given CPU address.
+
+        Args:
+          addr (int): A CPU address.
+
+        Returns:
+          (int) CPU address.
+        """
+        return addr + 1
+
 class LoROM(AbstractMapper):
     """LoROM mapper.
 
@@ -124,6 +147,21 @@ class LoROM(AbstractMapper):
           0x008000
         """
         return (cpuaddr & 0x007FFF) | ((cpuaddr & 0x007F0000) >> 1)
+
+    def increment_address(self, addr):
+        """Increment given CPU address.
+
+        Args:
+          addr (int): A CPU address.
+
+        Returns:
+          (int) CPU address.
+        """
+        addr += 1
+        if addr & 0xFFFF == 0:
+            # LoROM next bank
+            addr = (addr & 0xFF0000) | 0x8000
+        return addr
 
 def make_mapper(name):
     """Return the mapper instance from its class name.
