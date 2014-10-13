@@ -1,2 +1,4 @@
-include *.conf
-include *.conf.error
+include LICENSE
+include README.md
+recursive-include sample *.xml
+prune simplemenu/migrations
