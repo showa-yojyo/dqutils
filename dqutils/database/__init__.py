@@ -4,33 +4,53 @@
 
 from dqutils.database.table import Table
 from dqutils.database.parser import get_struct_info
-from dqutils.database.parser import handle_member
+from dqutils.database.parser import get_member_info
 from dqutils.mapper import make_mapper
 from dqutils.rom_image import RomImage
 from xml.dom.minidom import parse as parse_xml
 
-def process_xml(context, xml):
-    """構造体情報を読み取る
+def process_xml(context, xml_path):
+    """Parse an XML file.
 
-    xml: XML ファイル
+    This function is under construction.
+
+    Args:
+      context (dict): TBW
+      xml_path (string): Path to an XML file.
+
+    Returns:
+      None.
     """
-    cpuaddr, recordsize, recordnum = 0, 0, 0
-    with open(xml, 'r', encoding='utf-8') as src:
-        dom = parse_xml(src)
 
-        # handle <struct>
+    with open(xml_path, 'r', encoding='utf-8') as source:
+        dom = parse_xml(source)
+
+        # Handle the <struct> element in the XML tree.
         node = dom.getElementsByTagName('struct')[0]
-        cpuaddr, record_size, record_num = get_struct_info(node)
+        cpu_addr, record_size, record_num = get_struct_info(node)
+        members = [get_member_info(i)
+                   for i in node.getElementsByTagName('member')]
         read_array(
-            context, 
-            [handle_member(i) for i in node.getElementsByTagName('member')],
-            cpuaddr,
+            context,
+            members,
+            cpu_addr,
             record_size,
             record_num)
 
-def read_array(context, fields, cpuaddr, record_size, record_num):
-    """構造体情報を読み取る
+def read_array(context, fields, cpu_addr, record_size, record_num):
+    """Read ROM image and list the records.
 
+    This function is under construction.
+
+    Args:
+      context (dict): TBW
+      fields (list): TBW
+      cpu_addr (int): The CPU address the data is stored.
+      record_size (int): The size of a record in bytes.
+      record_num (int): How many records are present in the ROM.
+
+    Returns:
+      None.
     """
 
     # Test preconditions.
@@ -39,15 +59,8 @@ def read_array(context, fields, cpuaddr, record_size, record_num):
 
     mapper = make_mapper(context["mapper"])
 
-    # create table
     with RomImage(context["title"]) as mem:
-        # [required] 構造体オブジェクト配列オブジェクト
-        record_seq = Table(mem, mapper.from_cpu(cpuaddr), record_size, record_num)
-        record_seq.field_list = fields
-
-        # [optional] フィールドをそのアドレス位置の昇順でソート
-        #record_seq.sort_fields()
-
-        # [optional] 構造体オブジェクト配列を解析
-        # CSV を標準出力に書き出す
-        record_seq.parse()
+        table = Table(
+            mem, mapper.from_cpu(cpu_addr), record_size, record_num)
+        table.field_list = fields
+        table.parse()

@@ -1,59 +1,77 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 """dqutils.database.parser - TBW
 """
 
 from dqutils.database import table
 
-def get_struct_info(structnode):
-    """TEST"""
+def get_struct_info(node):
+    """Returns the information in order to retrieve data from ROM.
 
-    cpuaddr = 0
-    if structnode.hasAttribute('cpuaddress'):
-        cpuaddr = get_int(structnode.getAttribute('cpuaddress'))
+    Args:
+      structnore (xmlnode): The `<struct>` node in the XML file.
 
-    recordsize = 0
-    if structnode.hasAttribute('size'):
-        recordsize = get_int(structnode.getAttribute('size'))
+    Returns:
+      A tuple of (cpu address, record size, record count).
+    """
 
-    recordnum = 0
-    if structnode.hasAttribute('number'):
-        recordnum = get_int(structnode.getAttribute('number'))
+    cpu_addr = 0
+    if node.hasAttribute('cpu_address'):
+        cpu_addr = get_int(node.getAttribute('cpu_address'))
 
-    return cpuaddr, recordsize, recordnum
+    record_size = 0
+    if node.hasAttribute('size'):
+        record_size = get_int(node.getAttribute('size'))
+
+    record_num = 0
+    if node.hasAttribute('number'):
+        record_num = get_int(node.getAttribute('number'))
+
+    return cpu_addr, record_size, record_num
 
 def get_int(text):
-    """Cast a text value to numeric."""
+    """Cast a text value to a numeric value.
+
+    Args:
+      text (string): A text which represents an decimal or hexadecimal
+        integer.
+
+    Returns:
+      An integer.
+    """
 
     if not text:
         return 0
 
     if text.startswith('0x'):
-        return int(text, 16)  # 0x to hex
+        return int(text, 16)
     else:
-        return int(text, 10)  # decimal
+        return int(text, 10)
 
-# 実装しにくいので注意
-def handle_member(mem):
-    """<member> 要素の解析
+def get_member_info(node):
+    """Returns information of a member or field from a member element.
 
-    member 要素は属性しか持っていない。
-    required な要素は name, offset, type だけ。
+    A `member` element must have three attributes: `name`, `offset`,
+    and `type`. Other attributes such as `mask` or `format' are optional.
+
+    Args:
+      node: A `<member>` DOM element.
+
+    Returns:
+      (AbstractField): An instance which has information of the member or
+        field.
     """
 
     attrs = {}
 
-    # required
-    attr_name = mem.getAttribute('name')
-    attr_type = mem.getAttribute('type')
+    attr_name = node.getAttribute('name')
+    attr_type = node.getAttribute('type')
+    attrs['offset'] = get_int(node.getAttribute('offset'))
 
-    attrs['offset'] = get_int(mem.getAttribute('offset'))
-
-    # optional
-    attr_mask = get_int(mem.getAttribute('mask'))
-    attr_format = mem.getAttribute('format')
+    attr_mask = get_int(node.getAttribute('mask'))
     if attr_mask:
         attrs['mask'] = attr_mask
+
+    attr_format = node.getAttribute('format')
     if format:
         attrs['format'] = attr_format
 
