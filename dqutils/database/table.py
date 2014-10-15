@@ -41,16 +41,27 @@ class AbstractField(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def process(self, chunk):
+    def _do_get_value(self, byte_string):
+        """Return the value passed to the format.
+
+        Args:
+          byte_string (bytes): An instance of class bytes.
+
+        Returns:
+          TBW
+        """
+        pass
+
+    def process(self, byte_string):
         """Process bytes and return a text.
 
         Args:
-          chunk (bytes): An instance of class bytes.
+          byte_string (bytes): An instance of class bytes.
 
         Returns:
-          (string): TBW
+          (string): A formatted value.
         """
-        pass
+        return self.format % self._do_get_value(byte_string)
 
     def title(self):
         """Return the name of this member or field.
@@ -66,8 +77,8 @@ class BitField(AbstractField):
     def _do_get_format(self):
         self.format = '%X'
 
-    def process(self, chunk):
-        return self.format % get_bits(chunk, self.offset, self.mask)
+    def _do_get_value(self, byte_string):
+        return get_bits(byte_string, self.offset, self.mask)
 
 class ByteField(AbstractField):
     """This class represents a byte member data."""
@@ -75,8 +86,8 @@ class ByteField(AbstractField):
     def _do_get_format(self):
         self.format = '%02X'
 
-    def process(self, chunk):
-        return self.format % get_int(chunk, self.offset, 1)
+    def _do_get_value(self, byte_string):
+        return get_int(byte_string, self.offset, 1)
 
 class WordField(AbstractField):
     """This class represents a 2-byte member data."""
@@ -84,8 +95,8 @@ class WordField(AbstractField):
     def _do_get_format(self):
         self.format = '%04X'
 
-    def process(self, chunk):
-        return self.format % get_int(chunk, self.offset, 2)
+    def _do_get_value(self, byte_string):
+        return get_int(byte_string, self.offset, 2)
 
 class LongField(AbstractField):
     """This class represents a 3-byte member data."""
@@ -93,8 +104,8 @@ class LongField(AbstractField):
     def _do_get_format(self):
         self.format = '%06X'
 
-    def process(self, chunk):
-        return self.format % get_int(chunk, self.offset, 3)
+    def _do_get_value(self, byte_string):
+        return get_int(byte_string, self.offset, 3)
 
 class BadFieldType(TypeError):
     """An exception type for an unknown field."""
@@ -171,9 +182,9 @@ class Table(object):
 
             for _ in range(self.recnum):
                 # Obtain a byte sequence.
-                chunk = self.rom.read(self.reclen)
+                byte_string = self.rom.read(self.reclen)
                 self.do_write_record(
-                    [field.process(chunk) for field in self.field_list])
+                    [field.process(byte_string) for field in self.field_list])
         finally:
             self.rom.seek(saved_ptr)
 
