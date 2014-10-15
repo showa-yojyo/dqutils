@@ -15,8 +15,8 @@ def get_struct_info(node):
     """
 
     cpu_addr = 0
-    if node.hasAttribute('cpu_address'):
-        cpu_addr = get_int(node.getAttribute('cpu_address'))
+    if node.hasAttribute('cpuaddress'):
+        cpu_addr = get_int(node.getAttribute('cpuaddress'))
 
     record_size = 0
     if node.hasAttribute('size'):
