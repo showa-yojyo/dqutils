@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """dqutils.database.parser - TBW
 """
-
 from dqutils.database import table
+from dqutils.database import make_field
 
 def get_struct_info(node):
     """Returns the information in order to retrieve data from ROM.
@@ -76,4 +76,4 @@ def get_member_info(node):
         attrs['format'] = attr_format
 
     # pylint: disable=star-args
-    return table.make_field(attr_name, attr_type, **attrs)
+    return field.make_field(attr_name, attr_type, **attrs)
