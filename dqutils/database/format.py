@@ -15,26 +15,26 @@ class AbstractTableFormatter(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def make_header(self, title_list):
+    def format_header(self, columns):
         """Write the table header row.
 
         Args:
-          title_list (list): A list of names of members or fields.
+          columns (list): A list of members or fields.
 
         Returns:
-          None.
+          (string): TBW
         """
         pass
 
     @abstractmethod
-    def write_record(self, value_list):
+    def format_record(self, row):
         """Write the table row for record contents.
 
         Args:
-          value_list (list): A list of values of members or fields.
+          row (list): A row in the target table.
 
         Returns:
-          None.
+          (string): TBW
         """
         pass
 
@@ -51,8 +51,8 @@ class CSVFormatter(AbstractTableFormatter):
         super().__init__()
         self.sep = sep
 
-    def make_header(self, title_list):
-        print(self.sep.join(title_list))
+    def format_header(self, columns):
+        return self.sep.join((i.title() for i in columns))
 
-    def write_record(self, value_list):
-        print(self.sep.join(value_list))
+    def format_record(self, row):
+        return self.sep.join(row)

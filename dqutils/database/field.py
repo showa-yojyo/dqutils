@@ -13,7 +13,6 @@ class AbstractField(metaclass=ABCMeta):
       name (string): TBW
       offset (int): TBW
       mask (int): TBW
-      type (string): TBW
       format (string): TBW
     """
 
@@ -26,13 +25,12 @@ class AbstractField(metaclass=ABCMeta):
         """
 
         self.name = name
-        self.type = kwargs['type']
         self.offset = kwargs['offset']
         self.mask = kwargs.get('mask')
         self.format = kwargs.get('format', self._do_get_format())
 
     def __str__(self):
-        return '{0:%02X} {1} {2}'.format(self.offset, self.type, self.name)
+        return '{0:02X} {1}'.format(self.offset, self.name)
 
     @abstractmethod
     def _do_get_format(self):
