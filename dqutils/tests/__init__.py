@@ -2,7 +2,7 @@
 """Test suite for dqutils.
 
 This test suite consists of a collection of test modules in the
-dqutils.test package.  Each test module has a name starting with
+dqutils.tests package.  Each test module has a name starting with
 'test' and contains a function test_suite().  The function is expected
 to return an initialized unittest.TestSuite instance.
 
@@ -24,7 +24,7 @@ def test_suite():
     suite = unittest.TestSuite()
     for name in os.listdir(HERE):
         if name.startswith("test") and name.endswith(".py"):
-            modname = "dqutils.test." + name[:-3]
+            modname = "dqutils.tests." + name[:-3]
             __import__(modname)
             module = sys.modules[modname]
             suite.addTest(module.test_suite())
