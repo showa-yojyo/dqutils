@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      ここにタイトルを書く
   -->
-  <rom name="dq6"/>
+  <rom name="DRAGONQUEST6"/>
   <struct cpuaddress="0xC8C65D" size="0x19" number="0x019A">
     <member offset="0x00" type="bit" mask="0x01" format="%d" name="呪文"/>
     <member offset="0x00" type="bit" mask="0xFE" format="%02X" name="JSR($469F,X)[0]"/>

@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      ここにタイトルを書く
   -->
-  <rom name="dq5"/>
+  <rom name="DRAGONQUEST5"/>
   <struct cpuaddress="0x23AED1" size="9" number="42">
     <member offset="0x00" type="byte" format="%d" name="レベル初期値"/>
     <member offset="0x01" type="byte" format="%d" name="レベル上限値"/>

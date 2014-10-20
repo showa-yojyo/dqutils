@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 ダメージ構造体
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC23B44" size="5" number="0x32">
     <member offset="0x00" type="bit" mask="0x03FF" format="%d" name="敵側への最小値"/>
     <member offset="0x01" type="bit" mask="0x0FFC" format="%d" name="味方側への最小値"/>

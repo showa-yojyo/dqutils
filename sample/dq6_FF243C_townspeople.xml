@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ6 店屋構造体
   -->
-  <rom name="dq6"/>
+  <rom name="DRAGONQUEST6"/>
   <struct cpuaddress="0xFF243C" size="0x0B" number="0x074E">
     <member offset="0x00" type="bit" mask="0x3F" name="unknown"/>
     <member offset="0x00" type="bit" mask="0x03FC0" format="%04X" name="グラフィック"/>

@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ6 モンスター構造体
   -->
-  <rom name="dq6"/>
+  <rom name="DRAGONQUEST6"/>
   <struct cpuaddress="0xC20154" size="0x2A" number="0x100">
     <member offset="0x00" type="bit" mask="0x01FF" format="%04X" name="行動[0]"/>
     <member offset="0x01" type="bit" mask="0x02" format="%d" name="unknown-A[00]"/>

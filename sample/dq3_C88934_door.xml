@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 扉構造体
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC88934" size="8" number="340">
     <member offset="0x00" type="bit" mask="0x01FF" format="%04X" name="unknown"/>
     <member offset="0x01" type="bit" mask="0x03FE" format="%d" name="X"/>

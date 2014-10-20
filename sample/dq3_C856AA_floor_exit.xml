@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 フロア間出入口座標構造体（上下方向移動による）
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC856AA" size="7" number="136">
     <member offset="0x00" type="bit" mask="0x03FF" format="%04X" name="フロア"/>
     <member offset="0x01" type="bit" mask="0x07FC" format="%d" name="X 左端"/>

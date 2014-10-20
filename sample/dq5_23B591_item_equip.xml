@@ -4,7 +4,7 @@
      DQ5 アイテム装備可能フラグ配列
 
   -->
-  <rom name="dq5"/>
+  <rom name="DRAGONQUEST5"/>
   <struct cpuaddress="0x23B591" size="1" number="216">
     <member offset="0x00" type="byte" format="%02X" name="マスク"/>
   </struct>

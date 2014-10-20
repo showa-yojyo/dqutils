@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 サイト出入口座標構造体
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC85A70" size="7" number="578">
     <member offset="0x00" type="bit" mask="0x0F" format="%02X" name="演出"/>
     <member offset="0x00" type="bit" mask="0x1FF0" format="%d" name="X 左端"/>

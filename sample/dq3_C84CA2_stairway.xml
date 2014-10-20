@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 階段移動データ
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC84CA2" size="6" number="428">
     <member offset="0x00" type="bit" mask="0x03FF" format="%04X" name="フロア"/>
     <member offset="0x01" type="bit" mask="0x07FC" format="%d" name="X"/>

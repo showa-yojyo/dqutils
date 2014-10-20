@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 イベントモンスターパーティ情報構造体
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC8AC66" size="11" number="33">
     <member offset="0x00" type="word" name="unknown"/>
 

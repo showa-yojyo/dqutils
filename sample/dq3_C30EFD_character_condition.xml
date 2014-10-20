@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 登録所・性格条件群構造体
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC30EFD" size="0x0F" number="0x11">
     <member offset="0x00" type="bit" mask="0x7F" format="%d" name="増分の閾値[0]"/>
     <member offset="0x00" type="bit" mask="0x80" format="%d" name="二位フラグ[0]"/>

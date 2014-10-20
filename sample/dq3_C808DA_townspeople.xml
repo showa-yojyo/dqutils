@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 街の人々構造体
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC808DA" size="0x0C" number="0x056D">
     <member offset="0x00" type="bit" mask="0x003F" format="%02X" name="不明"/>
     <member offset="0x00" type="bit" mask="0x3FC0" format="%02X" name="キャラグラフィック"/>

@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ6 タイルエンカウント構造体
   -->
-  <rom name="dq6"/>
+  <rom name="DRAGONQUEST6"/>
   <struct cpuaddress="0xC6843C" size="0x16" number="0x75">
     <member offset="0x00" type="byte" format="%d" name="レベル"/>
     <member offset="0x01" type="bit" mask="0x03" format="%d" name="先制・奇襲"/>

@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ5 マッチメイク構造体
   -->
-  <rom name="dq5"/>
+  <rom name="DRAGONQUEST5"/>
   <struct cpuaddress="0x23DA97" size="8" number="50">
     <member name="モンスター[0]" offset="0x00" type="byte"/>
     <member name="オッズ[0]"     offset="0x01" type="byte" format="%d"/>

@@ -4,6 +4,8 @@
 
 import mmap
 from dqutils.config import get_config
+from dqutils.mapper import HiROM
+from dqutils.mapper import LoROM
 
 # pylint: disable=too-few-public-methods
 class RomImage(object):
@@ -54,3 +56,18 @@ def get_snes_header(mem):
     finally:
         mem.seek(bkp)
 
+def make_mapper(mem):
+    """Return the mapper instance from a ROM header.
+
+    Args:
+      mem (mmap): A ROM image.
+
+    Returns:
+      (AbstractMapper): The mapper instance.
+    """
+    header = get_snes_header(mem)
+    if header:
+        if header[0x15] & 0x01 == 0x01:
+            return HiROM()
+        elif header[0x15] & 0x01 == 0x00:
+            return LoROM()

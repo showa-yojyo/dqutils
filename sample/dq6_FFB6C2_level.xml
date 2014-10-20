@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ6 キャラクターレベル構造体
   -->
-  <rom name="dq6"/>
+  <rom name="DRAGONQUEST6"/>
   <struct cpuaddress="0xFFB6C2" size="0xB1" number="0x1B">
     <member offset="0x00" type="long" format="%d" name="Lv2 経験値"/>
 

@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ6 職業構造体
   -->
-  <rom name="dq6"/>
+  <rom name="DRAGONQUEST6"/>
   <struct cpuaddress="0xC41C3E" size="0x77" number="0x15">
     <member offset="0x00" type="word" format="@TEXT(%04X)" name="名前"/>
     <member offset="0x02" type="word" name="オフセット"/>

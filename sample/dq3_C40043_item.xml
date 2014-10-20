@@ -4,7 +4,7 @@
      DQ3 アイテム構造体
 
 -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC40043" size="0x13" number="0xE5">
     <member offset="0x00" type="word" format="@TEXT(%04X)" name="名前"/>
     <member offset="0x02" type="byte" format="%d" name="アイテム種別"/>

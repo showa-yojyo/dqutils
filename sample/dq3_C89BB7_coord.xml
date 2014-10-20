@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 座標情報構造体（この名前では詳細がわからない）
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC89BB7" size="5" number="408">
     <member offset="0x00" type="bit" mask="0x03FF" format="%04X" name="マップ"/>
     <member offset="0x01" type="bit" mask="0x07FE" format="%d" name="X"/>

@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ3 座標データ構造体（宿屋で目が覚めた時等に参照するアレ）
   -->
-  <rom name="dq3"/>
+  <rom name="DRAGONQUEST3"/>
   <struct cpuaddress="0xC86A9A" size="6" number="297">
     <member offset="0x00" type="bit" mask="0x03FF" format="%04X" name="フロア"/>
     <member offset="0x01" type="bit" mask="0x07FC" format="%d" name="X"/>

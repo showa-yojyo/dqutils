@@ -3,7 +3,7 @@
 <!-- dqutils 構造体抽出用 xml ファイル
      DQ5 インパス参照配列 part 2
   -->
-  <rom name="dq5"/>
+  <rom name="DRAGONQUEST5"/>
   <struct cpuaddress="0x23B3E1" size="1" number="216">
     <member offset="0x00" type="bit" mask="0x3F" format="%02X" name="戦闘時メッセージ"/>
     <member offset="0x00" type="bit" mask="0x40" format="%d" name="装備可能性"/>
