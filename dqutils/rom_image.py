@@ -28,3 +28,29 @@ class RomImage(object):
             self.image.close()
         if self.fin:
             self.fin.close()
+
+def get_snes_header(mem):
+    """Return the SNES header of 64 bytes.
+
+    Args:
+      mem (mmap): A ROM image.
+
+    Returns:
+      (bytes): The SNES header of the ROM image.
+    """
+
+    try:
+        bkp = mem.tell()
+        for i in (0x7fc0, 0xffc0):
+            mem.seek(i)
+            buffer = mem.read(64)
+
+            chksum1 = int.from_bytes(buffer[0x1C:0x1E], 'little')
+            chksum2 = int.from_bytes(buffer[0x1E:0x20], 'little')
+            if chksum1 ^ chksum2 == 0xFFFF:
+                return buffer
+        else:
+            return None
+    finally:
+        mem.seek(bkp)
+
