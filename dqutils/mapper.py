@@ -13,6 +13,29 @@ class AbstractMapper(metaclass=ABCMeta):
     (Especially, the section "Formulas to convert addresses" is useful.)
     """
 
+    @classmethod
+    @abstractmethod
+    def name(cls):
+        """Return the mapper name.
+
+        Returns:
+          (string): The mapper name.
+        """
+        pass
+
+    @classmethod
+    @abstractmethod
+    def check_header_mapper_byte(cls, mapper_byte):
+        """Return the mapper name.
+
+        Args:
+          mapper_byte (byte): The 0x15-th byte of SNES header of 64 bytes.
+
+        Returns:
+          (bool) Determine if this mapper matches the `mapper_byte`.
+        """
+        pass
+
     @abstractmethod
     def from_rom(self, romaddr):
         """Convert from a ROM address to a CPU address for HiROM.
@@ -56,6 +79,27 @@ class HiROM(AbstractMapper):
     $ffff) of each SNES bank, starting with SNES bank $40, and starting again
     with SNES bank $80.
     """
+
+    @classmethod
+    def name(cls):
+        """Return the mapper name.
+
+        Returns:
+          (string): The mapper name.
+        """
+        return "HiROM"
+
+    @classmethod
+    def check_header_mapper_byte(cls, mapper_byte):
+        """Return the mapper name.
+
+        Args:
+          mapper_byte (byte): The 0x15-th byte of SNES header of 64 bytes.
+
+        Returns:
+          (bool) Determine if this mapper matches the `mapper_byte`.
+        """
+        return mapper_byte & 0x01 == 0x01
 
     def from_rom(self, romaddr):
         """Convert from a ROM address to a CPU address for HiROM.
@@ -113,6 +157,27 @@ class LoROM(AbstractMapper):
     bank $80.
     """
 
+    @classmethod
+    def name(cls):
+        """Return the mapper name.
+
+        Returns:
+          (string): The mapper name.
+        """
+        return "LoROM"
+
+    @classmethod
+    def check_header_mapper_byte(cls, mapper_byte):
+        """Return the mapper name.
+
+        Args:
+          mapper_byte (byte): The 0x15-th byte of SNES header of 64 bytes.
+
+        Returns:
+          (bool) Determine if this mapper matches the `mapper_byte`.
+        """
+        return mapper_byte & 0x01 == 0x00
+
     def from_rom(self, romaddr):
         """Convert from a ROM address to a CPU address for HiROM.
 
@@ -163,17 +228,27 @@ class LoROM(AbstractMapper):
             addr = (addr & 0xFF0000) | 0x8000
         return addr
 
-def make_mapper(name):
+def make_mapper(name=None, header=None):
     """Return the mapper instance from its class name.
 
     Args:
       name (string): 'HiROM' or 'LoROM'.
+      header (bytes): SNES header of 64 bytes.
 
     Returns:
       (AbstractMapper): The mapper instance.
     """
+    assert name or header
 
-    if name == 'HiROM':
-        return HiROM()
-    elif name == 'LoROM':
-        return LoROM()
+    if name:
+        for cls in AbstractMapper.__subclasses__():
+            if cls.name() == name:
+                return cls()
+    elif header:
+        assert isinstance(header, bytes)
+        assert len(header) == 0x40
+
+        mapper_byte = header[0x15]
+        for cls in AbstractMapper.__subclasses__():
+            if cls.check_header_mapper_byte(mapper_byte):
+                return cls()

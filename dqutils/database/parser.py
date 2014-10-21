@@ -3,7 +3,8 @@
 """
 from dqutils.database.field import make_field
 from dqutils.rom_image import RomImage
-from dqutils.rom_image import make_mapper
+from dqutils.rom_image import get_snes_header
+from dqutils.mapper import make_mapper
 from abc import ABCMeta
 from abc import abstractmethod
 
@@ -77,7 +78,7 @@ class XmlParser(AbstractParser):
 
         # Read ROM image and list the records.
         with RomImage(title) as mem:
-            mapper = make_mapper(mem)
+            mapper = make_mapper(get_snes_header(mem))
 
             # Locate the address of the array on ROM image.
             mem.seek(mapper.from_cpu(cpu_addr))
