@@ -14,6 +14,7 @@ from dqutils.mapper import make_mapper
 from dqutils.bit import get_bits
 from dqutils.bit import get_int
 from dqutils.rom_image import RomImage
+from dqutils.rom_image import get_snes_header
 
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """TBW"""
@@ -23,7 +24,6 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         """Constructor."""
 
         self.title = context["title"]
-        self.mapper = make_mapper(context["mapper"])
         self.delimiters = context["delimiters"]
 
         if not first:
@@ -70,6 +70,8 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         Args:
           mem (mmap): The input stream of ROM.
         """
+
+        self.mapper = make_mapper(header=get_snes_header(mem))
 
         self._setup_huffman_tree(mem)
         self._setup_shiftbit_array(mem)

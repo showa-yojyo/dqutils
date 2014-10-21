@@ -8,7 +8,6 @@ from dqutils.string_generator import StringGeneratorCStyle
 
 CONTEXT = dict(
     title="DRAGONQUEST6",
-    mapper='HiROM',
     delimiters=b'\xAC',
     charmap=CHARMAP,
     addr_string=0xFB8703,

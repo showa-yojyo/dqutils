@@ -12,6 +12,7 @@ raw bytes.
 
 from dqutils.mapper import make_mapper
 from dqutils.rom_image import RomImage
+from dqutils.rom_image import get_snes_header
 from abc import ABCMeta
 from abc import abstractmethod
 
@@ -44,7 +45,6 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         self.last = last
         self.addr = addr
         self.delims = delims
-        self.mapper = make_mapper(context["mapper"])
 
         self.assert_valid()
 
@@ -56,6 +56,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             raise StopIteration
 
         with RomImage(self.title) as mem:
+            self.mapper = make_mapper(header=get_snes_header(mem))
             addr = self.addr
             mem.seek(self.mapper.from_cpu(addr))
             yield from self._do_iterate(mem, addr)
@@ -66,7 +67,6 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         assert 0 <= self.first < self.last
         assert 0 <= self.addr
         assert self.delims is None or isinstance(self.delims, bytes)
-        assert self.mapper
 
     @abstractmethod
     def _do_iterate(self, mem, addr):

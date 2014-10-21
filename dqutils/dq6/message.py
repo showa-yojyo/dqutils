@@ -10,7 +10,6 @@ from array import array
 
 CONTEXT_MESSAGE_BATTLE = dict(
     title="DRAGONQUEST6",
-    mapper='HiROM',
     delimiters=b'\xAC\xAE',
     charmap=CHARMAP_SMALL,
     message_id_first=0x0000,
@@ -20,7 +19,6 @@ CONTEXT_MESSAGE_BATTLE = dict(
 
 CONTEXT_MESSAGE_SCENARIO = dict(
     title="DRAGONQUEST6",
-    mapper='HiROM',
     delimiters=array('H', (0x00AC, 0x00AE,)),
     charmap=CHARMAP_LARGE,
     message_id_first=0x0000,

@@ -228,23 +228,23 @@ class LoROM(AbstractMapper):
             addr = (addr & 0xFF0000) | 0x8000
         return addr
 
-def make_mapper(name=None, header=None):
+def make_mapper(**kwargs):
     """Return the mapper instance from its class name.
 
     Args:
-      name (string): 'HiROM' or 'LoROM'.
-      header (bytes): SNES header of 64 bytes.
+      **kwargs: Arbitrary keyword arguments.
 
     Returns:
       (AbstractMapper): The mapper instance.
     """
-    assert name or header
-
-    if name:
+    if "name" in kwargs:
+        name = kwargs["name"]
         for cls in AbstractMapper.__subclasses__():
             if cls.name() == name:
                 return cls()
-    elif header:
+
+    if "header" in kwargs:
+        header = kwargs["header"]
         assert isinstance(header, bytes)
         assert len(header) == 0x40
 

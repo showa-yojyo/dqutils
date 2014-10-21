@@ -78,7 +78,7 @@ class XmlParser(AbstractParser):
 
         # Read ROM image and list the records.
         with RomImage(title) as mem:
-            mapper = make_mapper(get_snes_header(mem))
+            mapper = make_mapper(header=get_snes_header(mem))
 
             # Locate the address of the array on ROM image.
             mem.seek(mapper.from_cpu(cpu_addr))

@@ -45,7 +45,6 @@ CONTEXT_GROUP = [
 
 CONTEXT_PROTOTYPE = dict(
     title="DRAGONQUEST5",
-    mapper='LoROM',
     charmap=CHARMAP,)
 
 for group in CONTEXT_GROUP:

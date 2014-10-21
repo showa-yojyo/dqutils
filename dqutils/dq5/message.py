@@ -23,7 +23,6 @@ from array import array
 
 CONTEXT_MESSAGE_BATTLE = dict(
     title="DRAGONQUEST5",
-    mapper='LoROM',
     delimiters=array('H', (0x00E7, 0x00EF, 0x00FE)),
     charmap=CHARMAP_SMALL,
     message_id_first=0x0000,
@@ -39,7 +38,6 @@ CONTEXT_MESSAGE_BATTLE = dict(
 
 CONTEXT_MESSAGE_SCENARIO = dict(
     title="DRAGONQUEST5",
-    mapper='LoROM',
     delimiters=array('H', (0x1001, 0x1010, 0x1018)),
     charmap=CHARMAP_LARGE,
     message_id_first=0x0000,
