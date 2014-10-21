@@ -32,6 +32,12 @@ class AbstractField(metaclass=ABCMeta):
     def __str__(self):
         return '{0:02X} {1}'.format(self.offset, self.name)
 
+    @classmethod
+    @abstractmethod
+    def field_type(cls):
+        """Return the type name of field."""
+        pass
+
     @abstractmethod
     def _do_get_format(self):
         """Return the format string."""
@@ -71,6 +77,11 @@ class AbstractField(metaclass=ABCMeta):
 class BitField(AbstractField):
     """This class represents a bit-field member data."""
 
+    @classmethod
+    def field_type(cls):
+        """Return the type name of field."""
+        return 'bits'
+
     def _do_get_format(self):
         self.format = '%X'
 
@@ -79,6 +90,11 @@ class BitField(AbstractField):
 
 class ByteField(AbstractField):
     """This class represents a byte member data."""
+
+    @classmethod
+    def field_type(cls):
+        """Return the type name of field."""
+        return '1byte'
 
     def _do_get_format(self):
         self.format = '%02X'
@@ -89,6 +105,11 @@ class ByteField(AbstractField):
 class WordField(AbstractField):
     """This class represents a 2-byte member data."""
 
+    @classmethod
+    def field_type(cls):
+        """Return the type name of field."""
+        return '2byte'
+
     def _do_get_format(self):
         self.format = '%04X'
 
@@ -97,6 +118,11 @@ class WordField(AbstractField):
 
 class LongField(AbstractField):
     """This class represents a 3-byte member data."""
+
+    @classmethod
+    def field_type(cls):
+        """Return the type name of field."""
+        return '3byte'
 
     def _do_get_format(self):
         self.format = '%06X'
@@ -114,16 +140,38 @@ class BadFieldType(TypeError):
     def __str__(self):
         return "no such field type: {0}".format(self.bad_type)
 
-def make_field(name, field_type, **kwargs):
-    """Factory method"""
+_field_aliases = {
+    'bit': 'bits',
+    'byte': '1byte',
+    'bytes': '1byte',
+    'word': '2byte',
+    'long': '3byte',
+    'address': '3byte'}
 
-    if field_type in ('bit', 'bits'):
-        return BitField(name, **kwargs)
-    elif field_type in ('byte', '1byte'):
-        return ByteField(name, **kwargs)
-    elif field_type in ('word', '2byte'):
-        return WordField(name, **kwargs)
-    elif field_type in ('long', '3byte'):
-        return LongField(name, **kwargs)
-    else:
-        raise BadFieldType(field_type)
+def make_field(name, field_type, **kwargs):
+    """Make an instance of field class.
+
+    Args:
+      name (string): The name of field.
+      field_type (string): The type name of field.
+      **kwargs: Keyword arguments passed to the constructor of field class.
+
+    Returns:
+      (AbstractField): A field instance.
+
+    Examples:
+      >>> params = dict(offset=0x12, mask=0xFFF8, format='%d')
+      >>> gold = make_field('Gold', 'bits', **params)
+      >>> isinstance(gold, BitField)
+      True
+    """
+
+    field_type = field_type.lower()
+    if field_type in _field_aliases:
+        field_type = _field_aliases[field_type]
+
+    for cls in AbstractField.__subclasses__():
+        if cls.field_type() == field_type:
+            return cls(name, **kwargs)
+
+    raise BadFieldType(field_type)
