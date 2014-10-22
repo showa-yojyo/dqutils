@@ -3,39 +3,42 @@
 """
 from abc import ABCMeta
 from abc import abstractmethod
+from io import StringIO
 
+# pylint: disable=too-few-public-methods
+# pylint: disable=abstract-class-little-used
 class AbstractTableFormatter(metaclass=ABCMeta):
     """Abstract class to format and write tabular data.
+
+    Inspired by class Docutils.writers.Writer.
 
     Under construction.
     """
 
     def __init__(self):
         """The constructor."""
-        pass
+        self.table = None
+        self.destination = None
+        self.output = None
 
-    @abstractmethod
-    def format_header(self, columns):
-        """Write the table header row.
-
-        Args:
-          columns (list): A list of members or fields.
-
-        Returns:
-          (string): TBW
-        """
-        pass
-
-    @abstractmethod
-    def format_record(self, row):
-        """Write the table row for record contents.
+    def write(self, table, destination):
+        """Under construction.
 
         Args:
-          row (list): A row in the target table.
+          table (): TBW
+          destination (): TBW
 
         Returns:
-          (string): TBW
+          (): TBW
         """
+        self.table = table
+        self.destination = destination
+        self._do_translate()
+        return self.destination.write(self.output)
+
+    @abstractmethod
+    def _do_translate(self):
+        """Translate self.table and output to self.output."""
         pass
 
 class CSVFormatter(AbstractTableFormatter):
@@ -51,8 +54,16 @@ class CSVFormatter(AbstractTableFormatter):
         super().__init__()
         self.sep = sep
 
-    def format_header(self, columns):
-        return self.sep.join((i.title() for i in columns))
+    def _do_translate(self):
+        sep = self.sep
+        table = self.table
+        buffer = StringIO()
 
-    def format_record(self, row):
-        return self.sep.join(row)
+        # Write the table header row.
+        print(sep.join((i.title() for i in table.columns)), file=buffer)
+
+        # Write the table body rows.
+        for i in table.rows:
+            print(sep.join(i), file=buffer)
+
+        self.output = buffer.getvalue()
