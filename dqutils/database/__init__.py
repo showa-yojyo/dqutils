@@ -2,10 +2,9 @@
 """ dqutils package - dqutils.database __init__ module
 """
 import sys
+from dqutils.database.reader import XmlReader
 from dqutils.database.parser import XmlParser
-from dqutils.database.table import Table
 from dqutils.database.format import CSVFormatter
-from xml.dom.minidom import parse as parse_xml
 
 def process_xml(xml_path):
     """Parse an XML file.
@@ -18,11 +17,10 @@ def process_xml(xml_path):
     Returns:
       None.
     """
-    parser = XmlParser()
-    table = Table()
 
-    with open(xml_path, 'r', encoding='utf-8') as source:
-        parser.parse(parse_xml(source), table)
+    reader = XmlReader()
+    table = reader.read(xml_path, XmlParser())
 
     formatter = CSVFormatter()
     formatter.write(table, sys.stdout)
+
