@@ -64,6 +64,12 @@ class AbstractParser(metaclass=ABCMeta):
         """
         pass
 
+class NullParser(AbstractParser):
+    """TBW"""
+
+    def _do_parse(self, input_bytes, table):
+        pass
+
 class XmlParser(AbstractParser):
     """Under construction."""
 
