@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""dqutils.database.format -- (prototype)
+"""dqutils.database.writer -- (prototype)
 """
 from abc import ABCMeta
 from abc import abstractmethod
@@ -7,7 +7,7 @@ from io import StringIO
 
 # pylint: disable=too-few-public-methods
 # pylint: disable=abstract-class-little-used
-class AbstractTableFormatter(metaclass=ABCMeta):
+class AbstractWriter(metaclass=ABCMeta):
     """Abstract class to format and write tabular data.
 
     Inspired by class Docutils.writers.Writer.
@@ -41,7 +41,7 @@ class AbstractTableFormatter(metaclass=ABCMeta):
         """Translate self.table and output to self.output."""
         pass
 
-class CSVFormatter(AbstractTableFormatter):
+class CSVWriter(AbstractWriter):
     """Write tabular data in CSV format.
 
     Under construction.

@@ -4,7 +4,7 @@
 import sys
 from dqutils.database.reader import XmlReader
 from dqutils.database.parser import XmlParser
-from dqutils.database.format import CSVFormatter
+from dqutils.database.writer import CSVWriter
 
 def process_xml(xml_path):
     """Parse an XML file.
@@ -21,6 +21,5 @@ def process_xml(xml_path):
     reader = XmlReader()
     table = reader.read(xml_path, XmlParser())
 
-    formatter = CSVFormatter()
-    formatter.write(table, sys.stdout)
-
+    writer = CSVWriter()
+    writer.write(table, sys.stdout)
