@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""dqutils.database.field (prototype)
+"""dqutils.database.field -- Define field classes.
 """
 from abc import ABCMeta
 from abc import abstractmethod
@@ -7,20 +7,20 @@ from dqutils.bit import get_bits
 from dqutils.bit import get_int
 
 class AbstractField(metaclass=ABCMeta):
-    """This class represents a member or field in a data structure.
+    """This class represents a member data or field in a data structure.
 
     Attributes:
-      name (string): TBW
-      offset (int): TBW
-      mask (int): TBW
-      format (string): TBW
+      name (string): The name of this member data or field.
+      offset (int): The offset from the base alignment (in bytes).
+      mask (int): A mask value for a bit field.
+      format (string): A `sprintf` style formatting string.
     """
 
     def __init__(self, name, **kwargs):
         """The constructor.
 
         Args:
-          name (string): The name of the member or field.
+          name (string): The name of the member data or field.
           **kwargs: Arbitrary keyword arguments.
         """
 
@@ -51,7 +51,7 @@ class AbstractField(metaclass=ABCMeta):
           byte_string (bytes): An instance of class bytes.
 
         Returns:
-          TBW
+          (object): A numeric value.
         """
         pass
 
@@ -152,7 +152,7 @@ def make_field(name, field_type, **kwargs):
     """Make an instance of field class.
 
     Args:
-      name (string): The name of field.
+      name (string): The name of this member data or field.
       field_type (string): The type name of field.
       **kwargs: Keyword arguments passed to the constructor of field class.
 

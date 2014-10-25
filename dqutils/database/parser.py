@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""dqutils.database.parser - TBW
+"""dqutils.database.parser - Define parser classes.
 """
 from dqutils.database.field import make_field
 from dqutils.rom_image import RomImage
@@ -21,8 +21,8 @@ class AbstractParser(metaclass=ABCMeta):
         """Parse `input_string` into `doc`.
 
         Args:
-          input_string (string): TBW
-          doc (unspecified): TBW
+          input_string (string): A string to be parsed.
+          doc (object): An unspecified data.
 
         Returns:
           None
@@ -35,8 +35,8 @@ class AbstractParser(metaclass=ABCMeta):
         """Initial parse setup.
 
         Args:
-          input_string (string): TBW
-          doc (unspecified): TBW
+          input_string (string): A string to be parsed.
+          doc (object): An unspecified data.
 
         Returns:
           None
@@ -49,8 +49,8 @@ class AbstractParser(metaclass=ABCMeta):
         """Override to parse `input_string` into data `doc`.
 
         Args:
-          input_string (string): TBW
-          doc (unspecified): TBW
+          input_string (string): A string to be parsed.
+          doc (object): An unspecified data.
 
         Returns:
           None
@@ -72,10 +72,10 @@ class NullParser(AbstractParser):
         pass
 
 class XmlParser(AbstractParser):
-    """TBW"""
+    """This class parses given strings as XML and make a table model data."""
 
     def _do_parse(self, input_string, table):
-        """TBW
+        """Parse an XML object and return a table data.
 
         Args:
           input_string (string): An XML string.
@@ -118,10 +118,10 @@ class XmlParser(AbstractParser):
 
     @staticmethod
     def get_struct_info(node):
-        """Returns the information in order to retrieve data from ROM.
+        """Return the information in order to retrieve data from ROM.
 
         Args:
-          node (xmlnode): The `<struct>` node in the XML file.
+          node (xml.dom.Node): The `<struct>` node in the XML tree.
 
         Returns:
           A tuple of (cpu address, record size, record count).
@@ -143,13 +143,13 @@ class XmlParser(AbstractParser):
 
     @staticmethod
     def get_member_info(node):
-        """Returns information of a member or field from a member element.
+        """Return information of a member or field from a member element.
 
         A `member` element must have three attributes: `name`, `offset`,
         and `type`. Other attributes such as `mask` or `format' are optional.
 
         Args:
-          node: A `<member>` DOM element.
+          node (xml.dom.Node): A `<member>` DOM element.
 
         Returns:
           (AbstractField): An instance which has information of the member or

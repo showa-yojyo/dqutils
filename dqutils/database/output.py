@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""dqutils.database.output
+"""dqutils.database.output -- Define output classes.
 """
 from abc import ABCMeta
 from abc import abstractmethod

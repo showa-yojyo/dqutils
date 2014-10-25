@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""dqutils.database.reader -- (prototype)
+"""dqutils.database.reader -- Define reader classes.
 """
 from dqutils.database.table import Table
 from abc import ABCMeta
@@ -12,7 +12,7 @@ class AbstractReader(metaclass=ABCMeta):
         """Initialize the instance of class AbstractReader.
 
         Args:
-          parser (unspecified): The underlying parser instance.
+          parser (AbstractParser): The underlying parser instance.
         """
 
         self.parser = parser
@@ -21,7 +21,15 @@ class AbstractReader(metaclass=ABCMeta):
         self.document = None
 
     def read(self, source, parser):
-        """TBW"""
+        """Read contents of source and parse them.
+
+        Args:
+          source: A file-like object.
+          parser (AbstractParser): The underlying parser instance.
+
+        Returns:
+          (object): An unspecified data.
+        """
 
         self.source = source
         if not self.parser:
@@ -31,10 +39,10 @@ class AbstractReader(metaclass=ABCMeta):
         return self.parse()
 
     def parse(self):
-        """Parse `self.input` into X.
+        """Parse `self.input` into a model.
 
         Returns:
-          (unspecified): Unspecified.
+          (object): An unspecified data.
         """
 
         self.document = doc = self._do_new_document()
@@ -43,17 +51,31 @@ class AbstractReader(metaclass=ABCMeta):
 
     @abstractmethod
     def _do_new_document(self):
-        """TBW"""
+        """Create and return a new empty model.
+
+        Returns:
+          (object): An unspecified data.
+        """
         pass
 
 class NullReader(AbstractReader):
-    """TBW"""
+    """This class is a null reader."""
 
     def _do_new_document(self):
-        pass
+        """Return a something empty.
+
+        Returns:
+          (object): ???
+        """
+        return ''
 
 class TableReader(AbstractReader):
-    """TBW"""
+    """This class reads for table models."""
 
     def _do_new_document(self):
+        """Create and return a new empty table model.
+
+        Returns:
+          (Table): An empty table model.
+        """
         return Table()

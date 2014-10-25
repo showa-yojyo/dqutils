@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""dqutils.database.input
+"""dqutils.database.input -- Define input classes.
 """
 from abc import ABCMeta
 from abc import abstractmethod
