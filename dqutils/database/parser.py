@@ -7,49 +7,50 @@ from dqutils.rom_image import get_snes_header
 from dqutils.mapper import make_mapper
 from abc import ABCMeta
 from abc import abstractmethod
+from xml.dom.minidom import parseString as parse_xml
 
 # pylint: disable=too-few-public-methods
 class AbstractParser(metaclass=ABCMeta):
-    """Under construction."""
+    """This class imitates class Docutils.parsers.Parser."""
 
     def __init__(self):
-        self.input_bytes = None
-        self.table = None
+        self.input_string = None
+        self.doc = None
 
-    def parse(self, input_bytes, table):
-        """Parse `input_bytes` into `table`.
+    def parse(self, input_string, doc):
+        """Parse `input_string` into `doc`.
 
         Args:
-          input_bytes (bytes): TBW
-          table (Table): TBW
+          input_string (string): TBW
+          doc (unspecified): TBW
 
         Returns:
           None
         """
-        self._begin_parse(input_bytes, table)
-        self._do_parse(input_bytes, table)
+        self._begin_parse(input_string, doc)
+        self._do_parse(input_string, doc)
         self._end_parse()
 
-    def _begin_parse(self, input_bytes, table):
+    def _begin_parse(self, input_string, doc):
         """Initial parse setup.
 
         Args:
-          input_bytes (bytes): TBW
-          table (Table): TBW
+          input_string (string): TBW
+          doc (unspecified): TBW
 
         Returns:
           None
         """
-        self.input_bytes = input_bytes
-        self.table = table
+        self.input_string = input_string
+        self.doc = doc
 
     @abstractmethod
-    def _do_parse(self, input_bytes, table):
-        """Override to parse `input_bytes` into data `table`.
+    def _do_parse(self, input_string, doc):
+        """Override to parse `input_string` into data `doc`.
 
         Args:
-          input_bytes (bytes): TBW
-          table (Table): TBW
+          input_string (string): TBW
+          doc (unspecified): TBW
 
         Returns:
           None
@@ -65,15 +66,27 @@ class AbstractParser(metaclass=ABCMeta):
         pass
 
 class NullParser(AbstractParser):
-    """TBW"""
+    """This class imitates class Docutils.parsers.null.Parser."""
 
-    def _do_parse(self, input_bytes, table):
+    def _do_parse(self, input_string, doc):
         pass
 
 class XmlParser(AbstractParser):
-    """Under construction."""
+    """TBW"""
 
-    def _do_parse(self, dom, table):
+    def _do_parse(self, input_string, table):
+        """TBW
+
+        Args:
+          input_string (string): An XML string.
+          table (Table): An empty instance of class `Table`.
+
+        Returns:
+          None
+        """
+
+        dom = parse_xml(input_string)
+
         # Handle the <struct> element in the XML tree.
         node = dom.getElementsByTagName('struct')[0]
         cpu_addr, record_size, record_num = XmlParser.get_struct_info(node)

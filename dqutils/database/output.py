@@ -57,7 +57,7 @@ class TextFileOutput(AbstractOutput):
 
     def __init__(self, destination=None, destination_path=None,
                  auto_close=True):
-        """Initialize the instance of class AbstractOutput.
+        """Initialize the instance of class TextFileOutput.
 
         Args:
           destination (unspecified): Either a file-like object or `None`.
