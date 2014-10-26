@@ -11,9 +11,9 @@ class AbstractField(metaclass=ABCMeta):
 
     Attributes:
       name (string): The name of this member data or field.
-      offset (int): The offset from the base alignment (in bytes).
-      mask (int): A mask value for a bit field.
-      format (string): A `sprintf` style formatting string.
+      offset (int): The offset from the beginning of the array (given in bytes).
+      mask (int): A mask value if this is a bit field.
+      format (string): A `sprintf` format string.
     """
 
     def __init__(self, name, **kwargs):
@@ -62,7 +62,7 @@ class AbstractField(metaclass=ABCMeta):
           byte_string (bytes): An instance of class bytes.
 
         Returns:
-          (string): A formatted value.
+          (string): A formatted string.
         """
         return self.format % self._do_get_value(byte_string)
 
