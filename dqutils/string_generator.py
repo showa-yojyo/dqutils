@@ -64,7 +64,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
     def assert_valid(self):
         """Test if this instance is valid."""
         assert self.title
-        assert 0 <= self.first < self.last
+        assert 0 <= self.first <= self.last
         assert 0 <= self.addr
         assert self.delims is None or isinstance(self.delims, bytes)
 
