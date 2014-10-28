@@ -10,7 +10,35 @@ This package contains the following sub-packages:
 
 """
 
+from argparse import ArgumentParser
+from collections import namedtuple
+import sys
+
 __all__ = ("dq3", "dq5", "dq6", "database")
 
 __version__ = '1.1.0'
 """major.minor.micro version number."""
+
+Command = namedtuple('Command', ('name', 'help', 'func'))
+
+def run(commands):
+    """TBW.
+
+    Under construction.
+
+    Args:
+      commands (iterable of Command): TBW
+
+    Returns:
+      None
+    """
+
+    parser = ArgumentParser(description='dqutils command line interface')
+    parser.add_argument('--version', action='version', version=__version__)
+    subparsers = parser.add_subparsers(help='commands')
+    for i in commands:
+        subp = subparsers.add_parser(i.name, help=i.help)
+        subp.set_defaults(func=i.func)
+
+    options = parser.parse_args(sys.argv[1:])
+    options.func()
