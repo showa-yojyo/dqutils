@@ -42,7 +42,8 @@ class DQ6MessageTestCase(unittest.TestCase):
                         0x0629, 0x0621, 0x04F7, 0x0200,
                         0x0629, 0x0621, 0x04F7, 0x0551]),)
 
-        for result, addr, code in zip(enum_scenario(0x0023, 0x0026), addrs, codes):
+        messages = zip(enum_scenario(0x0023, 0x0026), addrs, codes)
+        for result, addr, code in messages:
             self.assertEqual(result[0], addr)
             # [-1] is one of the delimiter characters.
             self.assertEqual(result[-1][:-1], code)

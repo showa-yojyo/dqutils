@@ -11,6 +11,7 @@ from dqutils.database.field import BadFieldType
 
 # pylint: disable=too-many-public-methods
 class FieldTestCase(unittest.TestCase):
+    """Test classes and functions defined in dqutils.database.field."""
 
     def setUp(self):
         """Prepare the test fixture."""

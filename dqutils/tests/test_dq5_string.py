@@ -6,9 +6,7 @@
 
 import unittest
 from dqutils.dq5.string import enum_string
-from dqutils.dq5.string import CONTEXT_PROTOTYPE
 from dqutils.dq5.string import CONTEXT_GROUP
-from dqutils.dq5.charsmall import CHARMAP
 from dqutils.dq5.charsmall import process_dakuten
 from dqutils.string import get_text
 
