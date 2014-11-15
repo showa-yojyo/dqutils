@@ -1,27 +1,65 @@
 # About dqutils
 
-TBW
+**dqutils** is a Python package for looking program data in Dragon Quest series.
+
+This package provides the following features:
+
+* (DQ3, 5 and 6) View all text data of scenatio and battle scene.
+* (DQ3, 5 and 6) View all string data.
+* (DQ3, 5 and 6) Dump arrays of structs.
 
 ## Setup
+
+### Installation
 
 If you want to use this package, you need Python 3.0 or higher.
 Python 2.x are no longer supported.
 
-## Testing
+    $ git clone https://github.com/showa-yojyo/dqutils.git
+    $ pip install -e ./dqutils
 
-If you have the [Nose][1] package in your Python environment, 
-you can test the modules by running ``nosetests`` under the ``test`` directory.
+### Setting
 
-    $ cd dqutils/test
-    $ nosetests
+First, you must make the directory `.dqutils` in your home directory.
+This directory contains the setting files that dqutils package refers to.
+
+    $ mkdir -p ~/.dqutils
+
+Then, touch the file `config` and edit as follows for example:
+
+    # dqutils rc file
+    [ROM]
+    DRAGONQUEST3 = /path/to/DRAGONQUEST3.smc
+    DRAGONQUEST5 = /path/to/DRAGONQUEST5.smc
+    DRAGONQUEST6 = /path/to/DRAGONQUEST6.smc
+
+### Testing
+
+If you have [Nose][1] package in your Python environment,
+you can test **dqutils** package are successfully installed from the command line:
+
+    $ python 'import dqutils; dqutils.test()'
 
 ## Usage
 
-You can see the typical usage in the ``driver.py`` file.
+### View Texts
+
+To print all of the message data in Dragon Quest 3, type:
+
+    $ python -m dqutils.dq3 print-scenatio-messages
+    $ python -m dqutils.dq3 print-battle-messages
+
+To print all of the string data in Dragon Quest 3, type:
+
+    $ python -m dqutils.dq3 print-strings
+
+### View Sprites, Sounds, Bytecodes, etc.
+
+TBW
 
 ## License
 
-See the ``LICENSE`` file under the installation directory.
+See the `LICENSE` file under the installation directory.
 
 ## Authors
 
