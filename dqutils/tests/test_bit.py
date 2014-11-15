@@ -38,10 +38,3 @@ class BitTestCase(unittest.TestCase):
         self.assertEqual(get_bits(data, 0, 0xFF00), 0x0001)
         self.assertEqual(get_bits(data, 1, 0xFFFF), 0x0201)
         self.assertEqual(get_bits(data, 0, 0x0100), 0x0001)
-
-def test_suite():
-    """Setup a test suite."""
-    return unittest.makeSuite(BitTestCase)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

@@ -41,10 +41,3 @@ class DQ5MessageTestCase(unittest.TestCase):
 
         self.assertEqual(cpu_addr, 0x0BCCD8)
         self.assertEqual(wai, code_seq)
-
-def test_suite():
-    """Setup a test suite."""
-    return unittest.makeSuite(DQ5MessageTestCase)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

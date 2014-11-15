@@ -35,10 +35,3 @@ class DQ5StringTestCase(unittest.TestCase):
 
         text = process_dakuten(get_text(self.hinokinobou, charmap, None))
         self.assertEqual(text, 'ひのきのぼう')
-
-def test_suite():
-    """Setup a test suite."""
-    return unittest.makeSuite(DQ5StringTestCase)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

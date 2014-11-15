@@ -64,10 +64,3 @@ class RomImageTestCase(unittest.TestCase):
         self.assertTrue(header.startswith(b'DRAGONQUEST5'))
         self.assertEqual(header[0x15] & 0x01, 0x00) # LoROM
         self.assertEqual(header[0x17], 0x0B) # 1.5M => 2M
-
-def test_suite():
-    """Setup a test suite."""
-    return unittest.makeSuite(RomImageTestCase)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

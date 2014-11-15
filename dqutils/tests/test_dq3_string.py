@@ -33,10 +33,3 @@ class DQ3StringTestCase(unittest.TestCase):
         self.assertEqual(testdata[15][0], 0xFED6CA)
         self.assertTrue('にじのしずく' in get_text(
             testdata[15][1], CONTEXT["charmap"], CONTEXT["delimiters"]))
-
-def test_suite():
-    """Setup a test suite."""
-    return unittest.makeSuite(DQ3StringTestCase)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

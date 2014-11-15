@@ -95,13 +95,3 @@ class LoROMTestCase(unittest.TestCase):
         mapper = self.mapper
         self.assertEqual(mapper.increment_address(0x008000), 0x008001)
         self.assertEqual(mapper.increment_address(0x00FFFF), 0x018000)
-
-def test_suite():
-    """Setup a test suite."""
-    suite = unittest.TestSuite()
-    suite.addTest(HiROMTestCase())
-    suite.addTest(LoROMTestCase())
-    return suite
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

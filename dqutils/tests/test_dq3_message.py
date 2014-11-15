@@ -44,10 +44,3 @@ class DQ3MessageTestCase(unittest.TestCase):
             self.assertEqual(result[0], addr)
             # [-1] is one of the delimiter characters.
             self.assertEqual(result[-1][:-1], code)
-
-def test_suite():
-    """Setup a test suite."""
-    return unittest.makeSuite(DQ3MessageTestCase)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

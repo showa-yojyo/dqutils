@@ -33,10 +33,3 @@ class DQ6StringTestCase(unittest.TestCase):
         self.assertEqual(testdata[15][0], 0xFB9835)
         self.assertTrue('デュラン' in get_text(
             testdata[15][1], CONTEXT["charmap"], CONTEXT["delimiters"]))
-
-def test_suite():
-    """Setup a test suite."""
-    return unittest.makeSuite(DQ6StringTestCase)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")

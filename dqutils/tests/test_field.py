@@ -50,10 +50,3 @@ class FieldTestCase(unittest.TestCase):
 
         self.assertRaises(
             BadFieldType, make_field, 'X', 'dummy', kwargs=self.params)
-
-def test_suite():
-    """Setup a test suite."""
-    return unittest.makeSuite(FieldTestCase)
-
-if __name__ == "__main__":
-    unittest.main(defaultTest="test_suite")
