@@ -7,7 +7,7 @@ setup(
     name='dqutils',
 
     # Versions should comply with PEP440.
-    version='1.1.0.dev1',
+    version='1.2.0.dev',
 
     description='dqutils (Dragon Quest Utilities)',
     #long_description=description,
