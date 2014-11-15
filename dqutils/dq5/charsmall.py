@@ -270,7 +270,17 @@ CHARMAP = {
 }
 
 def process_dakuten(text):
-    """濁点だけの文字を直後のかな文字と結合した文字に置換する。"""
+    """Convert single dakuten characters into regular kana characters.
+
+    Combine all character pairs of a dakuten character followed by a kana
+    character into the corresponding single kana character.
+
+    Args:
+      text (string): A text in Japanse.
+
+    Returns:
+      (string): Processed text.
+    """
 
     if "゜" in text:
         text = text.replace('゜は', 'ぱ').\

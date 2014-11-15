@@ -1,15 +1,11 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
-"""Tests for dqutils.dq5.message
-"""
+"""Tests for dqutils.dq5.message"""
 
 import unittest
 from dqutils.dq5.message import enum_battle
 from dqutils.dq5.message import enum_scenario
 from array import array
-
-# TODO: test dakuten
 
 # pylint: disable=too-many-public-methods
 class DQ5MessageTestCase(unittest.TestCase):
