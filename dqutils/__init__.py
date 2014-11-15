@@ -16,7 +16,7 @@ import sys
 
 __all__ = ("dq3", "dq5", "dq6", "database")
 
-__version__ = '1.1.0'
+__version__ = '1.1.1'
 """major.minor.micro version number."""
 
 Command = namedtuple('Command', ('name', 'help', 'func'))
