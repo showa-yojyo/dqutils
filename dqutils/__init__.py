@@ -42,3 +42,5 @@ def run(commands):
 
     options = parser.parse_args(sys.argv[1:])
     options.func()
+
+from dqutils.tests.test import run as test
