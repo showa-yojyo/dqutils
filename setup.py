@@ -2,12 +2,19 @@
 """Setup script for dqutils (Dragon Quest Utilities) package."""
 
 from setuptools import setup, find_packages
+import sys
+
+# Write the version information.
+sys.path.insert(0, 'dqutils')
+import release
+version = release.write_versionfile()
+sys.path.pop(0)
 
 setup(
     name='dqutils',
 
     # Versions should comply with PEP440.
-    version='1.2.0.dev',
+    version=version,
 
     description='dqutils (Dragon Quest Utilities)',
     #long_description=description,
