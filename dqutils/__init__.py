@@ -16,7 +16,16 @@ import sys
 
 __all__ = ("dq3", "dq5", "dq6", "database")
 
-__version__ = '1.2.0dev'
+# Release data
+from dqutils import release
+
+__author__ = '{} <{}>'.format(release.AUTHOR, release.AUTHOR_EMAIL)
+
+__license__ = release.LICENSE
+
+__date__ = release.DATE
+
+__version__ = release.VERSION
 """major.minor.micro version number."""
 
 Command = namedtuple('Command', ('name', 'help', 'func'))
