@@ -8,6 +8,8 @@ import sys
 import time
 import datetime
 
+# pylint: disable=import-error
+
 _BASEDIR = os.path.abspath(os.path.split(__file__)[0])
 
 _VERSION_TEMPLATE = '''\
@@ -15,6 +17,8 @@ _VERSION_TEMPLATE = '''\
 """dqutils.version - version information of dqutils."""
 
 import datetime
+
+# pylint: disable=invalid-name
 
 version = "{version}"
 date = "{date}"
@@ -46,14 +50,8 @@ def write_versionfile():
         del sys.path[0]
         return version
 
-    date_info = datetime.datetime.now()
-    date = time.asctime(date_info.timetuple())
-
-    version = '.'.join([str(i) for i in (_MAJOR, _MINOR, _MICRO)])
-    if _DEV:
-        version += 'dev'
-
-    version_info = (_NAME, _MAJOR, _MINOR, _MICRO)
+    # Try to update all information
+    date, date_info, version, version_info = get_info()
 
     with open(version_file, mode='w', newline='') as fout:
         fout.write(_VERSION_TEMPLATE.format(
@@ -64,6 +62,39 @@ def write_versionfile():
             date_info=date_info,))
 
     return version
+
+def get_info(dynamic=True):
+    """Get current information.
+
+    This function is modelled after (or a copy of) the same name function
+    defined in module networkx.release.
+
+    Args:
+      dynamic (bool): If dynamically get information.
+
+    Returns:
+      (tuple): Information for release, a tuple instance
+        (date, date_info, version, version_info).
+    """
+
+    import_failed = False
+    if not dynamic:
+        sys.path.insert(0, _BASEDIR)
+        try:
+            from version import date, date_info, version, version_info
+        except ImportError:
+            import_failed = True
+        del sys.path[0]
+
+    if import_failed or dynamic:
+        date_info = datetime.datetime.now()
+        date = time.asctime(date_info.timetuple())
+        version = '.'.join([str(i) for i in (_MAJOR, _MINOR, _MICRO)])
+        if _DEV:
+            version += 'dev'
+        version_info = (_NAME, _MAJOR, _MINOR, _MICRO)
+
+    return date, date_info, version, version_info
 
 # Version information
 _NAME = 'dqutils'
