@@ -92,15 +92,63 @@ def get_info(dynamic=True):
         version = '.'.join([str(i) for i in (_MAJOR, _MINOR, _MICRO)])
         if _DEV:
             version += 'dev'
-        version_info = (_NAME, _MAJOR, _MINOR, _MICRO)
+        version_info = (NAME, _MAJOR, _MINOR, _MICRO)
 
     return date, date_info, version, version_info
 
 # Version information
-_NAME = 'dqutils'
+NAME = 'dqutils'
 _MAJOR = 1
 _MINOR = 2
 _MICRO = 0
 
 # Declare current release as a development release.
 _DEV = True
+
+# Constants mainly for setup.py.
+
+DESCRIPTION = 'dqutils (Dragon Quest Utilities)'
+#LONG_DESCRIPTION
+
+LICENSE = 'MIT'
+
+# Author details.
+AUTHOR = 'プレハブ小屋'
+AUTHOR_EMAIL = 'yojyo@hotmail.com'
+
+#MAINTAINER
+#MAINTAINER_EMAIL
+
+# The project's main homepage.
+URL = 'https://github.com/showa-yojyo/dqutils'
+DOWNLOAD_URL = 'https://github.com/showa-yojyo/dqutils'
+
+PLATFORMS = [
+    'Linux',
+    'Mac OSX',
+    'Windows',
+    'Unix',]
+
+# What does your project relate to?
+KEYWORDS = ['DRAGON QUEST SNES',]
+
+# See https://pypi.python.org/pypi?%3Aaction=list_classifiers
+CLASSIFIERS = [
+    # How mature is this project? Common values are
+    #   3 - Alpha
+    #   4 - Beta
+    #   5 - Production/Stable
+    'Development Status :: 3 - Alpha',
+
+    # Indicate who your project is intended for.
+    'Intended Audience :: Other Audience',
+    'Topic :: Utilities',
+
+    # Pick your license as you wish (should match "license" above)
+    'License :: OSI Approved :: MIT License',
+
+    # Specify the Python versions you support here. In particular, ensure
+    # that you indicate whether you support Python 2, Python 3 or both.
+    'Programming Language :: Python :: 3.4',]
+
+DATE, DATE_INFO, VERSION, VERSION_INFO = get_info()
