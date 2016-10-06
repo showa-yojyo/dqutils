@@ -1,32 +1,31 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Tests for dqutils.address module."""
+"""Tests for dqutils.mapper module."""
 
 import unittest
-from dqutils.mapper import HiROM
-from dqutils.mapper import LoROM
+from dqutils.mapper import (HiROM, LoROM, make_mapper)
 
 # pylint: disable=too-many-public-methods
 class HiROMTestCase(unittest.TestCase):
-    """Test functions defined in dqutils.address."""
+    """Test functions defined in dqutils.mapper."""
 
-    def setUp(self):
-        self.mapper = HiROM()
+    mapper = HiROM
+
+    def test_make_mapper(self):
+        """Test function dqutils.mapper.make_mapper for HiROM."""
+        self.assertEqual(make_mapper(name='HiROM'), self.mapper)
 
     def test_from_rom(self):
-        """Test method dqutils.address.HiROM.from_rom."""
+        """Test method dqutils.mapper.HiROM.from_rom."""
 
         mapper = self.mapper
-
-        # ROMADDR --> CPUADDR HiROM
         self.assertEqual(mapper.from_rom(0x020000), 0xC20000)
 
     def test_from_cpu(self):
-        """Test method dqutils.address.HiROM.from_cpu."""
+        """Test method dqutils.mapper.HiROM.from_cpu."""
 
         mapper = self.mapper
 
-        # ROMADDR <-- CPUADDR HiROM
         # SlowROM
 
         self.assertEqual(mapper.from_cpu(0x408000), 0x008000)
@@ -48,7 +47,7 @@ class HiROMTestCase(unittest.TestCase):
         self.assertEqual(mapper.from_cpu(0xFF8000), 0x3F8000)
 
     def test_increment_address(self):
-        """Test method dqutils.address.HiROM.increment_address."""
+        """Test method dqutils.mapper.HiROM.increment_address."""
 
         mapper = self.mapper
         self.assertEqual(mapper.increment_address(0xC00000), 0xC00001)
@@ -56,18 +55,24 @@ class HiROMTestCase(unittest.TestCase):
         self.assertEqual(mapper.increment_address(0xC08000), 0xC08001)
         self.assertEqual(mapper.increment_address(0xC0FFFF), 0xC10000)
 
-class LoROMTestCase(unittest.TestCase):
-    """Test functions defined in dqutils.address."""
+    def test_bank_offset_size(self):
+        """Test property dqutils.mapper.HiROM.bank_offset_size."""
+        self.assertEqual(self.mapper.bank_offset_size, 0x10000)
 
-    def setUp(self):
-        self.mapper = LoROM()
+class LoROMTestCase(unittest.TestCase):
+    """Test functions defined in dqutils.mapper."""
+
+    mapper = LoROM
+
+    def test_make_mapper(self):
+        """Test function dqutils.mapper.make_mapper for LoROM."""
+        self.assertEqual(make_mapper(name='LoROM'), self.mapper)
 
     def test_from_rom(self):
-        """Test method dqutils.address.LoROM.from_rom."""
+        """Test method dqutils.mapper.LoROM.from_rom."""
 
         mapper = self.mapper
 
-        # ROMADDR --> CPUADDR LoROM
         self.assertEqual(mapper.from_rom(0x000000), 0x008000)
         self.assertEqual(mapper.from_rom(0x008000), 0x018000)
         self.assertEqual(mapper.from_rom(0x010000), 0x028000)
@@ -76,11 +81,10 @@ class LoROMTestCase(unittest.TestCase):
         self.assertEqual(mapper.from_rom(0x1F8000), 0x3F8000)
 
     def test_from_cpu(self):
-        """Test method dqutils.address.LoROM.from_cpu."""
+        """Test method dqutils.mapper.LoROM.from_cpu."""
 
         mapper = self.mapper
 
-        # ROMADDR <-- CPUADDR LoROM
         self.assertEqual(mapper.from_cpu(0x008000), 0x000000)
         self.assertEqual(mapper.from_cpu(0x018000), 0x008000)
         self.assertEqual(mapper.from_cpu(0x028000), 0x010000)
@@ -90,8 +94,12 @@ class LoROMTestCase(unittest.TestCase):
         self.assertEqual(mapper.from_cpu(0x3F8000), 0x1F8000)
 
     def test_increment_address(self):
-        """Test method dqutils.address.HiROM.increment_address."""
+        """Test method dqutils.mapper.HiROM.increment_address."""
 
         mapper = self.mapper
         self.assertEqual(mapper.increment_address(0x008000), 0x008001)
         self.assertEqual(mapper.increment_address(0x00FFFF), 0x018000)
+
+    def test_bank_offset_size(self):
+        """Test property dqutils.mapper.HiROM.bank_offset_size."""
+        self.assertEqual(self.mapper.bank_offset_size, 0x8000)
