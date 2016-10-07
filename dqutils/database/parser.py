@@ -2,9 +2,8 @@
 """dqutils.database.parser - Define parser classes.
 """
 from dqutils.database.field import make_field
-from dqutils.rom_image import RomImage
-from dqutils.rom_image import get_snes_header
-from dqutils.mapper import make_mapper
+from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
+from dqutils.snescpu.mapper import make_mapper
 from abc import ABCMeta
 from abc import abstractmethod
 from xml.dom.minidom import parseString as parse_xml

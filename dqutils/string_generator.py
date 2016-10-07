@@ -10,9 +10,8 @@ This module provides a few functions capable to load strings in the forms of
 raw bytes.
 """
 
-from dqutils.mapper import make_mapper
-from dqutils.rom_image import RomImage
-from dqutils.rom_image import get_snes_header
+from dqutils.snescpu.mapper import make_mapper
+from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
 from abc import ABCMeta
 from abc import abstractmethod
 

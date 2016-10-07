@@ -4,8 +4,7 @@
 """Tests for dqutils.rom_image"""
 
 import unittest
-from dqutils.rom_image import RomImage
-from dqutils.rom_image import get_snes_header
+from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
 
 # pylint: disable=too-many-public-methods
 class RomImageTestCase(unittest.TestCase):

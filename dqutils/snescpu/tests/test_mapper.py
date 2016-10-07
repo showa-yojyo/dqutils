@@ -3,7 +3,7 @@
 """Tests for dqutils.mapper module."""
 
 import unittest
-from dqutils.mapper import (HiROM, LoROM, make_mapper)
+from dqutils.snescpu.mapper import (HiROM, LoROM, make_mapper)
 
 # pylint: disable=too-many-public-methods
 class HiROMTestCase(unittest.TestCase):

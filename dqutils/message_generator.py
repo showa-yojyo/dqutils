@@ -10,11 +10,10 @@ before.
 from abc import ABCMeta
 from abc import abstractmethod
 from array import array
-from dqutils.mapper import make_mapper
 from dqutils.bit import get_bits
 from dqutils.bit import get_int
-from dqutils.rom_image import RomImage
-from dqutils.rom_image import get_snes_header
+from dqutils.snescpu.mapper import make_mapper
+from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
 
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """TBW"""
