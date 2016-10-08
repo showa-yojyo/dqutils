@@ -1,7 +1,6 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-
-"""Tests for dqutils.rom_image"""
+"""
+Tests for dqutils.rom_image.
+"""
 
 import unittest
 from dqutils.snescpu.rom_image import (RomImage, get_snes_header)

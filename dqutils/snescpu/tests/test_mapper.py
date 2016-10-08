@@ -1,6 +1,6 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
-"""Tests for dqutils.mapper module."""
+"""
+Tests for dqutils.mapper module.
+"""
 
 import unittest
 from dqutils.snescpu.mapper import (HiROM, LoROM, make_mapper)
