@@ -1,7 +1,4 @@
-# -*- coding: utf-8 -*-
-
-"""dqutils.dq5.message module
-
+"""
 This module provides decoding methods for DQ5 message systems.
 The original implementation is of course written in 65816 code.
 Here are in Python version, which is based on C/C++ code version I wrote
@@ -12,14 +9,14 @@ These decoding functions are based on classical Huffman's algorithm.
 Special thanks to Mr. kobun_c.
 """
 
+from array import array
 from dqutils.bit import get_int
-from dqutils.dq5.charsmall import CHARMAP as CHARMAP_SMALL
-from dqutils.dq5.charsmall import process_dakuten
-from dqutils.dq5.charlarge import CHARMAP as CHARMAP_LARGE
-import dqutils.message
+from dqutils.message import enum_scenario as _enum_scenario
 from dqutils.message_generator import MessageGeneratorV
 from dqutils.string import get_text
-from array import array
+from .charsmall import (CHARMAP as CHARMAP_SMALL,
+                        process_dakuten)
+from .charlarge import CHARMAP as CHARMAP_LARGE
 
 CONTEXT_MESSAGE_BATTLE = dict(
     title="DRAGONQUEST5",
@@ -52,22 +49,30 @@ CONTEXT_MESSAGE_SCENARIO = dict(
     decoding_read_size=2)
 
 def enum_battle(first=None, last=None):
-    """A delegating generator.
+    """Return generator iterators of message data by specifying
+    their indices.
 
-    See dqutils.message.enum_battle for details.
+    Message data those indices in [`first`, `last`) will be returned.
 
-    Args:
-      first (optional): The beginning of the range to enumerate messages.
-      last (optional): The end of the range to enumerate messages.
+    Parameters
+    ----------
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
 
-    Yields:
-      A tuple of (address, shift-bits, character-code).
+    Yields
+    ------
+    addr : int
+        An offset value of the ROM address space.
+    code_seq : bytearray
+        A sequence of characters locating in `addr`.
     """
-    yield from dqutils.message.enum_scenario(
+    yield from _enum_scenario(
         CONTEXT_MESSAGE_BATTLE, MessageGeneratorV, first, last)
 
 def print_all_battle():
-    """Print message data to sys.stdout."""
+    """Print all message data of battle mode to sys.stdout."""
 
     context = CONTEXT_MESSAGE_BATTLE
 
@@ -91,22 +96,32 @@ def print_all_battle():
             message=text))
 
 def enum_scenario(first=None, last=None):
-    """A delegating generator.
+    """Return generator iterators of message data by specifying
+    their indices.
 
-    See dqutils.message.enum_scenario for details.
+    Message data those indices in [`first`, `last`) will be returned.
 
-    Args:
-      first (optional): The beginning of the range to enumerate messages.
-      last (optional): The end of the range to enumerate messages.
+    Parameters
+    ----------
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
 
-    Yields:
-      A tuple of (address, shift-bits, character-code).
+    Yields
+    ------
+    addr : int
+        The address of the message data.
+    shift_bits : int
+        The shift from `addr`.
+    code_seq : bytearray
+        A sequence of characters locating in `addr`.
     """
-    yield from dqutils.message.enum_scenario(
+    yield from _enum_scenario(
         CONTEXT_MESSAGE_SCENARIO, MessageGeneratorV, first, last)
 
 def print_all_scenario():
-    """Print message data to sys.stdout."""
+    """Print all message data of conversation mode to sys.stdout."""
 
     context = CONTEXT_MESSAGE_SCENARIO
 

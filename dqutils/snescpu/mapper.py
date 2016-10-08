@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """dqutils.address - SNES address conversion functions.
 """
 from abc import (ABCMeta, abstractmethod)
@@ -42,7 +41,7 @@ class AbstractMapper(metaclass=ABCMeta):
         Parameters
         ----------
         romaddr : int
-            A ROM address, i.e. offsets in headerless ROM image.
+            A ROM address, i.e. offsets in SMC-headerless ROM image.
 
         Returns
         -------
@@ -118,7 +117,7 @@ class HiROM(AbstractMapper):
         Parameters
         ----------
         romaddr : int
-            A ROM address, i.e. offsets in headerless ROM image.
+            A ROM address, i.e. offsets in SMC-headerless ROM image.
 
         Returns
         -------
@@ -225,7 +224,7 @@ class LoROM(AbstractMapper):
         0x018000
         """
         return ((romaddr & 0x00007FFF)
-            | (((romaddr & 0x007F8000) << 1) | 0x00008000))
+                | (((romaddr & 0x007F8000) << 1) | 0x00008000))
 
     @staticmethod
     def from_cpu(cpuaddr):
@@ -280,7 +279,7 @@ def make_mapper(**kwargs):
     name : str
         Mapper's name. Either 'HiROM' or 'LoROM' may be specified.
     header : bytes
-        40 byte header of SNES ROM.
+        0x40 byte header of SNES ROM.
 
     Returns
     -------
@@ -292,6 +291,7 @@ def make_mapper(**kwargs):
     get_snes_header
     """
 
+    # pylint: disable=no-member
     mappers = AbstractMapper.__subclasses__()
 
     name = kwargs.get('name')
@@ -304,6 +304,7 @@ def make_mapper(**kwargs):
         assert isinstance(header, bytes)
         assert len(header) == 0x40
 
+        # ROM makeup byte.
         mapper_byte = header[0x15]
         return next(cls for cls in mappers
                     if cls.check_header_mapper_byte(mapper_byte))

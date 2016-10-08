@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """dqutils.release - release information of dqutils.
 
 This is modelled after (or a copy of) networkx.release.
@@ -13,7 +12,6 @@ import datetime
 _BASEDIR = os.path.abspath(os.path.split(__file__)[0])
 
 _VERSION_TEMPLATE = '''\
-# -*- coding: utf-8 -*-
 """dqutils.version - version information of dqutils."""
 
 import datetime
@@ -39,14 +37,16 @@ def write_versionfile():
     This function is modelled after (or a copy of) the same name function
     defined in module networkx.release.
 
-    Returns:
-      (string): Version number.
+    Returns
+    -------
+    version : string
+        The version number.
     """
 
     version_file = os.path.join(_BASEDIR, 'version.py')
     if os.path.isfile(version_file):
         sys.path.insert(0, _BASEDIR)
-        from version import version
+        from dqutils.version import version
         del sys.path[0]
         return version
 
@@ -69,12 +69,17 @@ def get_info(dynamic=True):
     This function is modelled after (or a copy of) the same name function
     defined in module networkx.release.
 
-    Args:
-      dynamic (bool): If dynamically get information.
+    Parameters
+    ----------
+    dynamic : bool, optional, default:True
+        True if dynamically get information.
 
-    Returns:
-      (tuple): Information for release, a tuple instance
-        (date, date_info, version, version_info).
+    Returns
+    -------
+    date : str
+    date_info : datetime.datetime
+    version : str
+    version_info : tuple of str
     """
 
     import_failed = False

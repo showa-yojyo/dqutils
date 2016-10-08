@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-""" dqutils.rom_image module - TBW
+"""This module provides features dealing with SNES ROM images.
 """
 
 import mmap
@@ -7,9 +6,27 @@ from dqutils.config import get_config
 
 # pylint: disable=too-few-public-methods
 class RomImage(object):
-    """TBW"""
+    """This class manages the file handler of given SNES ROM image."""
 
     def __init__(self, title):
+        """Create an object of RomImage.
+
+        Parameters
+        ----------
+        title : str
+            The title of SNES ROM to read.
+
+        Examples
+        --------
+        >>> with RomImage('DRAGONQUEST3') as rom:
+        ...     header = get_snes_header(rom)
+        ...
+
+        See Also
+        --------
+        get_config, get_snes_header
+        """
+
         self.title = title
         self.fin = None
         self.image = None
@@ -30,26 +47,38 @@ class RomImage(object):
             self.fin.close()
 
 def get_snes_header(mem):
-    """Return the SNES header of 64 bytes.
+    """Return the 64 bytes of cartridge information a.k.a. SNES
+    header.
 
-    Args:
-      mem (mmap): A ROM image.
+    Parameters
+    ----------
+    mem : mmap.mmap
+        A memory-mapped file object associated with an SNES ROM.
 
-    Returns:
-      (bytes): The SNES header of the ROM image.
+    Returns
+    -------
+    buffer : bytes
+        The 64 bytes that contains cartridge information of the
+        ROM.
     """
 
+    assert not mem.closed
+
+    bkp = mem.tell()
     try:
-        bkp = mem.tell()
+        # Detect which ROM type it is.
+        # For LoROM, SNES header is located in [$7FC0, $8000),
+        # while for HiROM, in [$FFC0, $10000).
         for i in (0x7fc0, 0xffc0):
             mem.seek(i)
             buffer = mem.read(64)
 
+            # [$xFDC, $xFDE): checksum complement (inverse).
+            # [$xFDE, $xFE0): checksum bytes.
             chksum1 = int.from_bytes(buffer[0x1C:0x1E], 'little')
             chksum2 = int.from_bytes(buffer[0x1E:0x20], 'little')
-            if chksum1 ^ chksum2 == 0xFFFF:
+            if chksum1 | chksum2 == 0xFFFF:
                 return buffer
-        else:
-            return None
+        return None
     finally:
         mem.seek(bkp)

@@ -1,26 +1,56 @@
-# -*- coding: utf-8 -*-
-"""dqutils.message_generator module
+"""
+This module provides decoding methods for both DQ3 and DQ6 message
+systems.
 
-This module provides decoding methods for both DQ3 and DQ6 message systems.
-The original implementation is of course written in 65816 code.
-Here are in Python version, which is based on C/C++ code version I wrote
-before.
+The original implementation is written in the 65816 Processor codes.
+Here are in Python version, which is based on C/C++ implementation
+I wrote a long ago.
 """
 
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import (ABCMeta, abstractmethod)
 from array import array
-from dqutils.bit import get_bits
-from dqutils.bit import get_int
+from dqutils.bit import (get_bits, get_int)
 from dqutils.snescpu.mapper import make_mapper
 from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
 
 class AbstractMessageGenerator(metaclass=ABCMeta):
-    """TBW"""
+    """The base class of MessageGenerator subclasses."""
 
     # pylint: disable=too-many-instance-attributes
     def __init__(self, context, first=None, last=None):
-        """Constructor."""
+        """Create an object of class AbstractMessageGenerator.
+
+        Parameters
+        ----------
+        context : dict
+            This shall have the following keys:
+
+            - ``title``: the game title.
+            - ``delimiters``: delimeter characters, in type bytes.
+            - ``addr_group``: the address of information on message
+              grouping information.
+            - ``addr_shiftbit_array``: the address of information
+              on shift bits corresponding the message grouping.
+            - ``addr_message``: the address that message data are
+            stored.
+            - ``addr_huffman_off``: the address of the OFF branch.
+            - ``addr_huffman_on``: the address of the ON branch.
+            - ``huffman_root ``: the value of the root.
+
+            and the following keys are optional:
+
+            - ``message_id_first``: this value is referred when
+              `first` is not specified.
+            - ``message_id_last``: this value is referred when
+              `last` is not specified.
+            - ``decoding_read_size``: the size of an encoded code.
+            - ``decoding_mask``: the mask for an decoded code.
+
+        first : int, optional
+            The first index of the range of indices you want.
+        last : int, optional
+            The last index + 1 of the range of indices you want.
+        """
 
         self.title = context["title"]
         self.delimiters = context["delimiters"]
@@ -46,28 +76,32 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         self.decoding_read_size = context.get("decoding_read_size", 2)
         self.decoding_mask = context.get("decoding_mask", 0xFFFF)
 
+        self.mapper = None
+
     def assert_valid(self):
         """Test if this instance is valid."""
         assert self.title
         assert self.mapper
         assert isinstance(self.delimiters, array)
         assert self.delimiters.typecode == 'H'
-        assert 0 <= self.addr_group
-        assert 0 <= self.addr_shiftbit_array
+        assert self.addr_group >= 0
+        assert self.addr_shiftbit_array >= 0
         assert len(self.shiftbit_array) == 8
-        assert 0 <= self.addr_message
+        assert self.addr_message >= 0
         assert 0 <= self.first < self.last
-        assert 0 <= self.addr_huffman_off
-        assert 0 <= self.addr_huffman_on
-        assert 0 < self.huffman_root
+        assert self.addr_huffman_off >= 0
+        assert self.addr_huffman_on >= 0
+        assert self.huffman_root > 0
         assert len(self.huffman_off) == self.huffman_root + 2
         assert len(self.huffman_on) == self.huffman_root + 2
 
     def setup(self, mem):
         """Setup this instance.
 
-        Args:
-          mem (mmap): The input stream of ROM.
+        Parameters
+        ----------
+        mem : mmap.mmap
+            The input stream of ROM.
         """
 
         self.mapper = make_mapper(header=get_snes_header(mem))
@@ -80,11 +114,10 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     def _setup_huffman_tree(self, mem):
         """Initialize the Huffman trees.
 
-        Args:
-          mem (mmap): The input stream of ROM.
-
-        Returns:
-          None.
+        Parameters
+        ----------
+        mem : mmap.mmap
+            The input stream of ROM.
         """
 
         # Test preconditions.
@@ -107,11 +140,10 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     def _setup_shiftbit_array(self, mem):
         """Initialize the shiftbit array.
 
-        Args:
-          mem (mmap): The input stream of ROM.
-
-        Returns:
-          None.
+        Parameters
+        ----------
+        mem : mmap.mmap
+            The input stream of ROM.
         """
 
         assert self.addr_shiftbit_array
@@ -124,12 +156,19 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     def locate_message(self, mem, message_id):
         """Return the location where the messege data is stored.
 
-        Args:
-          mem (mmap): The input stream of ROM.
-          message_id: An ID.
+        Parameters
+        ----------
+        mem : mmap.mmap
+            The input stream of ROM.
+        message_id : int
+            An ID of a message data.
 
-        Returns:
-          TBW
+        Returns
+        -------
+        addr : int
+            The address of the message data.
+        shift : int
+            The shift from `addr`.
         """
 
         count, group = self._do_select_message_group(message_id)
@@ -156,16 +195,24 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         Decode a Huffman-encoded bit string and return a decoded character.
 
-        Args:
-          mem (mmap): The ROM image.
-          addr (int): The initial address to read the variable length-bit
-            string.
-          shift (int): The initial shift bit of the address.
+        Parameters
+        ----------
+        mem : mmap.mmap
+            The input stream of ROM.
+        addr : int
+            The initial address from which to read the variable
+            length-bit string.
+        shift : int
+            The initial shift bit of the address.
 
-        Returns:
-          An instance of tuple (addr, shift, value), where `addr` and
-          `shift` is the next location to read, and `value` is the
-          character code decoded from the Huffman tree.
+        Returns
+        -------
+        addr : int
+            the location of the next message data.
+        shift : int
+            The shift from `addr`.
+        value : int
+            A decoded character code.
         """
 
         # Test preconditions
@@ -199,11 +246,8 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         return addr, shift, node & self.decoding_mask
 
     def __iter__(self):
-        """Generate message data.
+        """Return a generator iterator."""
 
-        Yields:
-          A tuple of (address, shift-bits, character-code).
-        """
         with RomImage(self.title) as mem:
             self.setup(mem)
 
@@ -234,15 +278,20 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
     @abstractmethod
     def _do_select_message_group(self, message_id):
-        """TBW
+        """Return detailed location information of message data.
 
-        Args:
-          message_id (int): A message ID.
+        Parameters
+        ----------
+        message_id : int
+            An ID of a message data.
 
-        Returns:
-          A tuple (int, int), where:
-            int: count TBW
-            int: group TBW
+        Returns
+        --------
+        count : int
+            The number how many message data are stored before the
+            message.
+        group : int
+            The ID of grouping.
         """
         pass
 
@@ -250,41 +299,56 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     def _do_is_leaf_node(self, node):
         """Determine if `node` is a leaf node.
 
-        Args:
-          node (int): 2-byte value.
+        Parameters
+        ----------
+        node : int
+            A two-byte value.
 
-        Returns:
-          bool: True if `node` is a leaf, False otherwise.
+        Returns
+        --------
+        is_leaf : bool
+            True if `node` is a leaf, False otherwise.
         """
         pass
 
     @abstractmethod
     def _do_next_location(self, addr, shift):
-        """Returns the next address to read data encoded.
+        """Return the next address to read data encoded.
 
-        Args:
-          addr (int): The current CPU address.
-          shift (int): An 1-byte value for mask.
+        Parameters
+        ----------
+        addr : int
+            The current address in CPU space.
+        shift : int
+            An one-byte value for mask.
 
-        Returns:
-          (tuple of int): The next address and shift-bit.
+        Returns
+        --------
+        addr : int
+            The next address.
+        shift : int
+            The shift from `addr`.
         """
         pass
 
     @abstractmethod
     def _do_next_node(self, node):
-        """Returns the next node to traverse in the Huffman tree.
+        """Return the next node to traverse in the Huffman tree.
 
-        Args:
-          node (int): The current node, represented by 2-byte value.
+        Parameters
+        ----------
+        node : int
+            The current node, a two-byte value.
 
-        Returns:
-          (int): The next node, represented by 2-byte value.
+        Returns
+        --------
+        node : int
+            The next node, a two-byte value.
         """
         pass
 
 class MessageGeneratorW(AbstractMessageGenerator):
-    """For DQ3 and DQ6."""
+    """This class is for DQ3 and DQ6."""
 
     def _do_select_message_group(self, message_id):
         # The message ID gives the folowing information:
@@ -311,7 +375,7 @@ class MessageGeneratorW(AbstractMessageGenerator):
         return value & 0x7FFF
 
 class MessageGeneratorV(AbstractMessageGenerator):
-    """For DQ5."""
+    """This class is for DQ5."""
 
     def _do_select_message_group(self, message_id):
         count = message_id & 0x000F

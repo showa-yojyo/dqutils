@@ -9,11 +9,10 @@ This module has a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
-from dqutils.string import get_text
-from dqutils.dq5.charsmall import CHARMAP
-from dqutils.dq5.charsmall import process_dakuten
+from dqutils.string import (enum_string as _enum_string,
+                            get_text)
 from dqutils.string_generator import StringGeneratorPascalStyle
-import dqutils.string
+from .charsmall import (CHARMAP, process_dakuten)
 
 CONTEXT_GROUP = [
     # Partners (human beings).
@@ -51,23 +50,30 @@ for group in CONTEXT_GROUP:
     group.update(CONTEXT_PROTOTYPE)
 
 def enum_string(context, first=None, last=None):
-    """A delegating generator.
+    """Return generator iterators of string data by specifying
+    their indices.
 
-    See dqutils.string.enum_string for details.
+    String data those indices in [`first`, `last`) will be returned.
 
-    Args:
-      context: The information of the string table to enumerate.
-      first (optional): The beginning of the range to enumerate strings.
-      last (optional): The end of the range to enumerate strings.
+    Parameters
+    ----------
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
 
-    Yields:
-      A tuple of (address, shift-bits, character-code).
+    Yields
+    ------
+    i : int
+        The next CPU address of data in the range of 0 to `last` - 1.
+    b : bytearray
+        The next bytes of data in the range of 0 to `last` - 1.
     """
-    yield from dqutils.string.enum_string(
+    yield from _enum_string(
         context, StringGeneratorPascalStyle, first, last)
 
 def print_all():
-    """Print all of the strings in DQ5 to sys.stdout."""
+    """Print all of the string data to sys.stdout."""
 
     for i, context in enumerate(CONTEXT_GROUP):
         print('Group #{0:d}'.format(i))

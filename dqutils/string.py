@@ -1,13 +1,11 @@
-# -*- coding: utf-8 -*-
-""" dqutils.string - DQ common string components.
-
+"""
 This module defines common functions that access string data.
 
-A string is an array of characters rendered in windows with the small
-font.
+A string is an array of characters that is rendered in several
+windows with the smaller font.
 
-This module provides a few functions capable to load strings in the forms of
-raw bytes and legible texts.
+This module provides functions capable to load strings either in
+forms of raw bytes or human-readable texts.
 """
 
 from array import array
@@ -15,13 +13,19 @@ from array import array
 def get_text(code_seq, charmap, delims=None):
     """Return a text representation of a string.
 
-    Args:
-      code_seq: A string (instance of bytearray).
-      charmap: The character dictionary.
-      delims: The code of the delimiter character(s).
+    Parameters
+    ----------
+    code_seq : str
+        A string (instance of bytearray).
+    charmap : dict
+        The character dictionary.
+    delims : iterable of str, optional
+        The code of the delimiter characters.
 
-    Returns:
-      string: e.g. "ひのきのぼう"
+    Returns
+    -------
+    text : str
+        A human-readble text, e.g. "ひのきのぼう".
     """
     assert any(
         isinstance(code_seq, i) for i in (bytes, bytearray, array))
@@ -32,18 +36,23 @@ def get_text(code_seq, charmap, delims=None):
     if delims and code_seq[-1] in delims:
         code_seq = code_seq[0:-1]
 
-    return ''.join(charmap.get(c, '[{0:02X}]'.format(c)) for c in code_seq)
+    return ''.join(charmap.get(c, '[{0:02X}]'.format(c))
+                   for c in code_seq)
 
 def get_hex(code_seq):
     """Return a hex representation of a string.
 
     This function does not remove the delimiter code.
 
-    Args:
-      code_seq: A string (instance of bytearray).
+    Parameters
+    ----------
+    code_seq : bytearray
+        A sequence of character codes.
 
-    Returns:
-      string: e.g. "26 24 12 24 DC 0E AC"
+    Returns
+    -------
+    dump : str
+        E.g. "26 24 12 24 DC 0E AC".
     """
 
     assert any(
@@ -51,20 +60,42 @@ def get_hex(code_seq):
     return ' '.join('{:02X}'.format(c) for c in code_seq)
 
 def enum_string(context, generator_t, first=None, last=None):
-    """Generate string data in a range of indices.
+    """Return generator iterators of string data by specifying
+    their indices.
 
-    String data that indices in [`first`, `last`) will be generated.
+    String data those indices in [`first`, `last`) will be returned.
 
-    Args:
-      context: TBW
-      generator_t: The type of string generator.
-        See the module dqutils.string_generator for details.
-      first: The first index of the indices range you want.
-      last: The last index + 1 of the indices range you want.
+    Parameters
+    ----------
+    context : dict
+      This shall have the following keys:
 
-    Yields:
-      int: The next CPU address of data in the range of 0 to `last` - 1.
-      bytearray: The next bytes of data in the range of 0 to `last` - 1.
+      - ``title``: the game title.
+      - ``addr_string`` or ``addr_message``: the address that
+        string data are stored.
+      - ``delimiters``: delimeter characters, in type bytes.
+
+      and the following keys are optional:
+
+      - ``string_id_first`` or ``message_id_first``:
+        this value is referred when `first` is not specified.
+      - ``string_id_last`` or ``message_id_last``:
+        this value is referred when `last` is not specified.
+
+    generator_t : `~AbstractStringGenerator`
+        The type of string generator. See the module
+        dqutils.string_generator for details.
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
+
+    Yields
+    ------
+    i : int
+        The next CPU address of data in the range of 0 to `last` - 1.
+    b : bytearray
+        The next bytes of data in the range of 0 to `last` - 1.
     """
 
     yield from generator_t(context, first, last)
@@ -72,17 +103,33 @@ def enum_string(context, generator_t, first=None, last=None):
 def print_string(context, generator_t, first=None, last=None):
     """Print string data to sys.stdout.
 
-    String data that indices in [`first`, `last`) will be output.
+    String data those indices in [`first`, `last`) will be used.
 
-    Args:
-      context: TBW
-      generator_t: The type of string generator.
-        See the module dqutils.string_generator for details.
-      first: The first index of the range you want.
-      last: The last index + 1 of the range you want.
+    Parameters
+    ----------
+    context : dict
+      This shall have the following keys:
 
-    Returns:
-      None.
+      - ``title``: the game title.
+      - ``charmap``: a dict object for character mapping.
+      - ``addr_string`` or ``addr_message``: the address that
+        string data are stored.
+      - ``delimiters``: delimeter characters, in type bytes.
+
+      and the following keys are optional:
+
+      - ``string_id_first`` or ``message_id_first``:
+        this value is referred when `first` is not specified.
+      - ``string_id_last`` or ``message_id_last``:
+        this value is referred when `last` is not specified.
+
+    generator_t : `~AbstractStringGenerator`
+        The type of string generator. See the module
+        dqutils.string_generator for details.
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
     """
 
     # Test preconditions.

@@ -1,24 +1,28 @@
 #!/usr/bin/env python
-# -*- coding: utf-8 -*-
 """Test runner for dqutils.
 
-Implementation in this module is taken from networkx.tests.test module.
+Implementation in this module is taken from networkx.tests.test
+module.
 """
 import sys
-from os import path
-from os import getcwd
+from os import (getcwd, path)
 
 def run(verbosity=1, doctest=False):
     """Run dqutils tests.
 
-    Args:
-      verbosity (int): Level of detail in test reports. Higher numbers
-        provide more detail.
+    Parameters
+    ----------
+    verbosity : int, optional, default: 1
+        Level of detail in test reports. Higher numbers provide
+        more detail.
 
-      doctest (bool): True to run doctests in code modules.
+    doctest : bool, optional, default: False
+        True to run doctests in code modules.
 
-    Returns:
-      (bool): True on success, false on failure.
+    Returns
+    -------
+    status : bool
+        True on success, false on failure.
     """
 
     try:
@@ -37,7 +41,7 @@ def run(verbosity=1, doctest=False):
 
     argv = [' ',
             '--verbosity={:d}'.format(verbosity),
-            '-w', install_dir,
+            '--where', install_dir,
             '-exe']
     if doctest:
         argv.extend(['--with-doctest', '--doctest-extension=txt'])

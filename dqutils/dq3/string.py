@@ -1,10 +1,10 @@
-# -*- coding: utf-8 -*-
 """dqutils.dq3.string - DQ3-specific string components.
 """
 
-import dqutils.string
-from dqutils.dq3.charsmall import CHARMAP
+from dqutils.string import (enum_string as _enum_string,
+                            print_string as _print_string)
 from dqutils.string_generator import StringGeneratorCStyle
+from .charsmall import CHARMAP
 
 CONTEXT = dict(
     title="DRAGONQUEST3",
@@ -15,23 +15,28 @@ CONTEXT = dict(
     string_id_last=0x03BE,)
 
 def enum_string(first=None, last=None):
-    """A delegating generator.
+    """Return generator iterators of string data by specifying
+    their indices.
 
-    See dqutils.string.enum_string for details.
+    String data those indices in [`first`, `last`) will be returned.
 
-    Args:
-      first (optional): The beginning of the range to enumerate strings.
-      last (optional): The end of the range to enumerate strings.
+    Parameters
+    ----------
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
 
-    Yields:
-      A tuple of (address, shift-bits, character-code).
+    Yields
+    ------
+    i : int
+        The next CPU address of data in the range of 0 to `last` - 1.
+    b : bytearray
+        The next bytes of data in the range of 0 to `last` - 1.
     """
-    yield from dqutils.string.enum_string(
+    yield from _enum_string(
         CONTEXT, StringGeneratorCStyle, first, last)
 
 def print_all():
-    """A delegating function.
-
-    See dqutils.string.print_string for details.
-    """
-    dqutils.string.print_string(CONTEXT, StringGeneratorCStyle)
+    """Print all of the string data to sys.stdout."""
+    _print_string(CONTEXT, StringGeneratorCStyle)

@@ -2,12 +2,12 @@
 
 """dqutils.dq5.charsmall - The dictionary of small size characters.
 
-References:
+References
+----------
+[1] See dqviewer.exe <Sonitown, http://www.geocities.jp/sonitown> for the
+      table of small font characters.
 
-  [1] See dqviewer.exe <Sonitown, http://www.geocities.jp/sonitown> for the
-        table of small font characters.
-
-  [2] See dq3encode.c of dq_analyzer <Index of ~/s-endo, http://s-endo.skr.jp>
+[2] See dq3encode.c of dq_analyzer <Index of ~/s-endo, http://s-endo.skr.jp>
 """
 
 CHARMAP = {

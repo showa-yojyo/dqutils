@@ -1,23 +1,13 @@
-# -*- coding: utf-8 -*-
-"""This is the dqutils (Dragon Quest Utilities) dq5 sub-package.
-
-It contains a few modules for access to data stored in ROM of DRAGONQUEST 5.
+"""This is the dqutils (Dragon Quest Utilities) dq5 subpackage.
 """
 
-from dqutils import Command
-from dqutils import run
-from dqutils.dq5.message import print_all_battle
-from dqutils.dq5.message import print_all_scenario
-from dqutils.dq5.string import print_all
+from dqutils import (Command, run)
+from .message import (print_all_battle,
+                      print_all_scenario)
+from .string import print_all
 
 def main():
-    """dqutils.dq5.main function.
-
-    It deligates `dqutils.run()`.
-
-    Returns:
-      None
-    """
+    """See :code:`python -m dqutils.dq5 --help`."""
 
     commands = (
         Command(

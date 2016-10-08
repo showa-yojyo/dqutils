@@ -14,10 +14,9 @@ from argparse import ArgumentParser
 from collections import namedtuple
 import sys
 
-__all__ = ("dq3", "dq5", "dq6", "database")
-
 # Release data
 from dqutils import release
+from dqutils.tests.test import run as test
 
 __author__ = '{} <{}>'.format(release.AUTHOR, release.AUTHOR_EMAIL)
 
@@ -51,5 +50,3 @@ def run(commands):
 
     options = parser.parse_args(sys.argv[1:])
     options.func()
-
-from dqutils.tests.test import run as test

@@ -1,39 +1,81 @@
-# -*- coding: utf-8 -*-
-"""dqutils.message module
+"""
+This module provides functions that access message data.
+
+There are two kinds of message data in each SNES DRAGONQUEST
+programs. They are message data that are used in battle mode and
+conversational data. Both are displayed in the message window in the
+screen. Battle messages are rendered with the smaller font, while
+conversational messages are rendered with the larger font.
+
+For all of the programs, conversational message data are compressed.
 """
 
-from dqutils.string import get_text
-from dqutils.string import get_hex
-from dqutils.string_generator import StringGeneratorCStyle
 from array import array
+from dqutils.string import (get_text, get_hex)
+from dqutils.string_generator import StringGeneratorCStyle
 
 def enum_battle(context, first=None, last=None):
-    """Generate battle message data.
+    """Return generator iterators of message data by specifying
+    their indices.
 
-    Message data that indices in [`first`, `last`) will be output.
+    Message data those indices in [`first`, `last`) will be returned.
 
-    Args:
-      context: TBW
-      first: The first index of the range you want.
-      last: The last index + 1 of the range you want.
+    Parameters
+    ----------
+    context : dict
+      This shall have the following keys:
 
-    Yields:
-      A tuple of (address, shift-bits, character-code).
+      - ``title``: the game title.
+      - ``addr_message``: the address that message data are stored.
+      - ``delimiters``: delimeter characters, in type bytes.
+
+      and the following keys are optional:
+
+      - ``message_id_first``:
+        this value is referred when `first` is not specified.
+      - ``message_id_last``:
+        this value is referred when `last` is not specified.
+
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
+
+    Yields
+    ------
+    addr : int
+        An offset value of the ROM address space.
+    code_seq : bytearray
+        A sequence of characters locating in `addr`.
     """
     yield from StringGeneratorCStyle(context, first, last)
 
 def print_battle(context, first=None, last=None):
     """Print message data to sys.stdout.
 
-    Message data that indices in [`first`, `last`) will be output.
+    Message data those indices in [`first`, `last`) will be used.
 
-    Args:
-      context: TBW
-      first: The first index of the range you want.
-      last: The last index + 1 of the range you want.
+    Parameters
+    ----------
+    context : dict
+      This shall have the following keys:
 
-    Returns:
-      None.
+      - ``title``: the game title.
+      - ``charmap``: a dict object for character mapping.
+      - ``addr_message``: the address that message data are stored.
+      - ``delimiters``: delimeter characters, in type bytes.
+
+      and the following keys are optional:
+
+      - ``message_id_first``:
+        this value is referred when `first` is not specified.
+      - ``message_id_last``:
+        this value is referred when `last` is not specified.
+
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
     """
 
     # Test preconditions.
@@ -55,36 +97,74 @@ def print_battle(context, first=None, last=None):
             message=text))
 
 def enum_scenario(context, generator_t, first=None, last=None):
-    """Generate scenario message data.
+    """Return generator iterators of message data by specifying
+    their indices.
 
-    Message data that indices in [`first`, `last`) will be output.
+    Message data those indices in [`first`, `last`) will be returned.
 
-    Args:
-      context: TBW
-      generator_t: The type of message generator.
-        See the module dqutils.message_generator for details.
-      first (optional): The first index of the range you want.
-      last (optional): The last index + 1 of the range you want.
+    Parameters
+    ----------
+    context : dict
+      This shall have the following keys:
 
-    Yields:
-      A tuple of (address, shift-bits, character-code).
+      - ``title``: the game title.
+      - ``addr_message``: the address that message data are stored.
+      - ``delimiters``: delimeter characters, in type bytes.
+
+      and the following keys are optional:
+
+      - ``message_id_first``:
+        this value is referred when `first` is not specified.
+      - ``message_id_last``:
+        this value is referred when `last` is not specified.
+
+    generator_t : `~AbstractMessageGenerator`
+        The type of message generator. See the module
+        dqutils.message_generator for details.
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
+
+    Yields
+    ------
+    addr : int
+        The address of the message data.
+    shift_bits : int
+        The shift from `addr`.
+    code_seq : bytearray
+        A sequence of characters locating in `addr`.
     """
     yield from generator_t(context, first, last)
 
 def print_scenario(context, generator_t, first=None, last=None):
     """Print message data to sys.stdout.
 
-    Message data that indices in [`first`, `last`) will be output.
+    Message data those indices in [`first`, `last`) will be returned.
 
-    Args:
-      context: TBW
-      generator_t: The type of message generator.
-        See the module dqutils.message_generator for details.
-      first: The first index of the range you want.
-      last: The last index + 1 of the range you want.
+    Parameters
+    ----------
+    context : dict
+      This shall have the following keys:
 
-    Returns:
-      None.
+      - ``title``: the game title.
+      - ``addr_message``: the address that message data are stored.
+      - ``delimiters``: delimeter characters, in type bytes.
+
+      and the following keys are optional:
+
+      - ``message_id_first``:
+        this value is referred when `first` is not specified.
+      - ``message_id_last``:
+        this value is referred when `last` is not specified.
+
+    generator_t : `~AbstractMessageGenerator`
+        The type of message generator. See the module
+        dqutils.message_generator for details.
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
     """
 
     charmap = context["charmap"]
