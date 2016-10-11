@@ -64,17 +64,10 @@ class TestStateMachineDQ5(AbstractTestStateMachine):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
-        outfs = output_lines[0].split()
-        self.assertEqual(outfs[0], '23/E1FE:')
-        self.assertEqual(outfs[1], '08')
-        self.assertEqual(outfs[2], 'PHP')
-
+        self.assertRegex(output_lines[0], r'^23/E1FE:\s+08\s+PHP$')
+        self.assertRegex(output_lines[-2], r'^23/E24B:\s+6B\s+RTL$')
         self.assertEqual(output_lines[-1], '')
 
-        outps = output_lines[-2].split()
-        self.assertEqual(outps[0], '23/E24B:')
-        self.assertEqual(outps[1], '6B')
-        self.assertEqual(outps[2], 'RTL')
 
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ6(AbstractTestStateMachine):
@@ -91,18 +84,9 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
-        outfs = output_lines[0].split()
-        self.assertEqual(outfs[0], 'C2/B09A:')
-        self.assertEqual(outfs[1], '6400')
-        self.assertEqual(outfs[2], 'STZ')
-        self.assertEqual(outfs[3], '$00')
-
+        self.assertRegex(output_lines[0], r'^C2/B09A:\s+6400\s+STZ \$00$')
+        self.assertRegex(output_lines[-2], r'^C2/B13E:\s+60\s+RTS$')
         self.assertEqual(output_lines[-1], '')
-
-        outps = output_lines[-2].split()
-        self.assertEqual(outps[0], 'C2/B13E:')
-        self.assertEqual(outps[1], '60')
-        self.assertEqual(outps[2], 'RTS')
 
     def test_run_near_boundary_opcode(self):
         """Test disassembling near boundary (opcode)."""
@@ -113,11 +97,8 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
+        self.assertRegex(output_lines[-2], '^CA/FFFF:\s+FF$') # !!
         self.assertEqual(output_lines[-1], '')
-
-        outps = output_lines[-2].split()
-        self.assertEqual(outps[0], 'CA/FFFF:')
-        self.assertEqual(outps[1], 'FF') # !!
 
     def test_run_near_boundary_operand(self):
         """Test disassembling near boundary (operand)."""
@@ -128,11 +109,9 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
+        self.assertRegex(output_lines[-2], '^CB/FFFD:\s+FFFFFF$') # !!
         self.assertEqual(output_lines[-1], '')
 
-        outps = output_lines[-2].split()
-        self.assertEqual(outps[0], 'CB/FFFD:')
-        self.assertEqual(outps[1], 'FFFFFF') # !!
 
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ3(AbstractTestStateMachine):
@@ -148,16 +127,8 @@ class TestStateMachineDQ3(AbstractTestStateMachine):
         fsm.run(first=0xC25BA6, last=0xC25BCE)
 
         output_lines = fsm.destination.getvalue().split('\n')
-
-        outfs = output_lines[0].split()
-        self.assertEqual(outfs[0], 'C2/5BA6:')
-        self.assertEqual(outfs[1], 'A20000')
-        self.assertEqual(outfs[2], 'LDX')
-        self.assertEqual(outfs[3], '#$0000')
-
+        self.assertRegex(
+            output_lines[0], r'^C2/5BA6:\s+A20000\s+LDX #\$0000$')
+        self.assertRegex(
+            output_lines[-2], r'^C2/5BCD:\s+60\s+RTS$')
         self.assertEqual(output_lines[-1], '')
-
-        outps = output_lines[-2].split()
-        self.assertEqual(outps[0], 'C2/5BCD:')
-        self.assertEqual(outps[1], '60')
-        self.assertEqual(outps[2], 'RTS')

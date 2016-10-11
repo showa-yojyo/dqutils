@@ -123,7 +123,7 @@ class StateMachine(object):
             opcode=instruction.opcode,
             operand_raw=operand_raw,
             mnemonic=mnemonic,
-            operand=operand).strip(' '),
+            operand=operand).strip(),
               file=out)
 
     def _eval_instruction(self, instruction, across_bb):
