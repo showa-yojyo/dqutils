@@ -26,6 +26,7 @@ class TestCui(TestCase):
         self.assertFalse(args.index_8bit)
         self.assertFalse(args.bank)
         self.assertFalse(args.range)
+        self.assertFalse(args.until_return)
 
     def test_accum_flag(self):
         """Test create_argparser for -a options.
@@ -37,7 +38,7 @@ class TestCui(TestCase):
         self.assertFalse(args.index_8bit)
 
     def test_index_flag(self):
-        """Test create_argparser for -a options.
+        """Test create_argparser for -x options.
         """
         parser = self.parser
 
@@ -66,6 +67,18 @@ class TestCui(TestCase):
 
         args = parser.parse_args(['-r', 'C2B0DD'])
         self.assertEqual(args.range, 'C2B0DD')
+
+    def test_until_return(self):
+        """Test create_argparser for -u option.
+
+        Note that when -u and -r options are specified, the end
+        of the range of offsets will be simply discarded.
+        """
+
+        parser = self.parser
+
+        args = parser.parse_args(['-u',])
+        self.assertTrue(args.until_return)
 
     def test_create_args_default_dq5(self):
         """Test create_args for DQ5 default values."""

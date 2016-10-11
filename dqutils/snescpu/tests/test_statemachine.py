@@ -45,6 +45,18 @@ class AbstractTestStateMachine(TestCase):
         self.assertEqual(fsm.current_operand_size, 0)
         self.assertEqual(fsm.flags, 0)
 
+    def _do_test_until_option(self, first, pattern):
+        """This method is used from `test_with_until_option`."""
+
+        fsm = self.fsm
+        fsm.destination = StringIO()
+        fsm.run(first=first, until_return=True)
+
+        output_lines = fsm.destination.getvalue().split('\n')
+
+        self.assertRegex(output_lines[-2], pattern)
+        self.assertEqual(output_lines[-1], '')
+
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ5(AbstractTestStateMachine):
     """Tests for class dqutils.snescpu.statemachine.StateMachine."""
@@ -68,6 +80,13 @@ class TestStateMachineDQ5(AbstractTestStateMachine):
         self.assertRegex(output_lines[-2], r'^23/E24B:\s+6B\s+RTL$')
         self.assertEqual(output_lines[-1], '')
 
+    def test_run_until_return(self):
+        """Test disassembling with -u option for the first return
+        instruction occurrence.
+        """
+
+        self._do_test_until_option(
+            0x008F80, r'^00/8FAB:\s+40\s+RTI$')
 
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ6(AbstractTestStateMachine):
@@ -112,6 +131,15 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
         self.assertRegex(output_lines[-2], '^CB/FFFD:\s+FFFFFF$') # !!
         self.assertEqual(output_lines[-1], '')
 
+    def test_run_until_return(self):
+        """Test disassembling with -u option for the first return
+        instruction occurrence.
+        """
+
+        self._do_test_until_option(
+            0xC2B091, r'^C2/B099:\s+60\s+RTS$')
+        self._do_test_until_option(
+            0xC2B4AF, r'^C2/B501:\s+6B\s+RTL$')
 
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ3(AbstractTestStateMachine):
