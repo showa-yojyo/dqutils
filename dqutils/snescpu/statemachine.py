@@ -36,14 +36,15 @@ class StateMachine(object):
         self.destination = sys.stdout
         self.flags = 0
 
+        self.until_return = False
+
     @property
     def program_counter(self):
         """Return the program counter."""
-        assert self.rom
-
+        assert self.rom and self.mapper
         return self.mapper.from_rom(self.rom.tell())
 
-    def run(self, first=0, last=-1, flags=0):
+    def run(self, **kwargs):
         """Run the state machine on `self.rom`.
 
         Parameters
@@ -57,12 +58,18 @@ class StateMachine(object):
             until the program counter reaches the end of ROM image.
         flags : int, optional, default: 0
             The initial value of the register status bits.
+        until_return : bool, optional, default: False
+            Immediately terminate processing when RTI, RTS, or RTL
+            instruction is processed.
         """
 
-        self.flags = flags
         self.current_opcode = None
         self.current_operand = None
         self.current_operand_size = 0
+
+        first = kwargs.get('first', 0)
+        last = kwargs.get('last', -1)
+        self.flags = kwargs.get('flags', 0)
 
         self.rom.seek(self.mapper.from_cpu(first))
         if last != -1:
@@ -70,10 +77,38 @@ class StateMachine(object):
         else:
             last_rom_addr = self.rom.size()
 
-        while self.rom.tell() < last_rom_addr:
+        self.until_return = kwargs.get('until_return', False)
+
+        while not self._is_terminated(last_rom_addr):
             instruction, operand_raw, across_bb = self._read_instruction()
             self._eval_instruction(instruction, across_bb)
             self._print_instruction(instruction, operand_raw, across_bb)
+
+    def _is_terminated(self, last_rom_addr):
+        """Determine if this state machine is terminated.
+
+        When --until-return option is enabled,
+        detection of the first RTI/RTS/RTL instruction terminates
+        the main loop.
+
+        Parameters
+        ----------
+        last_rom_addr : int
+            The last offset + 1 of scanned program data.
+
+        Returns
+        -------
+        is_terminated : bool
+            True if this state machine is to be terminated.
+        """
+
+        assert self.rom and self.mapper
+
+        if (self.until_return and
+            self.current_opcode in (b'\x40', b'\x60', b'\x6B')):
+            return True
+
+        return last_rom_addr <= self.rom.tell()
 
     def _read_instruction(self):
         """Read the current instruction and return as an object."""
@@ -107,7 +142,17 @@ class StateMachine(object):
         return instruction, operand_raw, across_bb
 
     def _print_instruction(self, instruction, operand_raw, across_bb):
-        """Output disassembled code in one line."""
+        """Output disassembled code in one line.
+
+        Parameters
+        ----------
+        instruction : AbstractInstruction
+            The instruction to be output to `self.destination`.
+        operand_raw : bytes
+            The unprocessed operand bytes in the ROM image.
+        across_bb : bool
+            True if this line goes across the PB boundary.
+        """
 
         # cpu_addr is the value of PC immediately before reading
         # the current opcode.
@@ -127,6 +172,16 @@ class StateMachine(object):
               file=out)
 
     def _eval_instruction(self, instruction, across_bb):
-        """Execute the current instruction."""
+        """Execute the current instruction.
+
+        Returns
+        -------
+        instruction : AbstractInstruction
+            The instruction to be output to `self.destination`.
+        operand_raw : bytes
+            The unprocessed operand bytes in the ROM image.
+        across_bb : bool
+            True if this line goes across the PB boundary.
+        """
         if not across_bb:
             instruction.execute(self)

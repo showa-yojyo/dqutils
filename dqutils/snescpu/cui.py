@@ -44,6 +44,12 @@ def create_argparser():
         metavar='FIRST[:LAST]',
         help='disassemble block [FIRST, LAST)')
 
+    parser.add_argument(
+        '-u', '--until-return',
+        dest='until_return',
+        action='store_true',
+        help='exit immediately after processing RTI/RTS/RTL')
+
     return parser
 
 def create_args(rom, cmdline_args=None):
