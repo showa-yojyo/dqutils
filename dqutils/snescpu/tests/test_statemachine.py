@@ -2,7 +2,7 @@
 Tests for dqutils.snescpu.statemachine.
 """
 
-from unittest import (TestCase, skip)
+from unittest import TestCase
 from io import StringIO
 from dqutils.snescpu.rom_image import RomImage
 from dqutils.snescpu.statemachine import StateMachine
@@ -33,12 +33,12 @@ class AbstractTestStateMachine(TestCase):
         """Clean up."""
         self.fsm = None
 
-    @skip
-    def do_test_initial(self):
-        """Test the initial condition of an object of StateMachine."""
+    def _do_test_initial(self):
+        """Test the initial condition of an object of StateMachine.
+        """
         fsm = self.fsm
 
-        self.assertEqual(fsm.program_counter, 0)
+        self.assertIn(fsm.program_counter, (0x008000, 0xC00000,))
         self.assertIsNotNone(fsm.mapper)
         self.assertIsNone(fsm.current_opcode)
         self.assertIsNone(fsm.current_operand)
@@ -54,6 +54,9 @@ class AbstractTestStateMachine(TestCase):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
+        for line in output_lines[:-2]:
+            self.assertNotRegex(line, r'(RTI|RTS|RTL)')
+
         self.assertRegex(output_lines[-2], pattern)
         self.assertEqual(output_lines[-1], '')
 
@@ -64,8 +67,8 @@ class TestStateMachineDQ5(AbstractTestStateMachine):
     game_title = 'DRAGONQUEST5'
 
     def test_initial(self):
-        """Test the initial condition of an object of StateMachine."""
-        self.do_test_initial()
+        """Test the initial condition of StateMachine for DQ5."""
+        self._do_test_initial()
 
     def test_disassembled_code(self):
         """Test disassembled code for DQ5."""
@@ -94,6 +97,10 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
     game_title = 'DRAGONQUEST6'
 
+    def test_initial(self):
+        """Test the initial condition of StateMachine for DQ6."""
+        self._do_test_initial()
+
     def test_disassembled_code(self):
         """Test disassembled code for DQ6."""
 
@@ -103,8 +110,10 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
-        self.assertRegex(output_lines[0], r'^C2/B09A:\s+6400\s+STZ \$00$')
-        self.assertRegex(output_lines[-2], r'^C2/B13E:\s+60\s+RTS$')
+        self.assertRegex(
+            output_lines[0], r'^C2/B09A:\s+6400\s+STZ \$00$')
+        self.assertRegex(
+            output_lines[-2], r'^C2/B13E:\s+60\s+RTS$')
         self.assertEqual(output_lines[-1], '')
 
     def test_run_near_boundary_opcode(self):
@@ -116,7 +125,8 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
-        self.assertRegex(output_lines[-2], '^CA/FFFF:\s+FF$') # !!
+        self.assertRegex(
+            output_lines[-2], r'^CA/FFFF:\s+FF$') # !!
         self.assertEqual(output_lines[-1], '')
 
     def test_run_near_boundary_operand(self):
@@ -128,7 +138,8 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
-        self.assertRegex(output_lines[-2], '^CB/FFFD:\s+FFFFFF$') # !!
+        self.assertRegex(
+            output_lines[-2], r'^CB/FFFD:\s+FFFFFF$') # !!
         self.assertEqual(output_lines[-1], '')
 
     def test_run_until_return(self):
