@@ -2,7 +2,7 @@
 Tests for dqutils.snescpu.statemachine.
 """
 
-from unittest import TestCase
+from unittest import (TestCase, skip)
 from io import StringIO
 from dqutils.snescpu.rom_image import RomImage
 from dqutils.snescpu.statemachine import StateMachine
@@ -91,6 +91,11 @@ class TestStateMachineDQ5(AbstractTestStateMachine):
         self._do_test_until_option(
             0x008F80, r'^00/8FAB:\s+40\s+RTI$')
 
+    @skip('DQ5')
+    def test_run_brk_operand(self):
+        """Test if the operand of the BRK command varies."""
+        self.fail('DQ5')
+
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ6(AbstractTestStateMachine):
     """Tests for disassembling DQ6."""
@@ -152,6 +157,27 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
         self._do_test_until_option(
             0xC2B4AF, r'^C2/B501:\s+6B\s+RTL$')
 
+    def test_run_brk_operand(self):
+        """Test if the operand of the BRK command is 2 bytes."""
+
+        fsm = self.fsm
+        fsm.destination = StringIO()
+
+        # The information booth in the Slime Arena.
+        fsm.run(first=0xC3E601, until_return=True)
+
+        output_lines = fsm.destination.getvalue().split('\n')
+
+        self.assertRegex(
+            output_lines[0], r'^C3/E601:\s+001C07\s+BRK #\$071C$')
+        self.assertRegex(
+            output_lines[5], r'^C3/E60F:\s+001A07\s+BRK #\$071A$')
+        self.assertRegex(
+            output_lines[12], r'^C3/E625:\s+001B07\s+BRK #\$071B$')
+        self.assertRegex(
+            output_lines[-2], r'^C3/E62F:\s+6B\s+RTL$')
+        self.assertEqual(output_lines[-1], '')
+
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ3(AbstractTestStateMachine):
     """Tests for disassembling DQ3."""
@@ -170,4 +196,25 @@ class TestStateMachineDQ3(AbstractTestStateMachine):
             output_lines[0], r'^C2/5BA6:\s+A20000\s+LDX #\$0000$')
         self.assertRegex(
             output_lines[-2], r'^C2/5BCD:\s+60\s+RTS$')
+        self.assertEqual(output_lines[-1], '')
+
+    def test_run_brk_operand(self):
+        """Test if the operand of the BRK command is 2 bytes."""
+
+        fsm = self.fsm
+        fsm.destination = StringIO()
+
+        # People in the Shrine of Dharma.
+        fsm.run(first=0xCB9A3E, until_return=True)
+
+        output_lines = fsm.destination.getvalue().split('\n')
+
+        for line in output_lines[:4]:
+            self.assertRegex(
+                line, r'^CB/[0-9A-F]{4}:\s+00[0-9A-F]{4}\s+')
+            self.assertRegex(
+                line, r'BRK #\$[0-9A-F]{4}$')
+
+        self.assertRegex(
+            output_lines[-2], r'^CB/9A56:\s+6B\s+RTL$')
         self.assertEqual(output_lines[-1], '')
