@@ -4,6 +4,17 @@ Instructions of the 65816 Processor.
 
 from dqutils.snescpu.addressing import get_addressing_mode
 
+@classmethod
+def _operand_size_sig(cls, fsm):
+    """Override `actual_operand_size` for BRK and COP.
+
+    These are 1 byte instructions, but the program counter value
+    pushed onto stack is incremented by two, allowing for optional
+    signature byte.
+    """
+
+    return 2
+
 @staticmethod
 def _execute_c2(fsm):
     """REP: Reset status bits.
@@ -361,6 +372,10 @@ def _build_instruction_classes():
         annotation = cols[3]
         attrs['add_if_m_zero'] = annotation == '*'
         attrs['add_if_x_zero'] = annotation == '+'
+
+        if annotation == '**':
+            # BRK or COP
+            attrs['actual_operand_size'] = _operand_size_sig
 
         method = global_dicts.get('_execute_{:02x}'.format(opcode))
         if method:

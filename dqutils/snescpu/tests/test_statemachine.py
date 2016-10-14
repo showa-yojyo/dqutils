@@ -168,12 +168,13 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
         output_lines = fsm.destination.getvalue().split('\n')
 
-        self.assertRegex(
-            output_lines[0], r'^C3/E601:\s+001C07\s+BRK #\$071C$')
-        self.assertRegex(
-            output_lines[5], r'^C3/E60F:\s+001A07\s+BRK #\$071A$')
-        self.assertRegex(
-            output_lines[12], r'^C3/E625:\s+001B07\s+BRK #\$071B$')
+        for i in (0, 5, 12,):
+            line = output_lines[i]
+            self.assertRegex(
+                line, r'^C3/E6[0-9A-F]{2}:\s+00[0-9A-F]{2}07\s+')
+            self.assertRegex(
+                line, r'BRK #\$07[0-9A-F]{2}$')
+
         self.assertRegex(
             output_lines[-2], r'^C3/E62F:\s+6B\s+RTL$')
         self.assertEqual(output_lines[-1], '')
@@ -205,11 +206,12 @@ class TestStateMachineDQ3(AbstractTestStateMachine):
         fsm.destination = StringIO()
 
         # People in the Shrine of Dharma.
-        fsm.run(first=0xCB9A3E, until_return=True)
+        fsm.run(first=0xCB9A3E, last=0xCB9A57)
 
         output_lines = fsm.destination.getvalue().split('\n')
 
-        for line in output_lines[:4]:
+        for i in (0, 2, 4, 6,):
+            line = output_lines[i]
             self.assertRegex(
                 line, r'^CB/[0-9A-F]{4}:\s+00[0-9A-F]{4}\s+')
             self.assertRegex(

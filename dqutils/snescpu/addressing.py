@@ -58,8 +58,7 @@ def _format_program_counter_relative_long(fsm):
 def _format_stack_interrupt(fsm):
     """Stack/Interrupt"""
 
-    # TODO: treat as if BRK/COP takes 2 bytes as operand.
-    return '#${:02X}'.format(fsm.current_operand)
+    return '#${:04X}'.format(fsm.current_operand)
 
 @staticmethod
 def _format_stack_program_counter_relative_long(fsm):
