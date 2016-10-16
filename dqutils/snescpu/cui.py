@@ -76,6 +76,8 @@ def create_args(rom, cmdline_args=None):
           disassemble. If -1 is specified, then disassembling
           continues until the program counter reaches the end of ROM
           image.
+        - ``until_return``: True if disassembling will end
+          immediately after RTI, RTL, or RTS command is processed.
 
     mapper : AbstractMapper
         The mapper to the ROM image.
@@ -108,13 +110,16 @@ def create_args(rom, cmdline_args=None):
         first = int(rng[0], base=16)
         if len(rng) == 2 and rng[1]:
             last = int(rng[1], base=16)
+        else:
+            last = -1
     else:
         first = mapper.from_rom(0)
         last = -1 # dummy value; dynamically set
 
     context.update(
         first=first,
-        last=last,)
+        last=last,
+        until_return=args.until_return)
 
     return context, mapper
 

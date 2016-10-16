@@ -89,6 +89,7 @@ class TestCui(TestCase):
             self.assertEqual(args['flags'], 0)
             self.assertEqual(args['first'], 0x008000)
             self.assertEqual(args['last'], -1)
+            self.assertFalse(args['until_return'])
 
     def test_create_args_default_dq6(self):
         """Test create_args for DQ6 default values."""
@@ -99,6 +100,14 @@ class TestCui(TestCase):
             self.assertEqual(args['flags'], 0)
             self.assertEqual(args['first'], 0xC00000)
             self.assertEqual(args['last'], -1)
+            self.assertFalse(args['until_return'])
+
+            args, _ = create_args(rom, ['-r', 'CA023A:', '-u'])
+
+            self.assertEqual(args['flags'], 0)
+            self.assertEqual(args['first'], 0xCA023A)
+            self.assertEqual(args['last'], -1)
+            self.assertTrue(args['until_return'])
 
     def test_create_args_default_dq3(self):
         """Test create_args for DQ3 default values."""
@@ -109,3 +118,4 @@ class TestCui(TestCase):
             self.assertEqual(args['flags'], 0)
             self.assertEqual(args['first'], 0xC00000)
             self.assertEqual(args['last'], -1)
+            self.assertFalse(args['until_return'])
