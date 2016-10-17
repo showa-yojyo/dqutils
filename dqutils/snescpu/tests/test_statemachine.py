@@ -179,6 +179,16 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
             output_lines[-2], r'^C3/E62F:\s+6B\s+RTL$')
         self.assertEqual(output_lines[-1], '')
 
+    def test_run_cop_operand(self):
+        """Test if the COP command is 3 bytes long in DQ6."""
+
+        fsm = self.fsm
+        fsm.destination = StringIO()
+
+        fsm.run(first=0xCA0029, last=0xCA00AB)
+        output_lines = fsm.destination.getvalue().split('\n')
+        self.assertRegex(output_lines[0], r'COP #\$[0-9A-F]{6}$')
+
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ3(AbstractTestStateMachine):
     """Tests for disassembling DQ3."""
