@@ -5,7 +5,7 @@ Provide a state machine for the 65816 Processor.
 import sys
 from dqutils.snescpu.rom_image import get_snes_header
 from dqutils.snescpu.mapper import make_mapper
-from dqutils.snescpu.instructions import get_instruction
+from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
 
 # Does it need to be configurable?
 OUTPUT_FORMAT = '{bank:02X}/{addr:04X}:\t{opcode:02X}{operand_raw:<6}\t{mnemonic} {operand}'
@@ -37,6 +37,13 @@ class StateMachine(object):
         self.flags = 0
 
         self.until_return = False
+
+        # Initialize this own instruction table.
+        instructions = list(DEFAULT_INSTRUCTIONS)
+        overrides = self.init_instructions()
+        for opcode, instruction in overrides.items():
+            instructions[opcode] = instruction
+        self.instructions = instructions
 
     @property
     def program_counter(self):
@@ -116,7 +123,7 @@ class StateMachine(object):
         # Read the opcode.
         opcode = self.rom.read(1)
         self.current_opcode = opcode
-        instruction = get_instruction(self.current_opcode)
+        instruction = self.get_instruction(opcode)
 
         # Test if PC crossed the bank boundary after the current
         # instraction's opcode has been read.
@@ -185,3 +192,37 @@ class StateMachine(object):
         """
         if not across_bb:
             instruction.execute(self)
+
+    def init_instructions(self):
+        """Return specialized instructions.
+
+        Override this method if necessary, especially for BRK, COP,
+        JSR commands.
+
+        Returns
+        -------
+        instructions : dict
+            A dictionary with integer keys i.e. operand  whose
+            values are specialization of class `AbstractInstruction`.
+        """
+
+        return {}
+
+    def get_instruction(self, opcode):
+        """Return an object of class `AbstractInstruction`.
+
+        Parameters
+        ----------
+        opcode : bytes
+            A 1 byte value.
+
+        Returns
+        -------
+        instruction : AbstractInstruction
+            An object for one of instruction of the 65816 Processor.
+        """
+
+        if isinstance(opcode, bytes):
+            opcode = int.from_bytes(opcode, 'little')
+
+        return self.instructions[opcode]

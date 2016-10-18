@@ -4,17 +4,6 @@ Instructions of the 65816 Processor.
 
 from dqutils.snescpu.addressing import get_addressing_mode
 
-@classmethod
-def _operand_size_sig(cls, fsm):
-    """Override `actual_operand_size` for BRK and COP.
-
-    These are 1 byte instructions, but the program counter value
-    pushed onto stack is incremented by two, allowing for optional
-    signature byte.
-    """
-
-    return 2
-
 @staticmethod
 def _execute_c2(fsm):
     """REP: Reset status bits.
@@ -360,7 +349,8 @@ def _build_instruction_classes():
             return str()
 
     global_dicts = globals()
-    inst_classes = {}
+    #inst_classes = {}
+    instructions = []
     for opcode, cols in enumerate(INSTRUCTION_TABLE):
         attrs = dict(
             __slots__=(),
@@ -373,10 +363,6 @@ def _build_instruction_classes():
         attrs['add_if_m_zero'] = annotation == '*'
         attrs['add_if_x_zero'] = annotation == '+'
 
-        if annotation == '**':
-            # BRK or COP
-            attrs['actual_operand_size'] = _operand_size_sig
-
         method = global_dicts.get('_execute_{:02x}'.format(opcode))
         if method:
             attrs['execute'] = method
@@ -386,9 +372,11 @@ def _build_instruction_classes():
             class_name,
             (AbstractInstruction,),
             attrs)
-        inst_classes[class_name] = cls
+        #inst_classes[class_name] = cls
+        instructions.append(cls)
 
-    global_dicts.update(inst_classes)
+    #global_dicts.update(inst_classes)
+    return instructions
 
 def get_instruction(opcode):
     """Return the instruction object by its opcode.
@@ -396,7 +384,7 @@ def get_instruction(opcode):
     Parameters
     ----------
     opcode : bytes
-        See also `INSTRUCTION_TABLE`.
+        A 1 byte value. See also `INSTRUCTION_TABLE`.
 
     Returns
     -------
@@ -405,16 +393,14 @@ def get_instruction(opcode):
 
     Raises
     ------
-    KeyError
+    IndexError
         If `opcode` is invalid opcode for the 65816 Processor.
     """
 
     if isinstance(opcode, bytes):
-        class_name = 'Instruction{}'.format(opcode.hex().upper())
-    else:
-        assert isinstance(opcode, int)
-        class_name = 'Instruction{:02X}'.format(opcode)
+        opcode = int.from_bytes(opcode, 'little')
 
-    return globals()[class_name]
+    assert isinstance(opcode, int)
+    return DEFAULT_INSTRUCTIONS[opcode]
 
-_build_instruction_classes()
+DEFAULT_INSTRUCTIONS = tuple(_build_instruction_classes())

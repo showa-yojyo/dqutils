@@ -6,6 +6,9 @@ from unittest import (TestCase, skip)
 from io import StringIO
 from dqutils.snescpu.rom_image import RomImage
 from dqutils.snescpu.statemachine import StateMachine
+from dqutils.dq3.disasm import StateMachineDQ3
+from dqutils.dq6.disasm import StateMachineDQ6
+from dqutils.snescpu.addressing import get_addressing_mode
 
 # pylint: disable=too-many-public-methods
 class AbstractTestStateMachine(TestCase):
@@ -102,6 +105,10 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
     game_title = 'DRAGONQUEST6'
 
+    def setUp(self):
+        """Prepare the target of testing."""
+        self.fsm = StateMachineDQ6(self.rom)
+
     def test_initial(self):
         """Test the initial condition of StateMachine for DQ6."""
         self._do_test_initial()
@@ -194,6 +201,10 @@ class TestStateMachineDQ3(AbstractTestStateMachine):
     """Tests for disassembling DQ3."""
 
     game_title = 'DRAGONQUEST3'
+
+    def setUp(self):
+        """Prepare the target of testing."""
+        self.fsm = StateMachineDQ3(self.rom)
 
     def test_disassembled_code(self):
         """Test disassembled code for DQ3."""

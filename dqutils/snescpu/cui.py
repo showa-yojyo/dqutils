@@ -123,7 +123,7 @@ def create_args(rom, cmdline_args=None):
 
     return context, mapper
 
-def main(game_title):
+def main(game_title, state_machine_type=StateMachine):
     """The main function.
 
     Parameters
@@ -134,5 +134,5 @@ def main(game_title):
 
     with RomImage(game_title) as rom:
         args, mapper = create_args(rom)
-        fsm = StateMachine(rom, mapper)
+        fsm = state_machine_type(rom, mapper)
         fsm.run(**args)

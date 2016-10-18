@@ -33,7 +33,7 @@ class TestInstructions(TestCase):
     def test_invalid_instruction(self):
         """Test get_instruction for invalid opcode."""
 
-        self.assertRaises(KeyError, get_instruction, 666)
+        self.assertRaises(IndexError, get_instruction, 666)
 
     def test_instruction_rep(self):
         """Test REP."""
