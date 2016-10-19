@@ -1,15 +1,12 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 """Tests for dqutils.dq6.string"""
 
-import unittest
-from dqutils.dq6.string import CONTEXT
-from dqutils.dq6.string import enum_string
+from unittest import TestCase
+from dqutils.dq6.string import (CONTEXT, enum_string)
 from dqutils.string import get_text
 
-# pylint: disable=too-many-public-methods
-class DQ6StringTestCase(unittest.TestCase):
+class DQ6StringTestCase(TestCase):
     """Test functions defined in dqutils.dq6.string."""
 
     def test_get_text(self):

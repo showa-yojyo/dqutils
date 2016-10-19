@@ -1,17 +1,13 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """Tests for dqutils.dq5.string
 """
 
-import unittest
-from dqutils.dq5.string import enum_string
-from dqutils.dq5.string import CONTEXT_GROUP
+from unittest import TestCase
+from dqutils.dq5.string import (enum_string, CONTEXT_GROUP)
 from dqutils.dq5.charsmall import process_dakuten
 from dqutils.string import get_text
 
-# pylint: disable=too-many-public-methods
-class DQ5StringTestCase(unittest.TestCase):
+class DQ5StringTestCase(TestCase):
     """Test functions defined in dqutils.dq5.string."""
 
     hinokinobou = b'\x2A\x28\x16\x28\x84\x2D\x12'

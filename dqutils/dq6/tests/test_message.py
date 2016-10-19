@@ -1,15 +1,11 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """Tests for dqutils.dq6.message"""
 
-import unittest
-from dqutils.dq6.message import enum_battle
-from dqutils.dq6.message import enum_scenario
 from array import array
+from unittest import TestCase
+from dqutils.dq6.message import (enum_battle, enum_scenario)
 
-# pylint: disable=too-many-public-methods
-class DQ6MessageTestCase(unittest.TestCase):
+class DQ6MessageTestCase(TestCase):
     """Test functions defined in dqutils.dq6.message."""
 
     def test_enum_battle(self):

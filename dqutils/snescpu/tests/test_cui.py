@@ -3,8 +3,7 @@ Tests for dqutils.snescpu.cui.
 """
 
 from unittest import TestCase
-from dqutils.snescpu.rom_image import RomImage
-from dqutils.snescpu.cui import (create_argparser, create_args)
+from dqutils.snescpu.cui import create_argparser
 
 # pylint: disable=too-many-public-methods
 class TestCui(TestCase):
@@ -79,43 +78,3 @@ class TestCui(TestCase):
 
         args = parser.parse_args(['-u',])
         self.assertTrue(args.until_return)
-
-    def test_create_args_default_dq5(self):
-        """Test create_args for DQ5 default values."""
-
-        with RomImage('DRAGONQUEST5') as rom:
-            args, _ = create_args(rom, [])
-
-            self.assertEqual(args['flags'], 0)
-            self.assertEqual(args['first'], 0x008000)
-            self.assertEqual(args['last'], -1)
-            self.assertFalse(args['until_return'])
-
-    def test_create_args_default_dq6(self):
-        """Test create_args for DQ6 default values."""
-
-        with RomImage('DRAGONQUEST6') as rom:
-            args, _ = create_args(rom, [])
-
-            self.assertEqual(args['flags'], 0)
-            self.assertEqual(args['first'], 0xC00000)
-            self.assertEqual(args['last'], -1)
-            self.assertFalse(args['until_return'])
-
-            args, _ = create_args(rom, ['-r', 'CA023A:', '-u'])
-
-            self.assertEqual(args['flags'], 0)
-            self.assertEqual(args['first'], 0xCA023A)
-            self.assertEqual(args['last'], -1)
-            self.assertTrue(args['until_return'])
-
-    def test_create_args_default_dq3(self):
-        """Test create_args for DQ3 default values."""
-
-        with RomImage('DRAGONQUEST3') as rom:
-            args, _ = create_args(rom, [])
-
-            self.assertEqual(args['flags'], 0)
-            self.assertEqual(args['first'], 0xC00000)
-            self.assertEqual(args['last'], -1)
-            self.assertFalse(args['until_return'])
