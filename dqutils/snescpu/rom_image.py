@@ -77,7 +77,7 @@ def get_snes_header(mem):
             # [$xFDE, $xFE0): checksum bytes.
             chksum1 = int.from_bytes(buffer[0x1C:0x1E], 'little')
             chksum2 = int.from_bytes(buffer[0x1E:0x20], 'little')
-            if chksum1 | chksum2 == 0xFFFF:
+            if chksum1 ^ chksum2 == 0xFFFF:
                 return buffer
         return None
     finally:
