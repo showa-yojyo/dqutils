@@ -3,10 +3,10 @@ This module provides command line interface for the disassmbler.
 """
 
 from argparse import ArgumentParser
-from dqutils.release import VERSION
-from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
-from dqutils.snescpu.mapper import make_mapper
-from dqutils.snescpu.statemachine import StateMachine
+from ..release import VERSION
+from .rom_image import RomImage
+from .mapper import make_mapper
+from .statemachine import StateMachine
 
 def create_argparser():
     """Return a command line parser for the application.
@@ -88,7 +88,7 @@ def create_args(rom, cmdline_args=None):
 
     context = {}
     # properties for DQ6.
-    mapper = make_mapper(header=get_snes_header(rom))
+    mapper = make_mapper(rom=rom)
 
     # Initialize register flags, nvmxdizc.
     flags = 0x00

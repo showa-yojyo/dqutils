@@ -3,9 +3,9 @@ A simple hexdump.
 """
 
 from argparse import ArgumentParser
-from dqutils.release import VERSION
-from dqutils.snescpu.mapper import make_mapper
-from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
+from ..release import VERSION
+from .mapper import make_mapper
+from .rom_image import RomImage
 
 FORMAT_STRING = '{:02X}/{:04X}:\t{}'
 
@@ -52,7 +52,7 @@ def dump(game_title, start, byte_count, record_count):
     """
 
     with RomImage(game_title) as rom:
-        mapper = make_mapper(header=get_snes_header(rom))
+        mapper = make_mapper(rom=rom)
         rom.seek(mapper.from_cpu(start))
 
         last_cpu_address = start + byte_count * record_count

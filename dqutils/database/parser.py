@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
 """dqutils.database.parser - Define parser classes.
 """
-from dqutils.database.field import make_field
-from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
-from dqutils.snescpu.mapper import make_mapper
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import (ABCMeta, abstractmethod)
 from xml.dom.minidom import parseString as parse_xml
+from ..snescpu.rom_image import RomImage
+from ..snescpu.mapper import make_mapper
+from .field import make_field
 
 # pylint: disable=too-few-public-methods
 class AbstractParser(metaclass=ABCMeta):
@@ -96,7 +94,7 @@ class XmlParser(AbstractParser):
 
         # Read ROM image and list the records.
         with RomImage(title) as mem:
-            mapper = make_mapper(header=get_snes_header(mem))
+            mapper = make_mapper(rom=mem)
 
             # Locate the address of the array on ROM image.
             mem.seek(mapper.from_cpu(cpu_addr))

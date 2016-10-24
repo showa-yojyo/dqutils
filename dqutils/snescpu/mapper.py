@@ -1,6 +1,7 @@
 """dqutils.address - SNES address conversion functions.
 """
 from abc import (ABCMeta, abstractmethod)
+from .rom_image import get_snes_header
 
 class AbstractMapper(metaclass=ABCMeta):
     """The abstract class that represents the SNES ROM layout.
@@ -269,17 +270,17 @@ class LoROM(AbstractMapper):
             addr = (addr & 0xFF0000) | 0x8000
         return addr
 
-def make_mapper(**kwargs):
+def make_mapper(rom=None, name=None):
     """Return a mapper type.
 
     You may also directly use subclasses of class AbstractMapper.
 
     Parameters
     ----------
+    rom : mmap.mmap, default: None
+        A ROM image object.
     name : str
         Mapper's name. Either 'HiROM' or 'LoROM' may be specified.
-    header : bytes
-        0x40 byte header of SNES ROM.
 
     Returns
     -------
@@ -291,16 +292,13 @@ def make_mapper(**kwargs):
     get_snes_header
     """
 
+    assert rom or name
+
     # pylint: disable=no-member
     mappers = AbstractMapper.__subclasses__()
 
-    name = kwargs.get('name')
-    if name:
-        return next(cls for cls in mappers
-                    if cls.__name__ == name)
-
-    header = kwargs.get('header')
-    if header:
+    if rom:
+        header = get_snes_header(rom)
         assert isinstance(header, bytes)
         assert len(header) == 0x40
 
@@ -308,3 +306,6 @@ def make_mapper(**kwargs):
         mapper_byte = header[0x15]
         return next(cls for cls in mappers
                     if cls.check_header_mapper_byte(mapper_byte))
+    elif name:
+        return next(cls for cls in mappers
+                    if cls.__name__ == name)

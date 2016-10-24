@@ -3,9 +3,8 @@ Provide a state machine for the 65816 Processor.
 """
 
 import sys
-from dqutils.snescpu.rom_image import get_snes_header
-from dqutils.snescpu.mapper import make_mapper
-from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
+from .mapper import make_mapper
+from .instructions import DEFAULT_INSTRUCTIONS
 
 # Does it need to be configurable?
 OUTPUT_FORMAT = '{bank:02X}/{addr:04X}:\t{opcode:02X}{operand_raw:<6}\t{mnemonic} {operand}'
@@ -28,7 +27,7 @@ class StateMachine(object):
         if mapper:
             self.mapper = mapper
         else:
-            self.mapper = make_mapper(header=get_snes_header(rom))
+            self.mapper = make_mapper(rom=rom)
 
         self.current_opcode = None
         self.current_operand = None

@@ -2,8 +2,8 @@
 """
 
 from abc import (ABCMeta, abstractmethod)
-from dqutils.snescpu.mapper import make_mapper
-from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
+from .snescpu.mapper import make_mapper
+from .snescpu.rom_image import RomImage
 
 # pylint: disable=too-few-public-methods
 class AbstractStringGenerator(metaclass=ABCMeta):
@@ -67,7 +67,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             raise StopIteration
 
         with RomImage(self.title) as mem:
-            self.mapper = make_mapper(header=get_snes_header(mem))
+            self.mapper = make_mapper(rom=mem)
             addr = self.addr
             mem.seek(self.mapper.from_cpu(addr))
             yield from self._do_iterate(mem, addr)

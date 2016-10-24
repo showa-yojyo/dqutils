@@ -9,9 +9,9 @@ I wrote a long ago.
 
 from abc import (ABCMeta, abstractmethod)
 from array import array
-from dqutils.bit import (get_bits, get_int)
-from dqutils.snescpu.mapper import make_mapper
-from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
+from .bit import (get_bits, get_int)
+from .snescpu.mapper import make_mapper
+from .snescpu.rom_image import RomImage
 
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """The base class of MessageGenerator subclasses."""
@@ -104,7 +104,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             The input stream of ROM.
         """
 
-        self.mapper = make_mapper(header=get_snes_header(mem))
+        self.mapper = make_mapper(rom=mem)
 
         self._setup_huffman_tree(mem)
         self._setup_shiftbit_array(mem)
