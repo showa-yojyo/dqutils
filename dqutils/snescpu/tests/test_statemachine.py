@@ -4,8 +4,9 @@ Tests for dqutils.snescpu.statemachine.
 
 from unittest import TestCase
 from io import StringIO
-from dqutils.snescpu.rom_image import RomImage
-from dqutils.snescpu.statemachine import StateMachine
+from ..rom_image import RomImage
+from ..statemachine import StateMachine
+from ..states import DisassembleState
 
 class AbstractTestStateMachine(TestCase):
     """The base class of TestStateMachineDQ classes."""
@@ -26,10 +27,12 @@ class AbstractTestStateMachine(TestCase):
 
     def setUp(self):
         """Prepare the target of testing."""
-        self.fsm = StateMachine(self.rom)
+        self.fsm = StateMachine(
+            [DisassembleState], 'DisassembleState', self.rom)
 
     def tearDown(self):
         """Clean up."""
+        self.fsm.unlink()
         self.fsm = None
 
     def _do_test_initial(self):
@@ -39,10 +42,11 @@ class AbstractTestStateMachine(TestCase):
 
         self.assertIn(fsm.program_counter, (0x008000, 0xC00000,))
         self.assertIsNotNone(fsm.mapper)
-        self.assertIsNone(fsm.current_opcode)
-        self.assertIsNone(fsm.current_operand)
-        self.assertEqual(fsm.current_operand_size, 0)
-        self.assertEqual(fsm.flags, 0)
+        #self.assertIsNone(fsm.current_opcode)
+        #self.assertIsNone(fsm.current_operand)
+        #self.assertEqual(fsm.current_operand_size, 0)
+        #self.assertEqual(fsm.flags, 0)
+        #self.assertFalse(fsm.until_return)
 
     def _do_test_until_option(self, first, pattern):
         """This method is used from `test_with_until_option`."""

@@ -2,15 +2,15 @@
 """disasm.py: Disassembler for DRAGONQUEST 3.
 """
 
-from dqutils.snescpu.cui import main
-from dqutils.snescpu.addressing import get_addressing_mode
-from dqutils.snescpu.instructions import get_instruction
-from dqutils.snescpu.statemachine import StateMachine
+from ..snescpu.cui import main
+from ..snescpu.addressing import get_addressing_mode
+from ..snescpu.instructions import get_instruction
+from ..snescpu.states import DisassembleState
 
-class StateMachineDQ3(StateMachine):
-    """A specialized state machine."""
+class DisassembleStateDQ3(DisassembleState):
+    """A specialized state."""
 
-    def init_instructions(self):
+    def _init_instructions(self):
         immed = get_addressing_mode('Immediate')
         class BRK(get_instruction(0x00)):
             operand_size = 3
@@ -23,4 +23,5 @@ class StateMachineDQ3(StateMachine):
         return {0x00: BRK, 0x02: COP}
 
 if __name__ == '__main__':
-    main('DRAGONQUEST3', StateMachineDQ3)
+    main('DRAGONQUEST3',
+         [DisassembleStateDQ3], 'DisassembleStateDQ3')

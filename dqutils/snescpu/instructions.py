@@ -5,24 +5,24 @@ Instructions of the 65816 Processor.
 from dqutils.snescpu.addressing import get_addressing_mode
 
 @staticmethod
-def _execute_c2(fsm):
+def _execute_c2(state):
     """REP: Reset status bits.
 
     When used, it will set the bits specified by the 1 byte immediate
     value. This is the only means of setting the M and X status
     register bits.
     """
-    fsm.flags &= ~fsm.current_operand
+    state.flags &= ~state.current_operand
 
 @staticmethod
-def _execute_e2(fsm):
+def _execute_e2(state):
     """SEP: Set status bits.
 
     When used, it will set the bits specified by the 1 byte immediate
     value. This is the only means of setting the M and X status
     register bits.
     """
-    fsm.flags |= fsm.current_operand
+    state.flags |= state.current_operand
 
 # 65816 Programming Primer, Appendix B Composite Instruction List
 INSTRUCTION_TABLE = (
@@ -302,13 +302,13 @@ def _build_instruction_classes():
         addressing_mode = None
 
         @classmethod
-        def actual_operand_size(cls, fsm):
+        def actual_operand_size(cls, flags):
             """Return the actual size of this operand in bytes."""
 
             # Addition for Immediate mode.
-            if cls.add_if_x_zero and fsm.flags & 0x10 == 0x00:
+            if cls.add_if_x_zero and flags & 0x10 == 0x00:
                 return cls.operand_size
-            elif cls.add_if_m_zero and fsm.flags & 0x20 == 0x00:
+            elif cls.add_if_m_zero and flags & 0x20 == 0x00:
                 return cls.operand_size
 
             return cls.operand_size - 1
@@ -319,13 +319,13 @@ def _build_instruction_classes():
             pass
 
         @classmethod
-        def format(cls, fsm):
+        def format(cls, state):
             """Return formatted string of this instruction.
 
             Parameters
             ----------
             cls : AbstractInstruction
-            fsm : StateMachine
+            state : DisassembleState
 
             Returns
             -------
@@ -337,14 +337,14 @@ def _build_instruction_classes():
             addressing_mode = cls.addressing_mode
             if not addressing_mode:
                 # Opcode 42, WDM.
-                return '#${:02X}'.format(fsm.current_operand)
+                return '#${:02X}'.format(state.current_operand)
 
             if addressing_mode.formatter:
-                return addressing_mode.formatter(fsm)
+                return addressing_mode.formatter(state)
 
             syntax = addressing_mode.syntax
             if syntax:
-                return syntax.format(fsm.current_operand)
+                return syntax.format(state.current_operand)
 
             return str()
 

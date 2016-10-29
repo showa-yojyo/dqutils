@@ -4,8 +4,9 @@ Tests for dqutils.snescpu.statemachine.
 
 from io import StringIO
 from unittest import skip
-from dqutils.snescpu.tests.test_statemachine import AbstractTestStateMachine
-from dqutils.dq3.disasm import StateMachineDQ3
+from ...snescpu.tests.test_statemachine import AbstractTestStateMachine
+from ...snescpu.statemachine import StateMachine
+from ..disasm import DisassembleStateDQ3
 
 class TestStateMachineDQ3(AbstractTestStateMachine):
     """Tests for disassembling DQ3."""
@@ -14,7 +15,8 @@ class TestStateMachineDQ3(AbstractTestStateMachine):
 
     def setUp(self):
         """Prepare the target of testing."""
-        self.fsm = StateMachineDQ3(self.rom)
+        self.fsm = StateMachine(
+            [DisassembleStateDQ3], 'DisassembleStateDQ3', self.rom)
 
     def test_disassembled_code(self):
         """Test disassembled code for DQ3."""

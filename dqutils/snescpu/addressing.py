@@ -5,10 +5,10 @@ This module offers the addressing modes of the 65816 Processor.
 # Block Move
 
 @staticmethod
-def _format_block_move(fsm):
+def _format_block_move(state):
     """Block Move"""
 
-    operand = fsm.current_operand
+    operand = state.current_operand
     return '${src:02X},${dest:02X}'.format(
         src=operand & 0x00FF,
         dest=(operand & 0xFF00) >> 8)
@@ -16,22 +16,22 @@ def _format_block_move(fsm):
 # Immediate
 
 @staticmethod
-def _format_immediate(fsm):
+def _format_immediate(state):
     """Immediate"""
 
-    actual_operand_size = fsm.current_operand_size
+    actual_operand_size = state.current_operand_size
 
     return '#${:0{width}X}'.format(
-        fsm.current_operand, width=actual_operand_size * 2)
+        state.current_operand, width=actual_operand_size * 2)
 
 # Program Counter Relative
 
 @staticmethod
-def _format_program_counter_relative(fsm):
+def _format_program_counter_relative(state):
     """Program Counter Relative"""
 
-    program_counter = fsm.program_counter
-    operand = fsm.current_operand
+    program_counter = state.program_counter
+    operand = state.current_operand
 
     if operand & 0x80 == 0x00:
         near_addr = (program_counter + operand) & 0xFFFF
@@ -40,11 +40,11 @@ def _format_program_counter_relative(fsm):
     return '${:04X}'.format(near_addr)
 
 @staticmethod
-def _format_program_counter_relative_long(fsm):
+def _format_program_counter_relative_long(state):
     """Program Counter Relative Long"""
 
-    program_counter = fsm.program_counter
-    operand = fsm.current_operand
+    program_counter = state.program_counter
+    operand = state.current_operand
     if operand & 0x8000 == 0x0000:
         addr = (program_counter + operand) & 0xFFFF
     else:
@@ -55,16 +55,16 @@ def _format_program_counter_relative_long(fsm):
 # Stack
 
 @staticmethod
-def _format_stack_interrupt(fsm):
+def _format_stack_interrupt(state):
     """Stack/Interrupt"""
 
-    return '#${:04X}'.format(fsm.current_operand)
+    return '#${:04X}'.format(state.current_operand)
 
 @staticmethod
-def _format_stack_program_counter_relative_long(fsm):
+def _format_stack_program_counter_relative_long(state):
     """Stack (PCounter Relative Long)"""
     return '${:04X}'.format(
-        (fsm.program_counter + fsm.current_operand) & 0xFFFF)
+        (state.program_counter + state.current_operand) & 0xFFFF)
 
 # pylint: disable=line-too-long
 ADDRESSING_MODE_TABLE = (

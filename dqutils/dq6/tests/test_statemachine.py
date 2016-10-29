@@ -3,8 +3,9 @@ Tests for dqutils.snescpu.statemachine.
 """
 
 from io import StringIO
-from dqutils.snescpu.tests.test_statemachine import AbstractTestStateMachine
-from dqutils.dq6.disasm import StateMachineDQ6
+from ...snescpu.tests.test_statemachine import AbstractTestStateMachine
+from ...snescpu.statemachine import StateMachine
+from ..disasm import DisassembleStateDQ6
 
 # pylint: disable=too-many-public-methods
 class TestStateMachineDQ6(AbstractTestStateMachine):
@@ -14,7 +15,8 @@ class TestStateMachineDQ6(AbstractTestStateMachine):
 
     def setUp(self):
         """Prepare the target of testing."""
-        self.fsm = StateMachineDQ6(self.rom)
+        self.fsm = StateMachine(
+            [DisassembleStateDQ6], 'DisassembleStateDQ6', self.rom)
 
     def test_initial(self):
         """Test the initial condition of StateMachine for DQ6."""

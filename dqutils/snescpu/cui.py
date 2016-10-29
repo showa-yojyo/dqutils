@@ -123,16 +123,23 @@ def create_args(rom, cmdline_args=None):
 
     return context, mapper
 
-def main(game_title, state_machine_type=StateMachine):
+def main(game_title, state_classes, initial_state):
     """The main function.
 
     Parameters
     ----------
     game_title : str
         A str object for a game title.
+    state_classes : list
+        A list of `State` subclasses.
+    initial_state : str
+        The class name of the initial state.
     """
 
     with RomImage(game_title) as rom:
         args, mapper = create_args(rom)
-        fsm = state_machine_type(rom, mapper)
+        fsm = StateMachine(
+            state_classes, initial_state,
+            rom, mapper)
         fsm.run(**args)
+        fsm.unlink()
