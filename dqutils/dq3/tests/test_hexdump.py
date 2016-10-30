@@ -6,20 +6,20 @@ from io import StringIO
 from os import devnull
 from unittest import TestCase
 from unittest.mock import patch
-from dqutils.snescpu.hexdump import dump
+from dqutils.snescpu.hexdump import main
 
 ADDRESS_PATTERN = r'^[0-9A-F]{2}/[0-9A-F]{4}:'
 
 class TestCaseHexDump(TestCase):
-    """Tests for dquils.snescpu.hexdump."""
+    """Tests for dquils.snescpu.main."""
 
     game_title = 'DRAGONQUEST3'
 
     def test_dump(self):
-        """Test function `dump`."""
+        """Test function `main`."""
 
         with patch('sys.stdout', StringIO()) as out:
-            dump(self.game_title, 0xC808DA, 12, 1389)
+            main(self.game_title, ['C808DA', '12', '1389'])
             lines = out.getvalue().split('\n')
 
             self.assertTrue(lines[0].startswith('C8/08DA:'))

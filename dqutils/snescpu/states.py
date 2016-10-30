@@ -253,6 +253,60 @@ class DisassembleState(AbstractState):
 
         return self.instructions[opcode]
 
+FORMAT_STRING = '{:02X}/{:04X}:\t{}'
+
 class DumpState(AbstractState):
     """This state provides `hexdump`."""
-    pass
+
+    def __init__(self, state_machine):
+        super().__init__(state_machine)
+        self.byte_count = 0
+        self.record_count = 0
+
+    def __call__(self):
+        """
+        Perform byte-by-byte dump the contents of a ROM, in
+        hexiadecimal format.
+
+        Returns
+        -------
+        next_state : str
+            The name of the next state for the state machine.
+        """
+
+        fsm = self.state_machine
+        rom = fsm.rom
+        out = fsm.destination
+        while fsm.rom.tell() < fsm.last_rom_addr:
+            cpu_address = fsm.program_counter
+            bank = (cpu_address & 0xFF0000) >> 16
+            offset = cpu_address & 0x00FFFF
+            if offset + self.byte_count > 0x10000:
+                data = rom.read(0x10000 - offset)
+            else:
+                data = rom.read(self.byte_count)
+
+            print(FORMAT_STRING.format(
+                bank, offset, data.hex().upper()),
+                  file=out)
+
+        return ''
+
+    def runtime_init(self, **kwargs):
+        """Initialize before running the state machine.
+
+        Parameters
+        ----------
+        flags : int, optional, default: 0
+            The initial value of the register status bits.
+        until_return : bool, optional, default: False
+            Immediately terminate processing when RTI, RTS, or RTL
+            instruction is processed.
+
+        See also
+        --------
+        `StateMachine.runtime_init`
+        """
+
+        self.byte_count = kwargs.get('byte_count', 0)
+        self.record_count = kwargs.get('record_count', 0)
