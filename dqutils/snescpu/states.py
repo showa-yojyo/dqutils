@@ -266,7 +266,7 @@ class DumpState(AbstractState):
     def __call__(self):
         """
         Perform byte-by-byte dump the contents of a ROM, in
-        hexiadecimal format.
+        hexadecimal format.
 
         Returns
         -------

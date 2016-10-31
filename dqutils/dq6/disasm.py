@@ -2,8 +2,8 @@
 """disasm.py: Disassembler for DRAGONQUEST 6.
 """
 
-from ..snescpu.cui import main
 from ..snescpu.addressing import get_addressing_mode
+from ..snescpu.disasm import disassemble
 from ..snescpu.instructions import get_instruction
 from ..snescpu.states import DisassembleState
 
@@ -23,5 +23,5 @@ class DisassembleStateDQ6(DisassembleState):
         return {0x00: BRK, 0x02: COP}
 
 if __name__ == '__main__':
-    main('DRAGONQUEST6',
+    disassemble('DRAGONQUEST6',
          [DisassembleStateDQ6], 'DisassembleStateDQ6')

@@ -1,13 +1,13 @@
 """
-Tests for dqutils.snescpu.cui.
+Tests for dqutils.snescpu.disasm.
 """
 
 from unittest import TestCase
 from dqutils.snescpu.rom_image import RomImage
-from dqutils.snescpu.cui import create_args
+from dqutils.snescpu.disasm import create_args
 
 class TestCui(TestCase):
-    """Tests dqutils.snescpu.cui for DQ6."""
+    """Tests dqutils.snescpu.disasm for DQ6."""
 
     def test_create_args_default(self):
         """Test create_args for DQ6 default values."""

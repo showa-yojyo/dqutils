@@ -35,10 +35,9 @@ def create_argparser():
         help='the number of records/objects')
     return parser
 
-def main(game_title, cmdline=None):
-    """The main function.
-
-    Print the contents of a ROM, byte-by-byte, in hexiadecimal
+def dump(game_title, cmdline=None):
+    """
+    Print the contents of a ROM, byte-by-byte, in hexadecimal
     format.
 
     Parameters

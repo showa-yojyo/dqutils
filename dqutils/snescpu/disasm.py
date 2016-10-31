@@ -123,8 +123,8 @@ def create_args(rom, cmdline_args=None):
 
     return context, mapper
 
-def main(game_title, state_classes, initial_state):
-    """The main function.
+def disassemble(game_title, state_classes, initial_state):
+    """Disassemble the 65816 machine code.
 
     Parameters
     ----------
