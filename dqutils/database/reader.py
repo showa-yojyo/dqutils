@@ -1,9 +1,7 @@
-# -*- coding: utf-8 -*-
 """dqutils.database.reader -- Define reader classes.
 """
-from dqutils.database.table import Table
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import (ABCMeta, abstractmethod)
+from .table import Table
 
 class AbstractReader(metaclass=ABCMeta):
     """This class imitates class Docutils.readers.Reader."""

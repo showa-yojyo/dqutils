@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """This is the dqutils (Dragon Quest Utilities) package.
 
 This package contains the following sub-packages:
@@ -15,8 +14,8 @@ from collections import namedtuple
 import sys
 
 # Release data
-from dqutils import release
-from dqutils.tests.test import run as test
+from . import release
+from .tests.test import run as test
 
 __author__ = '{} <{}>'.format(release.AUTHOR, release.AUTHOR_EMAIL)
 

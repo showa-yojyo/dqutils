@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """dqutils.database.writer -- Define writer classes.
 """
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import (ABCMeta, abstractmethod)
 from io import StringIO
 
 # pylint: disable=too-few-public-methods

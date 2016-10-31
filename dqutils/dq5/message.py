@@ -10,10 +10,10 @@ Special thanks to Mr. kobun_c.
 """
 
 from array import array
-from dqutils.bit import get_int
-from dqutils.message import enum_scenario as _enum_scenario
-from dqutils.message_generator import MessageGeneratorV
-from dqutils.string import get_text
+from ..bit import get_int
+from ..message import enum_scenario as _enum_scenario
+from ..message_generator import MessageGeneratorV
+from ..string import get_text
 from .charsmall import (CHARMAP as CHARMAP_SMALL,
                         process_dakuten)
 from .charlarge import CHARMAP as CHARMAP_LARGE

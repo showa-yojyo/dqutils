@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """ dqutils package - dqutils.database __init__ module
 """
-from dqutils.database.reader import TableReader
-from dqutils.database.parser import XmlParser
-from dqutils.database.writer import CSVWriter
-from dqutils.database.input import TextFileInput
-from dqutils.database.output import TextFileOutput
+from .reader import TableReader
+from .parser import XmlParser
+from .writer import CSVWriter
+from .input import TextFileInput
+from .output import TextFileOutput
 
 def process_xml(xml_path):
     """Parse an XML file.

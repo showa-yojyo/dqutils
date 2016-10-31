@@ -1,9 +1,9 @@
 """dqutils.dq6.string - DQ6-specific string components.
 """
 
-from dqutils.string import (enum_string as _enum_string,
-                            print_string as _print_string)
-from dqutils.string_generator import StringGeneratorCStyle
+from ..string import (enum_string as _enum_string,
+                      print_string as _print_string)
+from ..string_generator import StringGeneratorCStyle
 from .charsmall import CHARMAP
 
 CONTEXT = dict(

@@ -1,8 +1,6 @@
-# -*- coding: utf-8 -*-
 """dqutils.database.output -- Define output classes.
 """
-from abc import ABCMeta
-from abc import abstractmethod
+from abc import (ABCMeta, abstractmethod)
 import sys
 
 # pylint: disable=too-few-public-methods

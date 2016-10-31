@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 """Module dqutils.dq5.string -- a string loader for DQ5.
 
 A string is an array of characters that are rendered in windows with the small
@@ -9,9 +7,9 @@ This module has a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
-from dqutils.string import (enum_string as _enum_string,
-                            get_text)
-from dqutils.string_generator import StringGeneratorPascalStyle
+from ..string import (enum_string as _enum_string,
+                      get_text)
+from ..string_generator import StringGeneratorPascalStyle
 from .charsmall import (CHARMAP, process_dakuten)
 
 CONTEXT_GROUP = [

@@ -3,7 +3,7 @@ Tests for dqutils.snescpu.rom_image.
 """
 
 from unittest import TestCase
-from dqutils.snescpu.rom_image import (RomImage, get_snes_header)
+from ...snescpu.rom_image import (RomImage, get_snes_header)
 
 class RomImageTestCase(TestCase):
     """Test functions defined in dqutils.snescpu.rom_image."""

@@ -1,10 +1,7 @@
-# -*- coding: utf-8 -*-
 """dqutils.database.field -- Define field classes.
 """
-from abc import ABCMeta
-from abc import abstractmethod
-from dqutils.bit import get_bits
-from dqutils.bit import get_int
+from abc import (ABCMeta, abstractmethod)
+from ..bit import (get_bits, get_int)
 
 class AbstractField(metaclass=ABCMeta):
     """This class represents a member data or field in a data structure.

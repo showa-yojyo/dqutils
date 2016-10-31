@@ -2,7 +2,7 @@
 Instructions of the 65816 Processor.
 """
 
-from dqutils.snescpu.addressing import get_addressing_mode
+from .addressing import get_addressing_mode
 
 @staticmethod
 def _execute_c2(state):

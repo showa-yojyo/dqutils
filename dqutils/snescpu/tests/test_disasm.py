@@ -3,7 +3,7 @@ Tests for dqutils.snescpu.disasm.
 """
 
 from unittest import TestCase
-from dqutils.snescpu.disasm import create_argparser
+from ..disasm import create_argparser
 
 # pylint: disable=too-many-public-methods
 class TestCui(TestCase):

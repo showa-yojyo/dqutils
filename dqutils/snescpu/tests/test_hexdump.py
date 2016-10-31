@@ -5,7 +5,7 @@ Tests for dquils.snescpu.hexdump.
 from os import devnull
 from unittest import TestCase
 from unittest.mock import patch
-from dqutils.snescpu.hexdump import create_argparser
+from ..hexdump import create_argparser
 
 class TestCaseHexDump(TestCase):
     """Tests for dquils.snescpu.hexdump."""

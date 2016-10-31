@@ -1,10 +1,7 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 """Tests for dqutils.bit module."""
 
 import unittest
-from dqutils.bit import get_bits
-from dqutils.bit import get_int
+from ..bit import (get_bits, get_int)
 
 # pylint: disable=too-many-public-methods
 class BitTestCase(unittest.TestCase):

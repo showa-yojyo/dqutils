@@ -11,8 +11,8 @@ For all of the programs, conversational message data are compressed.
 """
 
 from array import array
-from dqutils.string import (get_text, get_hex)
-from dqutils.string_generator import StringGeneratorCStyle
+from .string import (get_text, get_hex)
+from .string_generator import StringGeneratorCStyle
 
 def enum_battle(context, first=None, last=None):
     """Return generator iterators of message data by specifying

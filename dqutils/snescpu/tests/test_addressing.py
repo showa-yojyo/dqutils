@@ -3,8 +3,8 @@ Tests for dqutils.snescpu.addressing.
 """
 
 from unittest import TestCase
-from dqutils.snescpu.addressing import (ADDRESSING_MODE_TABLE,
-                                        get_addressing_mode)
+from ..addressing import (ADDRESSING_MODE_TABLE,
+                          get_addressing_mode)
 
 # pylint: disable=too-many-public-methods
 class TestAddressing(TestCase):

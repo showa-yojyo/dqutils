@@ -6,7 +6,7 @@ from io import StringIO
 from os import devnull
 from unittest import TestCase
 from unittest.mock import patch
-from dqutils.snescpu.hexdump import dump
+from ...snescpu.hexdump import dump
 
 ADDRESS_PATTERN = r'^[0-9A-F]{2}/[0-9A-F]{4}:'
 

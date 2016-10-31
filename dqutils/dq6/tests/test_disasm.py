@@ -3,8 +3,8 @@ Tests for dqutils.snescpu.disasm.
 """
 
 from unittest import TestCase
-from dqutils.snescpu.rom_image import RomImage
-from dqutils.snescpu.disasm import create_args
+from ...snescpu.disasm import create_args
+from ...snescpu.rom_image import RomImage
 
 class TestCui(TestCase):
     """Tests dqutils.snescpu.disasm for DQ6."""

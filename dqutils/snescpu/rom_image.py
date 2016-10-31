@@ -2,7 +2,7 @@
 """
 
 import mmap
-from dqutils.config import get_config
+from ..config import get_config
 
 # pylint: disable=too-few-public-methods
 class RomImage(object):

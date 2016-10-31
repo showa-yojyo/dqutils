@@ -1,7 +1,7 @@
 """This is the dqutils (Dragon Quest Utilities) dq3 subpackage.
 """
 
-from dqutils import (Command, run)
+from .. import (Command, run)
 from .message import (print_all_battle,
                       print_all_scenario)
 from .string import print_all

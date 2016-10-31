@@ -3,8 +3,8 @@
 """Tests for dqutils.dq3.string"""
 
 from unittest import TestCase
-from dqutils.dq3.string import (CONTEXT, enum_string)
-from dqutils.string import get_text
+from ...string import get_text
+from ..string import (CONTEXT, enum_string)
 
 class DQ3StringTestCase(TestCase):
     """Test functions defined in dqutils.dq3.string."""

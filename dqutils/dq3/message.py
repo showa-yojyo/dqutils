@@ -1,11 +1,11 @@
 """dqutils.dq3.message module"""
 
 from array import array
-from dqutils.message import (enum_battle as _enum_battle,
+from ..message import (enum_battle as _enum_battle,
                              enum_scenario as _enum_scenario,
                              print_battle as _print_battle,
                              print_scenario as _print_scenario)
-from dqutils.message_generator import MessageGeneratorW
+from ..message_generator import MessageGeneratorW
 from .charsmall import CHARMAP as CHARMAP_SMALL
 from .charlarge import CHARMAP as CHARMAP_LARGE
 
