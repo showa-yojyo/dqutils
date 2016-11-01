@@ -8,10 +8,12 @@ from ..rom_image import RomImage
 from ..statemachine import StateMachine
 from ..states import DisassembleState
 
-class AbstractTestStateMachine(TestCase):
-    """The base class of TestStateMachineDQ classes."""
+class AbstractStateMachineTestCase(TestCase):
+    """The base class of StateMachineTestCase classes."""
 
     game_title = None
+    state_classes = [DisassembleState]
+    initial_state = 'DisassembleState'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -28,7 +30,7 @@ class AbstractTestStateMachine(TestCase):
     def setUp(self):
         """Prepare the target of testing."""
         self.fsm = StateMachine(
-            [DisassembleState], 'DisassembleState', self.rom)
+            self.state_classes, self.initial_state, self.rom)
 
     def tearDown(self):
         """Clean up."""
@@ -42,11 +44,6 @@ class AbstractTestStateMachine(TestCase):
 
         self.assertIn(fsm.program_counter, (0x008000, 0xC00000,))
         self.assertIsNotNone(fsm.mapper)
-        #self.assertIsNone(fsm.current_opcode)
-        #self.assertIsNone(fsm.current_operand)
-        #self.assertEqual(fsm.current_operand_size, 0)
-        #self.assertEqual(fsm.flags, 0)
-        #self.assertFalse(fsm.until_return)
 
     def _do_test_until_option(self, first, pattern):
         """This method is used from `test_with_until_option`."""

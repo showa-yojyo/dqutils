@@ -4,9 +4,9 @@ Tests for dqutils.snescpu.statemachine.
 
 from io import StringIO
 from unittest import skip
-from ...snescpu.tests.test_statemachine import AbstractTestStateMachine
+from ...snescpu.tests.test_statemachine import AbstractStateMachineTestCase
 
-class TestStateMachineDQ5(AbstractTestStateMachine):
+class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for class dqutils.snescpu.statemachine.StateMachine."""
 
     game_title = 'DRAGONQUEST5'

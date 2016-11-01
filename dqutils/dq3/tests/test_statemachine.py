@@ -4,19 +4,16 @@ Tests for dqutils.snescpu.statemachine.
 
 from io import StringIO
 from unittest import skip
-from ...snescpu.tests.test_statemachine import AbstractTestStateMachine
+from ...snescpu.tests.test_statemachine import AbstractStateMachineTestCase
 from ...snescpu.statemachine import StateMachine
 from ..disasm import DisassembleStateDQ3
 
-class TestStateMachineDQ3(AbstractTestStateMachine):
+class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for disassembling DQ3."""
 
     game_title = 'DRAGONQUEST3'
-
-    def setUp(self):
-        """Prepare the target of testing."""
-        self.fsm = StateMachine(
-            [DisassembleStateDQ3], 'DisassembleStateDQ3', self.rom)
+    state_classes = [DisassembleStateDQ3]
+    initial_state = 'DisassembleStateDQ3'
 
     def test_disassembled_code(self):
         """Test disassembled code for DQ3."""

@@ -7,7 +7,7 @@ from unittest.mock import Mock
 from ..instructions import (INSTRUCTION_TABLE, get_instruction)
 
 # pylint: disable=too-many-public-methods
-class TestInstructions(TestCase):
+class InstructionsTestCase(TestCase):
     """Tests for dqutils.snescpu.instructions."""
 
     def test_get_instruction(self):

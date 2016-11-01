@@ -61,3 +61,33 @@ class DisassembleStateTestCase(TestCase):
             state.get_instruction(0x00), DEFAULT_INSTRUCTIONS[0])
         self.assertEqual(
             state.get_instruction(b'\x03'), DEFAULT_INSTRUCTIONS[3])
+
+class DumpStateTestCase(TestCase):
+    """Test class DumpState."""
+
+    def test_initial_properties(self):
+        """
+        Test the initial condition of an object of class
+        `DumpState`.
+        """
+
+        fsm = Mock(program_counter='dummy')
+        state = DumpState(fsm)
+        self.assertEqual(state.state_machine, fsm)
+        self.assertEqual(state.byte_count, 0)
+        self.assertEqual(state.record_count, 0)
+
+    def test_runtime_init(self):
+        """
+        Test behavior of `DumpState.runtime_init`. 
+        """
+
+        fsm = Mock(program_counter='dummy')
+        state = DumpState(fsm)
+        state.runtime_init(byte_count=20, record_count=47894)
+        self.assertEqual(state.byte_count, 20)
+        self.assertEqual(state.record_count, 47894)
+
+        state.runtime_init()
+        self.assertEqual(state.byte_count, 0)
+        self.assertEqual(state.record_count, 0)

@@ -6,7 +6,7 @@ from unittest import TestCase
 from ..disasm import create_argparser
 
 # pylint: disable=too-many-public-methods
-class TestCui(TestCase):
+class DisasmTestCase(TestCase):
     """Tests for dqutils.snescpu.disasm."""
 
     def setUp(self):

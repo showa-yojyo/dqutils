@@ -3,10 +3,12 @@ Tests for dqutils.snescpu.disasm.
 """
 
 from unittest import TestCase
+from unittest.mock import Mock
 from ...snescpu.disasm import create_args
 from ...snescpu.rom_image import RomImage
+from ..disasm import DisassembleStateDQ3
 
-class TestCui(TestCase):
+class DisasmTestCase(TestCase):
     """Tests dqutils.snescpu.disasm for DQ3."""
 
     def test_create_args_default(self):
@@ -19,3 +21,16 @@ class TestCui(TestCase):
             self.assertEqual(args['first'], 0xC00000)
             self.assertEqual(args['last'], -1)
             self.assertFalse(args['until_return'])
+
+    def test_specialized_state(self):
+        """Test class `DisassembleStateDQ3`."""
+
+        fsm = Mock(program_counter='dummy')
+        state = DisassembleStateDQ3(fsm)
+        state.runtime_init()
+
+        brk = state.get_instruction(0x00)
+        self.assertEqual(brk.operand_size, 3)
+
+        cop = state.get_instruction(0x02)
+        self.assertEqual(cop.operand_size, 4)

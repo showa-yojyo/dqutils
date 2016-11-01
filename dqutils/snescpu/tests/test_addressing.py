@@ -7,7 +7,7 @@ from ..addressing import (ADDRESSING_MODE_TABLE,
                           get_addressing_mode)
 
 # pylint: disable=too-many-public-methods
-class TestAddressing(TestCase):
+class AddressingTestCase(TestCase):
     """Tests for dqutils.snescpu.addressing."""
 
     def test_basic(self):

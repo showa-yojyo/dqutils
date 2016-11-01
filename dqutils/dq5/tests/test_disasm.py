@@ -6,7 +6,7 @@ from unittest import TestCase
 from ...snescpu.disasm import create_args
 from ...snescpu.rom_image import RomImage
 
-class TestCui(TestCase):
+class DisasmTestCase(TestCase):
     """Tests dqutils.snescpu.disasm for DQ5."""
 
     def test_create_args_default(self):
