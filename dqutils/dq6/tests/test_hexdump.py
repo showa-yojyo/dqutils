@@ -41,3 +41,21 @@ class HexDumpTestCase(AbstractHexDumpTestCase):
         self.assertRegex(lines[-2], ADDRESS_PATTERN)
         self.assertRegex(lines[-2], r'\t[0-9A-F]{8}$')
         self.assertEqual(lines[-1], '')
+
+    def test_dump_zero_input(self):
+        """Test the case where zeros are passed to `dump`."""
+
+        dump(self.game_title, ['C0FFC0', '0', '0'])
+        lines = self.out.getvalue().split('\n')
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[-1], '')
+
+        dump(self.game_title, ['C0FFC0', '1', '0'])
+        lines = self.out.getvalue().split('\n')
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[-1], '')
+
+        dump(self.game_title, ['C0FFC0', '0', '1'])
+        lines = self.out.getvalue().split('\n')
+        self.assertEqual(len(lines), 1)
+        self.assertEqual(lines[-1], '')

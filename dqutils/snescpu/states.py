@@ -274,6 +274,9 @@ class DumpState(AbstractState):
             The name of the next state for the state machine.
         """
 
+        if self.byte_count == 0 or self.record_count == 0:
+            return None
+
         fsm = self.state_machine
         rom = fsm.rom
         out = fsm.destination
