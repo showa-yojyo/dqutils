@@ -22,18 +22,25 @@ class AbstractState(metaclass=ABCMeta):
         """
         self.state_machine = state_machine
 
-    def __call__(self):
+    def __call__(self, context):
         """Do something and return the name of the next state.
 
         An empty string will be returned to tell that this state is
         the final.
 
+        Parameters
+        ----------
+        context : dict
+            Depends on your application.
+
         Returns
         -------
+        context : dict
+            Depends on your application.
         next_state : str
             The name of the next state for the state machine.
         """
-        return ''
+        return context, None
 
     @property
     def program_counter(self):
@@ -79,21 +86,32 @@ class DisassembleState(AbstractState):
             instructions[opcode] = instruction
         self.instructions = instructions
 
-    def __call__(self):
+    def __call__(self, context):
         """Disassemble bytes.
+
+        Parameters
+        ----------
+        context : dict
+            Depends on your application.
 
         Returns
         -------
+        context : dict
+            Depends on your application.
         next_state : str
             The name of the next state for the state machine.
         """
 
         while not self._is_terminated():
             instruction, operand_raw, across_bb = self._read_instruction()
-            self._eval_instruction(instruction, across_bb)
-            self._print_instruction(instruction, operand_raw, across_bb)
+            context, next_state = self._eval_instruction(
+                instruction, across_bb, context)
+            self._print_instruction(
+                instruction, operand_raw, across_bb)
+            if next_state:
+                return context, next_state
 
-        return ''
+        return context, None
 
     def runtime_init(self, **kwargs):
         """Initialize before running the state machine.
@@ -172,7 +190,7 @@ class DisassembleState(AbstractState):
 
         return instruction, operand_raw, across_bb
 
-    def _eval_instruction(self, instruction, across_bb):
+    def _eval_instruction(self, instruction, across_bb, context):
         """Execute the current instruction.
 
         Returns
@@ -184,8 +202,11 @@ class DisassembleState(AbstractState):
         across_bb : bool
             True if this line goes across the PB boundary.
         """
+
         if not across_bb:
-            instruction.execute(self)
+            return instruction.execute(self, context)
+
+        return context, None
 
     def _print_instruction(self, instruction, operand_raw, across_bb):
         """Output disassembled code in one line.
@@ -263,24 +284,40 @@ class DumpState(AbstractState):
         self.byte_count = 0
         self.record_count = 0
 
-    def __call__(self):
+    def __call__(self, context):
         """
         Perform byte-by-byte dump the contents of a ROM, in
         hexadecimal format.
 
+        Parameters
+        ----------
+        context : dict
+            Depends on your application.
+
         Returns
         -------
+        context : dict
+            Depends on your application.
         next_state : str
             The name of the next state for the state machine.
         """
 
-        if self.byte_count == 0 or self.record_count == 0:
-            return None
+        # TODO: Expermentally implement Disasm-Dump-Disasm
+        # state-transition.
+        next_state = None
+        if 'JSR' in context:
+            context.pop('JSR')
+            self.byte_count = context.pop('byte_count', self.byte_count)
+            self.record_count = context.pop('record_count', self.record_count)
+            next_state = context.pop('next_state')
+
+        if not self.byte_count or not self.record_count:
+            return context, None
 
         fsm = self.state_machine
         rom = fsm.rom
         out = fsm.destination
-        while fsm.rom.tell() < fsm.last_rom_addr:
+        for i in range(self.record_count):
             cpu_address = fsm.program_counter
             bank = (cpu_address & 0xFF0000) >> 16
             offset = cpu_address & 0x00FFFF
@@ -293,7 +330,10 @@ class DumpState(AbstractState):
                 bank, offset, data.hex().upper()),
                   file=out)
 
-        return ''
+            if len(data) < self.byte_count:
+                break
+
+        return context, next_state
 
     def runtime_init(self, **kwargs):
         """Initialize before running the state machine.

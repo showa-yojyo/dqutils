@@ -108,8 +108,10 @@ class StateMachine(object):
         self.runtime_init(**kwargs)
 
         state = self.get_state()
+        # TODO: What does `context` contain?
+        context = dict()
         while state:
-            next_state = state()
+            context, next_state = state(context)
             if not next_state:
                 break
             state = self.get_state(next_state)

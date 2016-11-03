@@ -5,14 +5,14 @@ Tests for dqutils.snescpu.statemachine.
 from io import StringIO
 from ...snescpu.tests.test_statemachine import AbstractStateMachineTestCase
 from ...snescpu.statemachine import StateMachine
-from ..disasm import DisassembleStateDQ6
+from ..disasm import (DisassembleStateDQ6, DumpState)
 
 # pylint: disable=too-many-public-methods
 class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for disassembling DQ6."""
 
     game_title = 'DRAGONQUEST6'
-    state_classes = [DisassembleStateDQ6]
+    state_classes = [DisassembleStateDQ6, DumpState]
     initial_state = 'DisassembleStateDQ6'
 
     def test_initial(self):
@@ -101,3 +101,23 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
         fsm.run(first=0xCA0029, last=0xCA00AB)
         output_lines = fsm.destination.getvalue().split('\n')
         self.assertRegex(output_lines[0], r'COP #\$[0-9A-F]{6}$')
+
+    def test_jsr_args(self):
+        """Test outputs of JSR instructions that have arguments."""
+
+        fsm = self.fsm
+        fsm.destination = StringIO()
+
+        # JSR $C92AB5 (RTL+8)
+        fsm.run(first=0xC37D14, until_return=True)
+        results = fsm.destination.getvalue().split('\n')
+
+        address_re = r'^[C-F][0-9A-F]/[0-9A-F]{4}:\t'
+        args_re = address_re + r'[0-9A-F]{8}$'
+
+        self.assertEqual(
+            results[0], 'C3/7D14:\t22B52AC9\tJSR $C92AB5')
+        self.assertRegex(results[1], args_re)
+        self.assertRegex(results[2], args_re)
+        self.assertEqual(
+            results[3], 'C3/7D20:\t8D8C38  \tSTA $388C')

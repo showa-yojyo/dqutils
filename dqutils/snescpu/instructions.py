@@ -5,7 +5,7 @@ Instructions of the 65816 Processor.
 from .addressing import get_addressing_mode
 
 @staticmethod
-def _execute_c2(state):
+def _execute_c2(state, context):
     """REP: Reset status bits.
 
     When used, it will set the bits specified by the 1 byte immediate
@@ -13,9 +13,10 @@ def _execute_c2(state):
     register bits.
     """
     state.flags &= ~state.current_operand
+    return context, None
 
 @staticmethod
-def _execute_e2(state):
+def _execute_e2(state, context):
     """SEP: Set status bits.
 
     When used, it will set the bits specified by the 1 byte immediate
@@ -23,6 +24,7 @@ def _execute_e2(state):
     register bits.
     """
     state.flags |= state.current_operand
+    return context, None
 
 # 65816 Programming Primer, Appendix B Composite Instruction List
 INSTRUCTION_TABLE = (
@@ -314,9 +316,9 @@ def _build_instruction_classes():
             return cls.operand_size - 1
 
         @staticmethod
-        def execute(fsm):
+        def execute(state, context):
             """NOP"""
-            pass
+            return context, None
 
         @classmethod
         def format(cls, state):

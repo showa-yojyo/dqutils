@@ -32,11 +32,11 @@ class InstructionsTestCase(TestCase):
         self.assertEqual(inst.mnemonic, 'REP')
 
         fsm = Mock(flags=0xFF, current_operand=0x30)
-        inst.execute(fsm)
+        inst.execute(fsm, None)
         self.assertEqual(fsm.flags & 0x30, 0)
 
         fsm = Mock(flags=0xFF, current_operand=0x00)
-        inst.execute(fsm)
+        inst.execute(fsm, None)
         self.assertEqual(fsm.flags, 0xFF)
 
     def test_instruction_sep(self):
@@ -46,9 +46,9 @@ class InstructionsTestCase(TestCase):
         self.assertEqual(inst.mnemonic, 'SEP')
 
         fsm = Mock(flags=0xFF, current_operand=0x30)
-        inst.execute(fsm)
+        inst.execute(fsm, None)
         self.assertEqual(fsm.flags, 0xFF)
 
         fsm = Mock(flags=0x00, current_operand=0x30)
-        inst.execute(fsm)
+        inst.execute(fsm, None)
         self.assertEqual(fsm.flags, 0x30)
