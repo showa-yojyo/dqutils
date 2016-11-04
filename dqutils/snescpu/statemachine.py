@@ -21,6 +21,13 @@ class StateMachine(object):
             A ROM image object.
         mapper : AbstractMapper, optional
             The mapper to `rom`.
+
+        Postconditions
+        --------------
+        >>> self.rom is rom
+        >>> self.initial_state == initial_state
+        >>> self.current_state == initial_state
+        >>> self.destination is sys.stdout
         """
 
         self.rom = rom
@@ -50,7 +57,12 @@ class StateMachine(object):
         return self.mapper.from_rom(self.rom.tell())
 
     def unlink(self):
-        """Remove circular references."""
+        """Remove circular references.
+
+        Postconditions
+        --------------
+        >>> self.states is None
+        """
 
         for i in self.states.values():
             i.unlink()
@@ -59,7 +71,8 @@ class StateMachine(object):
     def add_states(self, state_classes):
         """Add state classes to `self.states`.
 
-        Parameters:
+        Parameters
+        ----------
         state_classes : list
             A list of `State` subclasses.
         """
@@ -68,7 +81,12 @@ class StateMachine(object):
             {state_t.__name__: state_t(self) for state_t in state_classes})
 
     def runtime_init(self, **kwargs):
-        """Initialize states before running the state machine."""
+        """Initialize states before running the state machine.
+
+        Preconditions
+        -------------
+        >>> isinstance(self.states, dict)
+        """
         for i in self.states.values():
             i.runtime_init(**kwargs)
 
@@ -131,9 +149,14 @@ class StateMachine(object):
         -------
         current_state : State
 
+        Preconditions
+        -------------
+        >>> isinstance(self.states, dict)
+
         Raises
         ------
-        KeyError is raised if `next_state` is not in `self.states`.
+        KeyError
+            If `next_state` is not in `self.states`.
         """
 
         if next_state:

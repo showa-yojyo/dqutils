@@ -62,6 +62,7 @@ def create_args(rom, cmdline_args=None):
 
     cmdline_args : iterable of str, optional
         The program arguments passed from the terminal window.
+        Default: None.
 
     Returns
     -------

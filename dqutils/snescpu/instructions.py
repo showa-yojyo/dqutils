@@ -317,7 +317,21 @@ def _build_instruction_classes():
 
         @staticmethod
         def execute(state, context):
-            """NOP"""
+            """Overrided by subclasses if necessary.
+
+            Parameters
+            ----------
+            state : DisassembleState
+            context : dict
+                Depends on your application.
+
+            Returns
+            -------
+            context : dict
+                Depends on your application.
+            next_state : str
+                The name of the next state for the state machine.
+            """
             return context, None
 
         @classmethod

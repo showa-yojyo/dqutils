@@ -20,6 +20,10 @@ class AbstractState(metaclass=ABCMeta):
         ----------
         state_machine : StateMachine
             The controlling `StateMachine` object.
+
+        Postconditions
+        --------------
+        >>> self.state_machine is state_machine
         """
         self.state_machine = state_machine
 
@@ -63,16 +67,39 @@ class AbstractState(metaclass=ABCMeta):
         pass
 
     def unlink(self):
-        """Remove circular references."""
+        """Remove circular references.
+
+        Postconditions
+        --------------
+        >>> self.state_machine is None
+        """
         self.state_machine = None
 
 # Does it need to be configurable?
-OUTPUT_FORMAT = '{bank:02X}/{addr:04X}:\t{opcode:02X}{operand_raw:<6}\t{mnemonic} {operand}'
+OUTPUT_FORMAT = ('{bank:02X}/{addr:04X}:\t'
+                 '{opcode:02X}{operand_raw:<6}\t'
+                 '{mnemonic} {operand}')
 
 class DisassembleState(AbstractState):
     """This state provides a disassembler."""
 
     def __init__(self, state_machine):
+        """
+        Create an object of class `DisassembleState`.
+
+        Parameters
+        ----------
+        state_machine : StateMachine
+            The controlling `StateMachine` object.
+
+        Postconditions
+        --------------
+        >>> self.current_opcode is None
+        >>> self.current_operand is None
+        >>> self.current_operand_size == 0
+        >>> self.flags == 0x00
+        >>> not self.until_return
+        """
         super().__init__(state_machine)
         self.current_opcode = None
         self.current_operand = None
@@ -125,6 +152,14 @@ class DisassembleState(AbstractState):
             Immediately terminate processing when RTI, RTS, or RTL
             instruction is processed.
 
+        Postconditions
+        --------------
+        >>> self.current_opcode is None
+        >>> self.current_operand is None
+        >>> self.current_operand_size == 0
+        >>> self.flags == 0x00
+        >>> not self.until_return
+
         See also
         --------
         `StateMachine.runtime_init`
@@ -153,7 +188,7 @@ class DisassembleState(AbstractState):
         assert fsm.rom
 
         if (self.until_return and
-            self.current_opcode in (b'\x40', b'\x60', b'\x6B')):
+                self.current_opcode in (b'\x40', b'\x60', b'\x6B')):
             return True
 
         return fsm.last_rom_addr <= fsm.rom.tell()
@@ -194,14 +229,21 @@ class DisassembleState(AbstractState):
     def _eval_instruction(self, instruction, across_bb, context):
         """Execute the current instruction.
 
-        Returns
-        -------
+        Parameters
+        ----------
         instruction : AbstractInstruction
             The instruction to be output to `self.destination`.
         operand_raw : bytes
             The unprocessed operand bytes in the ROM image.
         across_bb : bool
             True if this line goes across the PB boundary.
+
+        Returns
+        -------
+        context : dict
+            Depends on your application.
+        next_state : str
+            The name of the next state for the state machine.
         """
 
         if not across_bb:
@@ -220,6 +262,13 @@ class DisassembleState(AbstractState):
             The unprocessed operand bytes in the ROM image.
         across_bb : bool
             True if this line goes across the PB boundary.
+
+        Returns
+        -------
+        context : dict
+            Depends on your application.
+        next_state : str
+            The name of the next state for the state machine.
         """
 
         fsm = self.state_machine
@@ -268,6 +317,15 @@ class DisassembleState(AbstractState):
         -------
         instruction : AbstractInstruction
             An object for one of instruction of the 65816 Processor.
+
+        Raises
+        ------
+        IndexError
+            If `opcode` is less zero or greater than 0xFF.
+
+        Preconditions
+        -------------
+        >>> isinstance(opcode, (bytes, int,))
         """
 
         if isinstance(opcode, bytes):

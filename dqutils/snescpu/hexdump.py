@@ -4,7 +4,6 @@ A simple hexdump.
 
 from argparse import ArgumentParser
 from ..release import VERSION
-from .mapper import make_mapper
 from .rom_image import RomImage
 from .statemachine import StateMachine
 from .states import DumpState
@@ -47,6 +46,7 @@ def dump(game_title, cmdline=None):
         The title of a game, e.g. 'DRAGONQUEST3'.
     cmdline : iterable of str, optional
         The program arguments passed from the terminal window.
+        Default: None.
     """
 
     parser = create_argparser()
