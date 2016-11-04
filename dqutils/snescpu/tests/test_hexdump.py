@@ -27,7 +27,7 @@ class HexDumpTestCase(TestCase):
         # a normal case
         args = parser.parse_args(['C0FF70', '16', '4'])
         self.assertEqual(args.start, 'C0FF70')
-        self.assertEqual(args.byte_count, 16)
+        self.assertEqual(args.byte_count, [16])
         self.assertEqual(args.record_count, 4)
 
 ADDRESS_PATTERN = r'^[0-9A-F]{2}/[0-9A-F]{4}:'

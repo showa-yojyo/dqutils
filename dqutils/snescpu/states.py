@@ -3,6 +3,7 @@ Provide class State and subclasses.
 """
 
 from abc import ABCMeta
+from itertools import (chain, repeat)
 from .instructions import DEFAULT_INSTRUCTIONS
 
 class AbstractState(metaclass=ABCMeta):
@@ -280,8 +281,21 @@ class DumpState(AbstractState):
     """This state provides `hexdump`."""
 
     def __init__(self, state_machine):
+        """
+        Create an object of class `DumpState`.
+
+        Parameters
+        ----------
+        state_machine : StateMachine
+            The controlling `StateMachine` object.
+
+        Postconditions
+        --------------
+        >>> self.byte_count == []
+        >>> self.record_count == 0
+        """
         super().__init__(state_machine)
-        self.byte_count = 0
+        self.byte_count = []
         self.record_count = 0
 
     def __call__(self, context):
@@ -302,7 +316,7 @@ class DumpState(AbstractState):
             The name of the next state for the state machine.
         """
 
-        # TODO: Expermentally implement Disasm-Dump-Disasm
+        # Expermentally implement Disasm-Dump-Disasm
         # state-transition.
         next_state = None
         if 'JSR' in context:
@@ -311,27 +325,30 @@ class DumpState(AbstractState):
             self.record_count = context.pop('record_count', self.record_count)
             next_state = context.pop('next_state')
 
-        if not self.byte_count or not self.record_count:
+        if not any(self.byte_count) or not self.record_count:
             return context, None
 
         fsm = self.state_machine
         rom = fsm.rom
         out = fsm.destination
-        for i in range(self.record_count):
+        byte_count_seq = chain.from_iterable(
+            repeat(self.byte_count, self.record_count))
+        for i in byte_count_seq:
             cpu_address = fsm.program_counter
             bank = (cpu_address & 0xFF0000) >> 16
             offset = cpu_address & 0x00FFFF
-            if offset + self.byte_count > 0x10000:
+
+            if offset + i > 0x10000:
                 data = rom.read(0x10000 - offset)
             else:
-                data = rom.read(self.byte_count)
+                data = rom.read(i)
 
             print(FORMAT_STRING.format(
                 bank, offset, data.hex().upper()),
                   file=out)
 
-            if len(data) < self.byte_count:
-                break
+            if len(data) < i:
+                return context, next_state
 
         return context, next_state
 
@@ -340,16 +357,15 @@ class DumpState(AbstractState):
 
         Parameters
         ----------
-        flags : int, optional, default: 0
-            The initial value of the register status bits.
-        until_return : bool, optional, default: False
-            Immediately terminate processing when RTI, RTS, or RTL
-            instruction is processed.
+        byte_count : list, optional
+            A list containts the numbers of bytes per a record.
+        record_count : int, optional
+            The number of records.
 
         See also
         --------
         `StateMachine.runtime_init`
         """
 
-        self.byte_count = kwargs.get('byte_count', 0)
+        self.byte_count = kwargs.get('byte_count', [])
         self.record_count = kwargs.get('record_count', 0)

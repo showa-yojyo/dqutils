@@ -112,12 +112,17 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
         fsm.run(first=0xC37D14, until_return=True)
         results = fsm.destination.getvalue().split('\n')
 
-        address_re = r'^[C-F][0-9A-F]/[0-9A-F]{4}:\t'
-        args_re = address_re + r'[0-9A-F]{8}$'
+        HEX_RE = r'[0-9A-F]'
 
         self.assertEqual(
             results[0], 'C3/7D14:\t22B52AC9\tJSR $C92AB5')
-        self.assertRegex(results[1], args_re)
-        self.assertRegex(results[2], args_re)
+        self.assertRegex(
+            results[1], '^C3/7D18:\t' + HEX_RE + '{2}$')
+        self.assertRegex(
+            results[2], '^C3/7D19:\t' + HEX_RE + '{4}$')
+        self.assertRegex(
+            results[3], '^C3/7D1B:\t' + HEX_RE + '{6}$')
+        self.assertRegex(
+            results[4], '^C3/7D1E:\t' + HEX_RE + '{4}$')
         self.assertEqual(
-            results[3], 'C3/7D20:\t8D8C38  \tSTA $388C')
+            results[5], 'C3/7D20:\t8D8C38  \tSTA $388C')

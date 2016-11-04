@@ -28,7 +28,8 @@ def create_argparser():
     parser.add_argument(
         'byte_count',
         type=int,
-        help='the number of bytes per an object or record')
+        nargs='+',
+        help='the numbers of bytes per an object or record')
     parser.add_argument(
         'record_count',
         type=int,
@@ -57,7 +58,7 @@ def dump(game_title, cmdline=None):
 
         first = int(args.start, 16)
         delattr(args, 'start')
-        last = first + args.byte_count * args.record_count
+        last = first + sum(args.byte_count) * args.record_count
         last = min(last, (first & 0xFF0000) + 0x10000)
 
         fsm.run(first=first, last=last, **vars(args))

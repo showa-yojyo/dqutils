@@ -29,8 +29,8 @@ class DisassembleStateDQ6(DisassembleState):
                 if self.current_operand == 0xC92AB5:
                     context.update(
                         next_state='DisassembleStateDQ6',
-                        byte_count=4,
-                        record_count=2,
+                        byte_count=[1, 2, 3, 2],
+                        record_count=1,
                         JSR=True)
                     return context, 'DumpState'
                 return context, None

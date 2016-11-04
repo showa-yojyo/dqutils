@@ -59,3 +59,16 @@ class HexDumpTestCase(AbstractHexDumpTestCase):
         lines = self.out.getvalue().split('\n')
         self.assertEqual(len(lines), 1)
         self.assertEqual(lines[-1], '')
+
+    def test_dump_nonuniform(self):
+        """Test nonuniform hexdump."""
+
+        dump(self.game_title, 'C316DD 1 2 3 2 1'.split())
+        lines = self.out.getvalue()
+        result = ('C3/16DD:\t00\n'
+                  'C3/16DE:\t2000\n'
+                  'C3/16E0:\tB4387E\n'
+                  'C3/16E3:\t1600\n'
+                  '')
+
+        self.assertMultiLineEqual(lines, result)

@@ -2,7 +2,7 @@
 A simple hexdump.
 
 Usage:
-$ python -m dqutils.dq5.hexdump <address> <byte_count> <record_count>
+$ python -m dqutils.dq5.hexdump <address> <byte_count>... <record_count>
 """
 
 from ..snescpu.hexdump import dump
