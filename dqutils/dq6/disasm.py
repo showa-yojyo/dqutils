@@ -197,13 +197,15 @@ class DisassembleStateDQ6(DisassembleState):
 
     def _init_instructions(self):
         immed = get_addressing_mode('Immediate')
+        implied = get_addressing_mode('Implied')
+
         class BRK(get_instruction(0x00)):
             operand_size = 3
             addressing_mode = immed
 
         class COP(get_instruction(0x02)):
-            operand_size = 4
-            addressing_mode = immed
+            operand_size = 1
+            addressing_mode = implied
 
         class JSR(get_instruction(0x22)):
             @staticmethod

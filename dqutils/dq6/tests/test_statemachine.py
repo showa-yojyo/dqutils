@@ -93,14 +93,15 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
         self.assertEqual(output_lines[-1], '')
 
     def test_run_cop_operand(self):
-        """Test if the COP command is 3 bytes long in DQ6."""
+        """Test if the COP command has no operands in DQ6."""
 
         fsm = self.fsm
         fsm.destination = StringIO()
 
         fsm.run(first=0xCA0029, last=0xCA00AB)
         output_lines = fsm.destination.getvalue().split('\n')
-        self.assertRegex(output_lines[0], r'COP #\$[0-9A-F]{6}$')
+        self.assertRegex(output_lines[0], r'^CA/0029:\t02\s+COP$')
+        self.assertRegex(output_lines[1], r'^CA/002A:\t4C1E00\s+JMP \$001E$')
 
     def test_jsr_args(self):
         """Test outputs of JSR instructions that have arguments."""

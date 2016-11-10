@@ -33,4 +33,4 @@ class DisasmTestCase(TestCase):
         self.assertEqual(brk.operand_size, 3)
 
         cop = state.get_instruction(0x02)
-        self.assertEqual(cop.operand_size, 4)
+        self.assertEqual(cop.operand_size, 1)
