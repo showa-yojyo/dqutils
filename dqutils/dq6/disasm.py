@@ -162,6 +162,7 @@ SPECIAL_SUBROUTINES = {
     0xC45F3C: (2,),
     0xC461CC: (2,),
     0xC46265: (2,),
+    0xC46A99: (2,),
     0xC59977: (2,),
     0xC2E4DC: (1,),
     0xC2E7DB: (1,),
@@ -174,6 +175,8 @@ SPECIAL_SUBROUTINES = {
     0xC42862: (1,),
     0xC42895: (1,),
     0xC429E3: (1,),
+    0xC42A08: (1,),
+    0xC42A50: (1,),
     0xC42AA1: (1,),
     0xC42AC1: (1,),
     0xC42FDC: (1,),
@@ -190,7 +193,9 @@ SPECIAL_SUBROUTINES = {
     0xC45885: (1,),
     0xC461FA: (1,),
     0xC46612: (1,),
-    0xC466FE: (1,),}
+    0xC466FE: (1,),
+    0xC468D5: (1,),
+    0xC469C3: (1,),}
 
 class DisassembleStateDQ6(DisassembleState):
     """A specialized state."""
