@@ -7,10 +7,6 @@ from ..snescpu.disasm import disassemble
 from ..snescpu.instructions import get_instruction
 from ..snescpu.states import (DisassembleState, DumpState)
 
-# TODO: Complete the list of subroutines that
-# take hard-coded argument bytes immediately after
-# JSR operands.
-
 # A dictionary of subroutines with following bytes as arguments.
 # key: the address of subroutine
 # value: the corresponding byte-partition for DumpState.byte_count
