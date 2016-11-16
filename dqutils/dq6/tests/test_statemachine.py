@@ -60,6 +60,19 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             output_lines[-2], r'^CB/FFFD:\s+FFFFFF$') # !!
         self.assertEqual(output_lines[-1], '')
 
+    def test_run_near_boundary_opcode(self):
+        """Test disassembling near boundary (opcode)."""
+
+        fsm = self.fsm
+        fsm.destination = StringIO()
+        fsm.run(first=0xCEFFFD, until_return=True)
+
+        output_lines = fsm.destination.getvalue().split('\n')
+
+        self.assertRegex(
+            output_lines[-2], r'^CE/FFFF:\s+6B\s+RTL$')
+        self.assertEqual(output_lines[-1], '')
+
     def test_run_until_return(self):
         """Test disassembling with -u option for the first return
         instruction occurrence.

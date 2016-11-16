@@ -203,13 +203,13 @@ class DisassembleState(AbstractState):
         self.current_opcode = opcode
         instruction = self.get_instruction(opcode)
 
+        self.current_operand_size = instruction.actual_operand_size(self.flags)
+
         # Test if PC crossed the bank boundary after the current
         # instraction's opcode has been read.
-        if fsm.program_counter & 0xFFFF == 0x0000:
+        if fsm.program_counter & 0xFFFF == 0x0000 and self.current_operand_size:
             self.current_operand_size = 0
             return instruction, '', True
-
-        self.current_operand_size = instruction.actual_operand_size(self.flags)
 
         # Test if PC crossed the bank boundary after the opcode
         # has been read.
@@ -220,9 +220,12 @@ class DisassembleState(AbstractState):
             across_bb = True
             self.current_operand_size = num_remain_bytes
 
-        # Read the operand.
-        operand_raw = fsm.rom.read(self.current_operand_size)
-        self.current_operand = int.from_bytes(operand_raw, 'little')
+        # Read the operand if necessary.
+        if self.current_operand_size:
+            operand_raw = fsm.rom.read(self.current_operand_size)
+            self.current_operand = int.from_bytes(operand_raw, 'little')
+        else:
+            operand_raw, self.current_operand = None, None
 
         return instruction, operand_raw, across_bb
 
