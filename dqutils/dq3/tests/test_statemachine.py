@@ -6,13 +6,13 @@ from io import StringIO
 from unittest import skip
 from ...snescpu.tests.test_statemachine import AbstractStateMachineTestCase
 from ...snescpu.statemachine import StateMachine
-from ..disasm import DisassembleStateDQ3
+from ..disasm import (DisassembleStateDQ3, DumpState)
 
 class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for disassembling DQ3."""
 
     game_title = 'DRAGONQUEST3'
-    state_classes = [DisassembleStateDQ3]
+    state_classes = [DisassembleStateDQ3, DumpState]
     initial_state = 'DisassembleStateDQ3'
 
     def test_disassembled_code(self):
@@ -55,3 +55,22 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
     def test_run_cop_operand(self):
         """Test if the operand of the COP command varies."""
         self.fail('DQ3')
+
+    def test_jsr_args(self):
+        """Test outputs of JSR instructions that have arguments."""
+
+        fsm = self.fsm
+        fsm.destination = StringIO()
+
+        # JSR $C90572 (RTL+B)
+        fsm.run(first=0xC66C1B, until_return=True)
+        actual = fsm.destination.getvalue()
+        expected = ('C6/6C1B:	227205C9	JSR $C90572\n'
+                    'C6/6C1F:	00\n'
+                    'C6/6C20:	0700\n'
+                    'C6/6C22:	B17DC8\n'
+                    'C6/6C25:	0000\n'
+                    'C6/6C27:	1F0000\n'
+                    'C6/6C2A:	997DA1  	STA $A17D,Y\n'
+                    '')
+        self.assertIn(expected, actual)
