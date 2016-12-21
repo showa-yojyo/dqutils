@@ -55,12 +55,6 @@ def _format_program_counter_relative_long(state):
 # Stack
 
 @staticmethod
-def _format_stack_interrupt(state):
-    """Stack/Interrupt"""
-
-    return '#${:04X}'.format(state.current_operand)
-
-@staticmethod
 def _format_stack_program_counter_relative_long(state):
     """Stack (PCounter Relative Long)"""
     return '${:04X}'.format(
@@ -99,7 +93,7 @@ ADDRESSING_MODE_TABLE = (
     ('Stack (RTL)                  ', '               ', None,),
     ('Stack (RTS)                  ', '               ', None,),
     ('Stack Relative               ', '${:02X},S      ', None,),
-    ('Stack/Interrupt              ', '#${:02X}       ', _format_stack_interrupt,),
+    ('Stack/Interrupt              ', '#${:02X}       ', None,),
     ('Stack/RTI                    ', '               ', None,),
 )
 
