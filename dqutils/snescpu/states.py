@@ -379,12 +379,10 @@ class DumpState(AbstractState):
 
         # Expermentally implement Disasm-Dump-Disasm
         # state-transition.
-        next_state = None
-        if 'JSR' in context:
-            context.pop('JSR')
+        next_state = context.pop('next_state', None)
+        if next_state:
             self.byte_count = context.pop('byte_count', self.byte_count)
             self.record_count = context.pop('record_count', self.record_count)
-            next_state = context.pop('next_state')
 
         if not any(self.byte_count) or not self.record_count:
             return context, None

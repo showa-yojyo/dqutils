@@ -5,11 +5,14 @@ Tests for dqutils.snescpu.statemachine.
 from io import StringIO
 from unittest import skip
 from ...snescpu.tests.test_statemachine import AbstractStateMachineTestCase
+from ..disasm import (DisassembleStateDQ5, DumpState)
 
 class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for class dqutils.snescpu.statemachine.StateMachine."""
 
     game_title = 'DRAGONQUEST5'
+    state_classes = [DisassembleStateDQ5, DumpState]
+    initial_state = 'DisassembleStateDQ5'
 
     def test_initial(self):
         """Test the initial condition of StateMachine for DQ5."""
@@ -53,7 +56,6 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
         self._do_test_brk(
             expected, first=0x00B1ED, last=0x00B1F3, flags=0x20)
 
-    @skip('DQ5 BRK plus')
     def test_disassemble_brk_01(self):
         """Test `BRK #$01`."""
 
@@ -63,7 +65,6 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/A71B:	101E\n')
         self._do_test_brk(expected, first=0x00A717, last=0x00A71D)
 
-    @skip('DQ5 BRK plus')
     def test_disassemble_brk_02(self):
         """Test `BRK #$02`."""
 
@@ -88,7 +89,6 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/816C:	CA      	DEX\n')
         self._do_test_brk(expected, first=0x00816A, last=0x00816D)
 
-    @skip('DQ5 BRK plus')
     def test_disassemble_brk_09(self):
         """Test `BRK #$09`."""
 
@@ -97,7 +97,6 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/C0B0:	10\n')
         self._do_test_brk(expected, first=0x00C0AE, last=0x00C0B1)
 
-    @skip('DQ5 BRK plus')
     def test_disassemble_brk_0b(self):
         """Test `BRK #$0B` and `BRK #$0C`."""
 
@@ -109,7 +108,6 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/A73A:	0200\n')
         self._do_test_brk(expected, first=0x00A732, last=0x00A73C)
 
-    @skip('DQ5 BRK plus')
     def test_disassemble_brk_0d(self):
         """Test `BRK #$0D`."""
 
@@ -120,7 +118,6 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/A8FE:	0126\n')
         self._do_test_brk(expected, first=0x00A8F8, last=0x00A900)
 
-    @skip('DQ5 BRK plus')
     def test_disassemble_brk_0e(self):
         """Test `BRK #$0E`."""
 
@@ -130,7 +127,6 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/BF95:	FF\n')
         self._do_test_brk(expected, first=0x00BF91, last=0x00BF96)
 
-    @skip('DQ5 BRK plus')
     def test_disassemble_brk_12(self):
         """Test `BRK #$12`."""
 
@@ -141,16 +137,14 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/CA38:	44\n')
         self._do_test_brk(expected, first=0x00CA33, last=0x00CA39)
 
-    @skip('DQ5 BRK plus')
     def test_disassemble_brk_19(self):
         """Test `BRK #$19`."""
 
         expected = (
             '00/8110:	0019    	BRK #$19\n'
             '00/8112:	3300\n')
-        self._do_test_brk(expected, first=0x008100, last=0x008114)
+        self._do_test_brk(expected, first=0x008110, last=0x008114)
 
-    @skip('DQ5 BRK minus')
     def test_disassemble_brk_95(self):
         """Test `BRK #$95` and `BRK #$99`."""
 
@@ -161,7 +155,6 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/C471:	AA\n')
         self._do_test_brk(expected, first=0x00C46C, last=0x00C472)
 
-    @skip('DQ5 BRK minus')
     def test_disassemble_brk_9C(self):
         """Test `BRK #$9C`."""
 

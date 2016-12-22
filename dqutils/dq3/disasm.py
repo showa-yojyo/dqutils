@@ -254,8 +254,7 @@ class DisassembleStateDQ3(DisassembleState):
                     context.update(
                         next_state='DisassembleStateDQ3',
                         byte_count=byte_count,
-                        record_count=1,
-                        JSR=True)
+                        record_count=1,)
                     return context, 'DumpState'
                 return context, None
 
