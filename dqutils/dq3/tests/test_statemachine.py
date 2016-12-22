@@ -51,10 +51,15 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             output_lines[-2], r'^CB/9A56:\s+6B\s+RTL$')
         self.assertEqual(output_lines[-1], '')
 
-    @skip('DQ3')
     def test_run_cop_operand(self):
         """Test if the operand of the COP command varies."""
-        self.fail('DQ3')
+
+        fsm = self.fsm
+        fsm.destination = StringIO()
+        fsm.run(first=0xCC001B, until_return=True)
+        actual = fsm.destination.getvalue().partition('\n')
+        expected = 'CC/001B:	02      	COP'
+        self.assertEqual(expected, actual[0])
 
     def test_jsr_args(self):
         """Test outputs of JSR instructions that have arguments."""
