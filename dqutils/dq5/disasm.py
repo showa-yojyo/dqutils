@@ -45,11 +45,11 @@ BRK_BMI = (
     (0,), # BRK #$86: TODO
     (0,), # BRK #$87: TODO
     (1,), # BRK #$88
-    (0,), # BRK #$89: TODO
-    (0,), # BRK #$8A: TODO
+    (2,), # BRK #$89
+    (1,), # BRK #$8A
     (0,), # BRK #$8B: TODO
     (0,), # BRK #$8C: TODO
-    (0,), # BRK #$8D: TODO
+    (2,), # BRK #$8D: TODO
     (0,), # BRK #$8E: TODO
     (0,), # BRK #$8F: TODO
     (0,), # BRK #$90: TODO
