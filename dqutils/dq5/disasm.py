@@ -36,26 +36,26 @@ BRK_BPL = (
     (0,),)# BRK #$1A
 
 BRK_BMI = (
-    (0,), # BRK #$80: TODO
-    (0,), # BRK #$81: TODO
-    (0,), # BRK #$82: TODO
-    (0,), # BRK #$83: TODO
-    (0,), # BRK #$84: TODO
-    (0,), # BRK #$85: TODO
-    (0,), # BRK #$86: TODO
-    (0,), # BRK #$87: TODO
+    (0,), # BRK #$80
+    (1,), # BRK #$81
+    (0,), # BRK #$82
+    (1,), # BRK #$83
+    (0,), # BRK #$84
+    (1,), # BRK #$85
+    (0,), # BRK #$86
+    (1,), # BRK #$87
     (1,), # BRK #$88
     (2,), # BRK #$89
     (1,), # BRK #$8A
-    (0,), # BRK #$8B: TODO
-    (0,), # BRK #$8C: TODO
-    (2,), # BRK #$8D: TODO
-    (0,), # BRK #$8E: TODO
-    (0,), # BRK #$8F: TODO
-    (0,), # BRK #$90: TODO
-    (0,), # BRK #$91: TODO
-    (0,), # BRK #$92: TODO
-    (0,), # BRK #$93: TODO
+    (2,), # BRK #$8B
+    (1,), # BRK #$8C
+    (2,), # BRK #$8D
+    (1,), # BRK #$8E
+    (2,), # BRK #$8F
+    (2,), # BRK #$90
+    (2,), # BRK #$91
+    (2,), # BRK #$92
+    (3,), # BRK #$93
     (1,), # BRK #$94
     (1,), # BRK #$95
     (1,), # BRK #$96
