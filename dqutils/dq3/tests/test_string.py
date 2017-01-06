@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 """Tests for dqutils.dq3.string"""
 

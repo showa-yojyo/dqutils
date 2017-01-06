@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Tests for dqutils.dq5.message"""
 
 from array import array

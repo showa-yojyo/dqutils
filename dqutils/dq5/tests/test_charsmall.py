@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Tests for dqutils.dq5.charsmall module."""
 
 from unittest import TestCase

@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 """dqutils.dq5.charsmall - The dictionary of small size characters.
 

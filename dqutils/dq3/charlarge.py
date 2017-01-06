@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 
 """dqutils.dq3.charlarge - The dictionary of large size characters.
 """

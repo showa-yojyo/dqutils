@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 """Setup script for dqutils (Dragon Quest Utilities) package."""
 
 from setuptools import setup, find_packages
