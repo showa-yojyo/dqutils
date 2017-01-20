@@ -81,6 +81,22 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
             '00/9800:	6B      	RTL\n')
         self._do_test_brk(expected, first=0x0097FE, last=0x009801)
 
+    def test_disassemble_brk_04(self):
+        """Test `BRK #$04`."""
+
+        expected = (
+            '01/DDD0:	0004    	BRK #$04\n'
+            '01/DDD2:	3CB4\n')
+        self._do_test_brk(expected, first=0x01DDD0, last=0x01DDD4)
+
+    def test_disassemble_brk_06(self):
+        """Test `BRK #$06`."""
+
+        expected = (
+            '20/BD91:	0006    	BRK #$06\n'
+            '20/BD93:	A905    	LDA #$05\n')
+        self._do_test_brk(expected, first=0x20BD91, last=0x20BD95, flags=0x20)
+
     def test_disassemble_brk_08(self):
         """Test `BRK #$08`."""
 
