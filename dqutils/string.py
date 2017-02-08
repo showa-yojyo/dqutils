@@ -139,7 +139,7 @@ def print_string(context, generator_t, first=None, last=None):
     charmap = context["charmap"]
     assert isinstance(charmap, dict)
 
-    for i, item in enumerate(generator_t(context, first, last)):
+    for i, item in enumerate(generator_t(context, first, last), first):
         if charmap:
             text = get_text(item[1], charmap, delim)
         else:

@@ -2,7 +2,7 @@
 """
 
 from ..string import (enum_string as _enum_string,
-                            print_string as _print_string)
+                      print_string as _print_string)
 from ..string_generator import StringGeneratorCStyle
 from .charsmall import CHARMAP
 
@@ -37,6 +37,20 @@ def enum_string(first=None, last=None):
     yield from _enum_string(
         CONTEXT, StringGeneratorCStyle, first, last)
 
+def print_string(first=None, last=None):
+    """Print string data to sys.stdout.
+
+    String data those indices in [`first`, `last`) will be used.
+
+    Parameters
+    ----------
+    first : int, optional
+        The first index of the range of indices you want.
+    last : int, optional
+        The last index + 1 of the range of indices you want.
+    """
+    _print_string(CONTEXT, StringGeneratorCStyle, first, last)
+
 def print_all():
     """Print all of the string data to sys.stdout."""
-    _print_string(CONTEXT, StringGeneratorCStyle)
+    print_string()
