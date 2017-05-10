@@ -186,6 +186,7 @@ SPECIAL_SUBROUTINES = {
     0xC42A50: (1,),
     0xC42AA1: (1,),
     0xC42AC1: (1,),
+    0xC42B55: (1,),
     0xC42FDC: (1,),
     0xC43488: (1,),
     0xC434B2: (1,),

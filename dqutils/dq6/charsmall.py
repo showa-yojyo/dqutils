@@ -256,7 +256,7 @@ CHARMAP = {
     0xFA:"ペ",
     0xFB:"ポ",
     0xFC:"～",
-    #0xFD:"[FD]",
+    0xFD:"＋",
     #0xFE:"[FE]",
     #0xFF:"[FF]",
 }
