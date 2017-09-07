@@ -5,11 +5,13 @@ Usage:
 dumptool.py ROM_ADDRESS SIZEOF_ARRAY SIZEOF_OBJECT [OPTIONS] <STDIN>
 
 Example:
-$ dumptool.py dqutils.dq3.dumptool 0xC8F323 0x36 10
-#$0000\t#$00001F
-#$0000\t#$0003E0
+$ dumptool.py dqutils.dq5.dumptool 0x2396F3 0x16 0x55
+#$00\t#$FF
+#$01\t#$07
+#$01\t#$38
+#$01\t#$C0
 ...
-#$0035\t#$000001
+#$15\t#$FF
 [EOF]
 """
 
@@ -17,7 +19,8 @@ import sys
 from ..snescpu.dumptool import run
 
 def main(args=sys.argv[1:]):
-    run('DRAGONQUEST3', args)
+    run('DRAGONQUEST5', args)
 
 if __name__ == "__main__":
     sys.exit(main())
+
