@@ -25,8 +25,6 @@ class DumpToolTestCase(TestCase):
         with patch('sys.stdin', input), patch('sys.stdout', StringIO()) as output:
             main(['0xC8C65D', '0x19', '10', '--delimiter', ':'])
 
-        print(output.getvalue())
-
         expected = dedent(
             """\
             0000:0:00:0:00:0:00
