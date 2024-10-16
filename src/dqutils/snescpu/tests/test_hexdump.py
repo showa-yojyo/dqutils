@@ -17,12 +17,10 @@ class HexDumpTestCase(TestCase):
         parser = create_argparser()
 
         # invalid arguments
-        with patch('sys.stderr', open(devnull, 'w')):
+        with open(devnull, 'w') as fout, patch('sys.stderr', fout):
             self.assertRaises(SystemExit, parser.parse_args)
-            self.assertRaises(SystemExit, parser.parse_args,
-                              ['C0FF70'])
-            self.assertRaises(SystemExit, parser.parse_args,
-                              ['C0FF70', '16'])
+            self.assertRaises(SystemExit, parser.parse_args, ['C0FF70'])
+            self.assertRaises(SystemExit, parser.parse_args, ['C0FF70', '16'])
 
         # a normal case
         args = parser.parse_args(['C0FF70', '16', '4'])
