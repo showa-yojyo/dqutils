@@ -72,5 +72,3 @@ See the `LICENSE` file under the installation directory.
   * Web site (GitHub): [showa-yojyo (プレハブ小屋)](https://github.com/showa-yojyo/)
   * E-mail: yojyo@hotmail.com
   * Twitter: [@showa_yojyo](https://twitter.com/showa_yojyo)
-
-[1]: http://somethingaboutorange.com/mrl/projects/nose/ "Nose"
