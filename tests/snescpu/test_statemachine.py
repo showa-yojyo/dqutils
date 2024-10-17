@@ -4,9 +4,9 @@ Tests for dqutils.snescpu.statemachine.
 
 from unittest import TestCase
 from io import StringIO
-from ..rom_image import RomImage
-from ..statemachine import StateMachine
-from ..states import DisassembleState
+from dqutils.snescpu.rom_image import RomImage
+from dqutils.snescpu.statemachine import StateMachine
+from dqutils.snescpu.states import DisassembleState
 
 class AbstractStateMachineTestCase(TestCase):
     """The base class of StateMachineTestCase classes."""

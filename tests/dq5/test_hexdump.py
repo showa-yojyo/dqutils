@@ -2,9 +2,10 @@
 Tests for dquils.snescpu.hexdump.
 """
 
-from ...snescpu.hexdump import dump
-from ...snescpu.tests.test_hexdump import (AbstractHexDumpTestCase,
-                                           ADDRESS_PATTERN)
+from dqutils.snescpu.hexdump import dump
+from ..snescpu.test_hexdump import (
+    AbstractHexDumpTestCase,
+    ADDRESS_PATTERN)
 
 class HexDumpTestCase(AbstractHexDumpTestCase):
     """Tests for dquils.snescpu.hexdump."""

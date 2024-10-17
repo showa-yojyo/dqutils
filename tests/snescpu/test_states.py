@@ -4,8 +4,8 @@ Tests for dqutils.snescpu.states.
 
 from unittest import TestCase
 from unittest.mock import Mock
-from ..instructions import DEFAULT_INSTRUCTIONS
-from ..states import (DisassembleState, DumpState)
+from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
+from dqutils.snescpu.states import (DisassembleState, DumpState)
 
 class DisassembleStateTestCase(TestCase):
     """A TestCase for class DisassembleState."""
@@ -29,7 +29,7 @@ class DisassembleStateTestCase(TestCase):
 
     def test_runtime_init(self):
         """
-        Test behaviors of `DisassembleState.runtime_init`. 
+        Test behaviors of `DisassembleState.runtime_init`.
         """
 
         fsm = Mock(program_counter='dummy')
@@ -79,7 +79,7 @@ class DumpStateTestCase(TestCase):
 
     def test_runtime_init(self):
         """
-        Test behavior of `DumpState.runtime_init`. 
+        Test behavior of `DumpState.runtime_init`.
         """
 
         fsm = Mock(program_counter='dummy')

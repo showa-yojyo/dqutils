@@ -4,7 +4,8 @@ Tests for dqutils.snescpu.instructions.
 
 from unittest import TestCase
 from unittest.mock import Mock
-from ..instructions import (INSTRUCTION_TABLE, get_instruction)
+from dqutils.snescpu.instructions import (
+    INSTRUCTION_TABLE, get_instruction)
 
 # pylint: disable=too-many-public-methods
 class InstructionsTestCase(TestCase):

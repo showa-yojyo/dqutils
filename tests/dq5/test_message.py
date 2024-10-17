@@ -2,7 +2,7 @@
 
 from array import array
 from unittest import TestCase
-from ..message import (enum_battle, enum_scenario)
+from dqutils.dq5.message import (enum_battle, enum_scenario)
 
 class DQ5MessageTestCase(TestCase):
     """Test functions defined in dqutils.dq5.message."""

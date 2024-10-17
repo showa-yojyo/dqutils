@@ -6,7 +6,7 @@ from io import StringIO
 from os import devnull
 from unittest import TestCase
 from unittest.mock import patch
-from ..hexdump import create_argparser
+from dqutils.snescpu.hexdump import create_argparser
 
 class HexDumpTestCase(TestCase):
     """Tests for dquils.snescpu.hexdump."""

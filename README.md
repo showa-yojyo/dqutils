@@ -37,12 +37,14 @@ Then, touch the file `config` and edit as follows for example:
 
 UNDER CONSTRUCTION (issue #11) (available only for developers?)
 
-    $ cd src
-    $ python -m unittest
+For example:
+
+    $ cd $REPOSITORY_ROOT
+    $ PYTHONPATH=./src pipenv run python -m unittest discover .
     ....................................s.........................................................
     ----------------------------------------------------------------------
     Ran 94 tests in 0.130s
-    
+
     OK (skipped=1)
 
 ## Usage

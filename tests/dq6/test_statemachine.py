@@ -3,9 +3,8 @@ Tests for dqutils.snescpu.statemachine.
 """
 
 from io import StringIO
-from ...snescpu.tests.test_statemachine import AbstractStateMachineTestCase
-from ...snescpu.statemachine import StateMachine
-from ..disasm import (DisassembleStateDQ6, DumpState)
+from dqutils.dq6.disasm import (DisassembleStateDQ6, DumpState)
+from ..snescpu.test_statemachine import AbstractStateMachineTestCase
 
 # pylint: disable=too-many-public-methods
 class StateMachineTestCase(AbstractStateMachineTestCase):

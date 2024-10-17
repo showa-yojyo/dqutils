@@ -6,7 +6,7 @@ from io import StringIO
 from textwrap import dedent
 from unittest import TestCase
 from unittest.mock import patch
-from ..dumptool import main
+from dqutils.dq3.dumptool import main
 
 class DumpToolTestCase(TestCase):
 

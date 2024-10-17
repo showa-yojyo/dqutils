@@ -2,8 +2,8 @@
 """Tests for dqutils.dq6.string"""
 
 from unittest import TestCase
-from ...string import get_text
-from ..string import (CONTEXT, enum_string)
+from dqutils.dq6.string import (CONTEXT, enum_string)
+from dqutils.string import get_text
 
 class DQ6StringTestCase(TestCase):
     """Test functions defined in dqutils.dq6.string."""

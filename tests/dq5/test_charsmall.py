@@ -1,7 +1,7 @@
 """Tests for dqutils.dq5.charsmall module."""
 
 from unittest import TestCase
-from ..charsmall import process_dakuten
+from dqutils.dq5.charsmall import process_dakuten
 
 class DQ5CharSmallTestCase(TestCase):
     """Test functions defined in dqutils.dq5.charsmall."""

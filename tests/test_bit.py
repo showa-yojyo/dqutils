@@ -1,7 +1,7 @@
 """Tests for dqutils.bit module."""
 
 import unittest
-from ..bit import (get_bits, get_int)
+from dqutils.bit import (get_bits, get_int)
 
 # pylint: disable=too-many-public-methods
 class BitTestCase(unittest.TestCase):

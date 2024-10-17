@@ -4,8 +4,8 @@ Tests for dqutils.snescpu.statemachine.
 
 from io import StringIO
 from unittest import skip
-from ...snescpu.tests.test_statemachine import AbstractStateMachineTestCase
-from ..disasm import (DisassembleStateDQ5, DumpState)
+from dqutils.dq5.disasm import (DisassembleStateDQ5, DumpState)
+from ..snescpu.test_statemachine import AbstractStateMachineTestCase
 
 class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for class dqutils.snescpu.statemachine.StateMachine."""

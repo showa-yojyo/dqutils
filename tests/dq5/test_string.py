@@ -2,9 +2,9 @@
 """
 
 from unittest import TestCase
-from ..string import (enum_string, CONTEXT_GROUP)
-from ..charsmall import process_dakuten
-from ...string import get_text
+from dqutils.dq5.string import (enum_string, CONTEXT_GROUP)
+from dqutils.dq5.charsmall import process_dakuten
+from dqutils.string import get_text
 
 class DQ5StringTestCase(TestCase):
     """Test functions defined in dqutils.dq5.string."""
