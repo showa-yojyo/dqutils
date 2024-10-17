@@ -15,7 +15,6 @@ import sys
 
 # Release data
 from . import release
-from .tests.test import run as test
 
 __author__ = '{} <{}>'.format(release.AUTHOR, release.AUTHOR_EMAIL)
 

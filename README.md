@@ -35,10 +35,15 @@ Then, touch the file `config` and edit as follows for example:
 
 ### Testing
 
-If you have [Nose][1] package in your Python environment,
-you can test **dqutils** package are successfully installed from the command line:
+UNDER CONSTRUCTION (issue #11) (available only for developers?)
 
-    $ python 'import dqutils; dqutils.test()'
+    $ cd src
+    $ python -m unittest
+    ....................................s.........................................................
+    ----------------------------------------------------------------------
+    Ran 94 tests in 0.130s
+    
+    OK (skipped=1)
 
 ## Usage
 
