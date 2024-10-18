@@ -130,10 +130,10 @@ Source = "https://github.com/showa-yojyo/dqutils/"
 
 # Choosing a build backend:
 # https://packaging.python.org/en/latest/tutorials/packaging-projects/#choosing-a-build-backend
-# [build-system]
-#
+[build-system]
+
 # A list of packages that are needed to build your package:
-# requires = ["hatchling"]
-#
+requires = ["hatchling"]
+
 # The name of the Python object that frontends will use to perform the build:
-# build-backend = "hatchling.build"
+build-backend = "hatchling.build"

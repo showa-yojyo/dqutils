@@ -47,6 +47,31 @@ For example:
 
     OK (skipped=1)
 
+### Build the Package
+
+To build the package, install the required packages and run the build command
+with Pipenv. The generated files will be in the `dist` directory. For example:
+
+    $ cd $REPOSITORY_ROOT
+    $ pipenv sync
+    To activate this project's virtualenv, run pipenv shell.
+    Alternatively, run a command inside the virtualenv with pipenv run.
+    Installing dependencies from Pipfile.lock (xxxxxx)...
+    All dependencies are now up-to-date!
+    $ pipenv run python -m build
+    * Creating isolated environment: venv+pip...
+    * Installing packages in isolated environment:
+      - hatchling
+    * Getting build dependencies for sdist...
+    * Building sdist...
+    * Building wheel from sdist
+    * Creating isolated environment: venv+pip...
+    * Installing packages in isolated environment:
+      - hatchling
+    * Getting build dependencies for wheel...
+    * Building wheel...
+    Successfully built dqutils-x.y.z.tar.gz and dqutils-x.y.z-py3-none-any.whl
+
 ## Usage
 
 ### View Texts
