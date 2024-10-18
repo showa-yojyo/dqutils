@@ -3,8 +3,9 @@
 applications that use this package.
 """
 
-import os.path
 from configparser import ConfigParser
+import os
+from pathlib import Path
 
 def get_config():
     """Return configuration data from :file:`config`.
@@ -39,24 +40,42 @@ def get_config():
 def _load_conf():
     """Read and parse configuration data from :file:`config`."""
 
-    with open(os.path.join(confdir_home(), 'config')) as fin:
+    with (confdir_home() / 'config').open() as fin:
         confparser = ConfigParser()
         confparser.read_file(fin)
 
     return confparser
 
-def confdir_home():
-    """Return the path to dqutils configuration files.
+def confdir_home() -> str:
+    """Return the directory path to dqutils configuration files.
 
-    Default to :file:`~/.dqutils`.
+    The directory location is determined in the following order:
+
+    * On Linux,
+
+      * ``$XDG_CONFIG_HOME/dqutils`` (if ``$XDG_CONFIG_HOME`` is defined)
+      * Otherwise, ``$HOME/.config/dqutils``
+    * On other platforms, * ``$HOME/.dqutils`` if ``$HOME`` is defined
 
     Returns
     -------
     path : str
-        A string containing the path to the directory where
-        configuration files of dqutils package locate in.
+        A string containing the path to the directory where configuration files
+        of dqutils package locate in.
     """
-    return os.path.expanduser('~/.dqutils')
+
+    def gen_candidates():
+        if xdg_config_home := os.environ.get('XDG_CONFIG_HOME'):
+            yield Path(xdg_config_home, "dqutils")
+        home_dir = Path.home()
+        yield home_dir / ".config" / "dqutils"
+        yield home_dir / ".dqutils"
+
+    for dir in gen_candidates():
+        if dir.is_dir():
+            return dir
+
+    raise RuntimeError("Could not find configuration directory. See the README")
 
 if __name__ == "__main__":
     get_config()
