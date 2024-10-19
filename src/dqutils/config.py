@@ -3,11 +3,14 @@
 applications that use this package.
 """
 
+from collections.abc import Iterator
 from configparser import ConfigParser
 import os
 from pathlib import Path
 
-def get_config():
+_CONFIG: ConfigParser | None = None
+
+def get_config() -> ConfigParser:
     """Return configuration data from :file:`config`.
 
     When the file :file:`config` is located under the path that
@@ -32,12 +35,13 @@ def get_config():
         An object of the main configuration parser.
     """
 
-    if not getattr(get_config, "MYCONFIG", None):
-        get_config.MYCONFIG = _load_conf()
+    global _CONFIG
+    if _CONFIG is None:
+        _CONFIG = _load_conf()
 
-    return get_config.MYCONFIG
+    return _CONFIG
 
-def _load_conf():
+def _load_conf() -> ConfigParser:
     """Read and parse configuration data from :file:`config`."""
 
     with (confdir_home() / 'config').open() as fin:
@@ -46,7 +50,7 @@ def _load_conf():
 
     return confparser
 
-def confdir_home() -> str:
+def confdir_home() -> Path:
     """Return the directory path to dqutils configuration files.
 
     The directory location is determined in the following order:
@@ -64,7 +68,7 @@ def confdir_home() -> str:
         of dqutils package locate in.
     """
 
-    def gen_candidates():
+    def gen_candidates() -> Iterator[Path]:
         if xdg_config_home := os.environ.get('XDG_CONFIG_HOME'):
             yield Path(xdg_config_home, "dqutils")
         home_dir = Path.home()

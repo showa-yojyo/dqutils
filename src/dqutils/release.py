@@ -104,8 +104,8 @@ def get_info(dynamic=True):
 # Version information
 NAME = 'dqutils'
 _MAJOR = 1
-_MINOR = 2
-_MICRO = 0
+_MINOR = 1
+_MICRO = 2
 
 # Declare current release as a development release.
 _DEV = True

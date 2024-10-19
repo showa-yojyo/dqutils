@@ -12,6 +12,7 @@ This package contains the following sub-packages:
 from argparse import ArgumentParser
 from collections import namedtuple
 import sys
+from typing import Iterable
 
 # Release data
 from . import release
@@ -27,7 +28,7 @@ __version__ = release.VERSION
 
 Command = namedtuple('Command', ('name', 'help', 'func'))
 
-def run(commands):
+def run(commands: Iterable[Command]) -> None:
     """TBW.
 
     Under construction.

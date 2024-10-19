@@ -9,8 +9,16 @@ forms of raw bytes or human-readable texts.
 """
 
 from array import array
+from collections.abc import Iterator
+from typing import Any, Mapping, TypeAlias
+from .string_generator import AbstractStringGenerator, StringInfo
 
-def get_text(code_seq, charmap, delims=None):
+CodeSeq: TypeAlias = bytes | bytearray | array
+
+def get_text(
+        code_seq: CodeSeq,
+        charmap: Mapping[int, str],
+        delims: CodeSeq | None=None) -> str:
     """Return a text representation of a string.
 
     Parameters
@@ -27,11 +35,6 @@ def get_text(code_seq, charmap, delims=None):
     text : str
         A human-readble text, e.g. "ひのきのぼう".
     """
-    assert any(
-        isinstance(code_seq, i) for i in (bytes, bytearray, array))
-    assert isinstance(charmap, dict)
-    assert delims is None or any(
-        isinstance(code_seq, i) for i in (bytes, bytearray, array))
 
     if delims and code_seq[-1] in delims:
         code_seq = code_seq[0:-1]
@@ -39,7 +42,7 @@ def get_text(code_seq, charmap, delims=None):
     return ''.join(charmap.get(c, '[{0:02X}]'.format(c))
                    for c in code_seq)
 
-def get_hex(code_seq):
+def get_hex(code_seq: CodeSeq) -> str:
     """Return a hex representation of a string.
 
     This function does not remove the delimiter code.
@@ -54,12 +57,13 @@ def get_hex(code_seq):
     dump : str
         E.g. "26 24 12 24 DC 0E AC".
     """
-
-    assert any(
-        isinstance(code_seq, i) for i in (bytes, bytearray, array))
     return ' '.join('{:02X}'.format(c) for c in code_seq)
 
-def enum_string(context, generator_t, first=None, last=None):
+def enum_string(
+        context: Mapping[str, Any],
+        generator_t: type[AbstractStringGenerator],
+        first: int|None=None,
+        last: int|None=None) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
 
@@ -100,7 +104,11 @@ def enum_string(context, generator_t, first=None, last=None):
 
     yield from generator_t(context, first, last)
 
-def print_string(context, generator_t, first=None, last=None):
+def print_string(
+        context: Mapping[str, Any],
+        generator_t: type[AbstractStringGenerator],
+        first: int|None=None,
+        last: int|None=None) -> None:
     """Print string data to sys.stdout.
 
     String data those indices in [`first`, `last`) will be used.

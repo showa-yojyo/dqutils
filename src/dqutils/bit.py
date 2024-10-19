@@ -2,8 +2,10 @@
 manipulation.
 """
 from itertools import islice
+# from collections.abc import Buffer
+from typing import Iterable
 
-def get_bits(byte_seq, index, mask):
+def get_bits(byte_seq: Iterable[int], index: int, mask: int) -> int:
     """Obtain specified bits as an integer value from a sequence of
     bytes.
 
@@ -21,8 +23,7 @@ def get_bits(byte_seq, index, mask):
     Returns
     -------
     value : int
-        The integer that extracted bit string represents (in little
-        endian).
+        The integer that extracted bit string represents (in little endian).
 
     See Also
     --------
@@ -37,7 +38,7 @@ def get_bits(byte_seq, index, mask):
 
     return value
 
-def get_int(byte_seq, index, length):
+def get_int(byte_seq: Iterable[int], index: int, length: int) -> int:
     """Obtain the integer value from a subsequence in a sequence of
     bytes.
 

@@ -2,14 +2,24 @@
 """
 
 from abc import (ABCMeta, abstractmethod)
-from .snescpu.mapper import make_mapper
+from collections.abc import Iterator, Mapping
+import mmap
+from typing import Any, Self, Tuple, TypeAlias
+
+from .snescpu.mapper import AbstractMapper, make_mapper
 from .snescpu.rom_image import RomImage
+
+StringInfo: TypeAlias = Tuple[int, bytes | bytearray]
 
 # pylint: disable=too-few-public-methods
 class AbstractStringGenerator(metaclass=ABCMeta):
     """The base class of StringGenerator subclasses."""
 
-    def __init__(self, context, first=None, last=None):
+    def __init__(
+            self: Self,
+            context: Mapping[str, Any],
+            first: int|None=None,
+            last: int|None=None):
         """Create an object of class AbstractStringGenerator.
 
         Parameters
@@ -38,29 +48,28 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         assert "title" in context
         title = context["title"]
 
-        if not first:
+        if first is None:
             first = context.get("string_id_first",
                                 context.get("message_id_first"))
-        if not last:
+        if last is None:
             last = context.get("string_id_last",
                                context.get("message_id_last"))
-        assert 0 <= first <= last
+        # assert 0 <= first <= last
 
-        addr = context.get("addr_string", context.get("addr_message"))
+        addr: int = context.get("addr_string", context.get("addr_message"))
         assert addr
 
-        delims = context.get("delimiters")
-        assert delims is None or isinstance(delims, bytes)
+        delims: bytes|None = context.get("delimiters")
 
         self.title = title
         self.first = first
         self.last = last
         self.addr = addr
         self.delims = delims
-        self.mapper = None
+        self.mapper: type[AbstractMapper]
         self.assert_valid()
 
-    def __iter__(self):
+    def __iter__(self: Self) -> Iterator[StringInfo]:
         self.assert_valid()
 
         if self.first == self.last:
@@ -72,15 +81,18 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             mem.seek(self.mapper.from_cpu(addr))
             yield from self._do_iterate(mem, addr)
 
-    def assert_valid(self):
+    def assert_valid(self: Self) -> None:
         """Test if this instance is valid."""
         assert self.title
-        assert 0 <= self.first <= self.last
+        # assert self.first and self.last and 0 <= self.first <= self.last
         assert self.addr >= 0
         assert self.delims is None or isinstance(self.delims, bytes)
 
     @abstractmethod
-    def _do_iterate(self, mem, addr):
+    def _do_iterate(
+        self: Self,
+        mem: mmap.mmap,
+        addr: int) -> Iterator[StringInfo]:
         """Iterate pairs of string information.
 
         Parameters
@@ -104,8 +116,14 @@ class StringGeneratorPascalStyle(AbstractStringGenerator):
     strings information.
     """
 
-    def _do_iterate(self, mem, addr):
+    def _do_iterate(
+        self: Self,
+        mem: mmap.mmap,
+        addr: int) -> Iterator[StringInfo]:
         first, last = self.first, self.last
+        assert first is not None
+        assert last is not None
+
         for i in range(0, last):
             size = mem.read(1)[0]
             if size and first <= i:
@@ -117,14 +135,25 @@ class StringGeneratorCStyle(AbstractStringGenerator):
     strings information.
     """
 
-    def _do_iterate(self, mem, addr):
+    def _do_iterate(
+        self: Self,
+        mem: mmap.mmap,
+        addr: int) -> Iterator[StringInfo]:
         first, last = self.first, self.last
+        assert first is not None
+        assert last is not None
+
         delims = self.delims
+        assert delims
+
         from_rom_addr = self.mapper.from_rom
         for i in range(0, last):
             code_seq = bytearray()
             addr = from_rom_addr(mem.tell())
-            code = b'\xFFFF' # dummy value
+
+            # do-while loop
+            code = mem.read_byte()
+            code_seq.append(code)
             while code not in delims:
                 code = mem.read_byte()
                 code_seq.append(code)

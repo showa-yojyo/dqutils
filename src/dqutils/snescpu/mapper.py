@@ -1,6 +1,8 @@
 """dqutils.address - SNES address conversion functions.
 """
 from abc import (ABCMeta, abstractmethod)
+import mmap
+
 from .rom_image import get_snes_header
 
 class AbstractMapper(metaclass=ABCMeta):
@@ -14,17 +16,17 @@ class AbstractMapper(metaclass=ABCMeta):
     is useful.)
     """
 
-    bank_offset_size = None
+    bank_offset_size: int
     """The number of bytes in one bank."""
 
     @staticmethod
     @abstractmethod
-    def check_header_mapper_byte(mapper_byte):
+    def check_header_mapper_byte(mapper_byte: int) -> bool:
         """Return the mapper name.
 
         Parameters
         ----------
-        mapper_byte : bytes
+        mapper_byte : int
             The 0x15th byte of SNES header of 64 bytes.
 
         Returns
@@ -36,7 +38,7 @@ class AbstractMapper(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def from_rom(romaddr):
+    def from_rom(romaddr: int) -> int:
         """Convert from a ROM address to a CPU address for HiROM.
 
         Parameters
@@ -53,7 +55,7 @@ class AbstractMapper(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def from_cpu(cpuaddr):
+    def from_cpu(cpuaddr: int) -> int:
         """Convert from a CPU address to a ROM address for HiROM.
 
         Parameters
@@ -70,7 +72,7 @@ class AbstractMapper(metaclass=ABCMeta):
 
     @staticmethod
     @abstractmethod
-    def increment_address(addr):
+    def increment_address(addr: int) -> int:
         """Increment given CPU address.
 
         Parameters
@@ -96,12 +98,12 @@ class HiROM(AbstractMapper):
     bank_offset_size = 0x10000
 
     @staticmethod
-    def check_header_mapper_byte(mapper_byte):
+    def check_header_mapper_byte(mapper_byte: int) -> bool:
         """Return the mapper name.
 
         Parameters
         ----------
-        mapper_byte : bytes
+        mapper_byte : int
             The 0x15th byte of SNES header of 64 bytes.
 
         Returns
@@ -112,7 +114,7 @@ class HiROM(AbstractMapper):
         return mapper_byte & 0x01 == 0x01
 
     @staticmethod
-    def from_rom(romaddr):
+    def from_rom(romaddr: int) -> int:
         """Convert from a ROM address to a CPU address for HiROM.
 
         Parameters
@@ -135,7 +137,7 @@ class HiROM(AbstractMapper):
         return 0x00C00000 | (romaddr & 0x003FFFFF)
 
     @staticmethod
-    def from_cpu(cpuaddr):
+    def from_cpu(cpuaddr: int) -> int:
         """Convert from a CPU address to a ROM address for HiROM.
 
         To convert from a CPU address to a ROM address, first,
@@ -162,7 +164,7 @@ class HiROM(AbstractMapper):
         return cpuaddr & 0x003FFFFF
 
     @staticmethod
-    def increment_address(addr):
+    def increment_address(addr: int) -> int:
         """Increment given CPU address.
 
         Parameters
@@ -188,12 +190,12 @@ class LoROM(AbstractMapper):
     bank_offset_size = 0x8000
 
     @staticmethod
-    def check_header_mapper_byte(mapper_byte):
+    def check_header_mapper_byte(mapper_byte: int) -> bool:
         """Return the mapper name.
 
         Parameters
         ----------
-        mapper_byte : bytes
+        mapper_byte : int
             The 0x15th byte of SNES header of 64 bytes.
 
         Returns
@@ -204,7 +206,7 @@ class LoROM(AbstractMapper):
         return mapper_byte & 0x01 == 0x00
 
     @staticmethod
-    def from_rom(romaddr):
+    def from_rom(romaddr: int) -> int:
         """Convert from a ROM address to a CPU address for HiROM.
 
         Parameters
@@ -228,7 +230,7 @@ class LoROM(AbstractMapper):
                 | (((romaddr & 0x007F8000) << 1) | 0x00008000))
 
     @staticmethod
-    def from_cpu(cpuaddr):
+    def from_cpu(cpuaddr: int) -> int:
         """Convert from a CPU address to a ROM address for HiROM.
 
         Parameters
@@ -251,7 +253,7 @@ class LoROM(AbstractMapper):
         return (cpuaddr & 0x007FFF) | ((cpuaddr & 0x007F0000) >> 1)
 
     @staticmethod
-    def increment_address(addr):
+    def increment_address(addr: int) -> int:
         """Increment given CPU address.
 
         Parameters
@@ -270,7 +272,9 @@ class LoROM(AbstractMapper):
             addr = (addr & 0xFF0000) | 0x8000
         return addr
 
-def make_mapper(rom=None, name=None):
+def make_mapper(
+        rom: mmap.mmap|None=None,
+        name: str|None = None) -> type[AbstractMapper]:
     """Return a mapper type.
 
     You may also directly use subclasses of class AbstractMapper.
@@ -284,7 +288,7 @@ def make_mapper(rom=None, name=None):
 
     Returns
     -------
-    mapper : AbstractMapper
+    mapper : type[AbstractMapper]
         The mapper type.
 
     See also
@@ -309,3 +313,5 @@ def make_mapper(rom=None, name=None):
     elif name:
         return next(cls for cls in mappers
                     if cls.__name__ == name)
+
+    raise RuntimeError('Mapper type not found')
