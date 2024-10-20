@@ -11,10 +11,17 @@ For all of the programs, conversational message data are compressed.
 """
 
 from array import array
-from .string import (get_text, get_hex)
-from .string_generator import StringGeneratorCStyle
+from collections.abc import Iterator, Mapping
+from typing import Any
 
-def enum_battle(context, first=None, last=None):
+from .string import (get_text, get_hex)
+from .string_generator import StringGeneratorCStyle, StringInfo
+from .message_generator import AbstractMessageGenerator
+
+def enum_battle(
+        context: Mapping[str, Any],
+        first: int|None=None,
+        last: int|None=None) -> Iterator[StringInfo]:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -50,7 +57,10 @@ def enum_battle(context, first=None, last=None):
     """
     yield from StringGeneratorCStyle(context, first, last)
 
-def print_battle(context, first=None, last=None):
+def print_battle(
+        context: Mapping[str, Any],
+        first: int|None=None,
+        last: int|None=None) -> None:
     """Print message data to sys.stdout.
 
     Message data those indices in [`first`, `last`) will be used.
@@ -96,7 +106,11 @@ def print_battle(context, first=None, last=None):
             address=item[0],
             message=text))
 
-def enum_scenario(context, generator_t, first=None, last=None):
+def enum_scenario(
+        context: Mapping[str, Any],
+        generator_t: type[AbstractMessageGenerator],
+        first: int|None=None,
+        last: int|None=None): # TODO
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -137,7 +151,11 @@ def enum_scenario(context, generator_t, first=None, last=None):
     """
     yield from generator_t(context, first, last)
 
-def print_scenario(context, generator_t, first=None, last=None):
+def print_scenario(
+        context: Mapping[str, Any],
+        generator_t: type[AbstractMessageGenerator],
+        first: int|None=None,
+        last: int|None=None) -> None:
     """Print message data to sys.stdout.
 
     Message data those indices in [`first`, `last`) will be returned.
@@ -168,7 +186,7 @@ def print_scenario(context, generator_t, first=None, last=None):
     """
 
     charmap = context["charmap"]
-    assert charmap is None or isinstance(charmap, dict)
+    assert isinstance(charmap, dict)
 
     delims = context["delimiters"]
     assert delims is None or isinstance(delims, array)
