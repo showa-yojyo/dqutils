@@ -19,7 +19,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             self: Self,
             context: Mapping[str, Any],
             first: int|None=None,
-            last: int|None=None):
+            last: int|None=None) -> None:
         """Create an object of class AbstractStringGenerator.
 
         Parameters
