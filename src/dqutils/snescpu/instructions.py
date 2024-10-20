@@ -1,28 +1,44 @@
 """
 Instructions of the 65816 Processor.
 """
+from __future__ import annotations
+
+from typing import Any, TYPE_CHECKING
 
 from .addressing import get_addressing_mode
 
-@staticmethod
-def _execute_c2(state, context):
+if TYPE_CHECKING:
+    from collections.abc import MutableMapping
+    from typing import Any, TypeAlias
+    from .states import DisassembleState
+
+    ContextT: TypeAlias = MutableMapping[str, Any]
+
+def _execute_c2(
+        state: DisassembleState,
+        context: ContextT
+        ) -> tuple[ContextT, None]:
     """REP: Reset status bits.
 
     When used, it will set the bits specified by the 1 byte immediate
     value. This is the only means of setting the M and X status
     register bits.
     """
+    assert isinstance(state.current_operand, int)
     state.flags &= ~state.current_operand
     return context, None
 
-@staticmethod
-def _execute_e2(state, context):
+def _execute_e2(
+        state: DisassembleState,
+        context: ContextT
+        ) -> tuple[ContextT, None]:
     """SEP: Set status bits.
 
     When used, it will set the bits specified by the 1 byte immediate
     value. This is the only means of setting the M and X status
     register bits.
     """
+    assert isinstance(state.current_operand, int)
     state.flags |= state.current_operand
     return context, None
 
@@ -289,80 +305,82 @@ INSTRUCTION_TABLE = (
 # ** Opcode is 1 byte, but program counter value pushed onto stack is
 #    incremented by 2 allowing for optional signature byte.
 
-def _build_instruction_classes():
+class AbstractInstruction(object):
+    """The base class for all instruction classes."""
+
+    opcode = None
+    operand_size: int
+    mnemonic = None
+    #aliases = None
+    add_if_m_zero: bool
+    add_if_x_zero: bool
+    addressing_mode = None
+
+    @classmethod
+    def actual_operand_size(cls, flags: int) -> int:
+        """Return the actual size of this operand in bytes."""
+
+        # Addition for Immediate mode.
+        if cls.add_if_x_zero and flags & 0x10 == 0x00:
+            return cls.operand_size
+        elif cls.add_if_m_zero and flags & 0x20 == 0x00:
+            return cls.operand_size
+
+        return cls.operand_size - 1
+
+    @staticmethod
+    def execute(
+        state: DisassembleState,
+        context: ContextT
+        ) -> tuple[ContextT, str | None]:
+        """Overrided by subclasses if necessary.
+
+        Parameters
+        ----------
+        state : DisassembleState
+        context : dict
+            Depends on your application.
+
+        Returns
+        -------
+        context : dict
+            Depends on your application.
+        next_state : str
+            The name of the next state for the state machine.
+        """
+        return context, None
+
+    @classmethod
+    def format(cls, state: DisassembleState) -> str:
+        """Return formatted string of this instruction.
+
+        Parameters
+        ----------
+        cls : AbstractInstruction
+        state : DisassembleState
+
+        Returns
+        -------
+        result : str
+            A string value which contains its name and parsed
+            operand.
+        """
+
+        if not (addressing_mode := cls.addressing_mode):
+            # Opcode 42, WDM.
+            assert state.current_operand
+            return '#${:02X}'.format(state.current_operand)
+
+        if addressing_mode.formatter:
+            return addressing_mode.formatter(state)
+
+        if syntax := addressing_mode.syntax:
+            return syntax.format(state.current_operand)
+
+        return str()
+
+def _build_instruction_classes() -> list[type]:
     """Register newly generated types to this module."""
-
-    class AbstractInstruction(object):
-        """The base class for all instruction classes."""
-
-        opcode = None
-        operand_size = None
-        mnemonic = None
-        #aliases = None
-        add_if_m_zero = None
-        add_if_x_zero = None
-        addressing_mode = None
-
-        @classmethod
-        def actual_operand_size(cls, flags):
-            """Return the actual size of this operand in bytes."""
-
-            # Addition for Immediate mode.
-            if cls.add_if_x_zero and flags & 0x10 == 0x00:
-                return cls.operand_size
-            elif cls.add_if_m_zero and flags & 0x20 == 0x00:
-                return cls.operand_size
-
-            return cls.operand_size - 1
-
-        @staticmethod
-        def execute(state, context):
-            """Overrided by subclasses if necessary.
-
-            Parameters
-            ----------
-            state : DisassembleState
-            context : dict
-                Depends on your application.
-
-            Returns
-            -------
-            context : dict
-                Depends on your application.
-            next_state : str
-                The name of the next state for the state machine.
-            """
-            return context, None
-
-        @classmethod
-        def format(cls, state):
-            """Return formatted string of this instruction.
-
-            Parameters
-            ----------
-            cls : AbstractInstruction
-            state : DisassembleState
-
-            Returns
-            -------
-            result : str
-                A string value which contains its name and parsed
-                operand.
-            """
-
-            addressing_mode = cls.addressing_mode
-            if not addressing_mode:
-                # Opcode 42, WDM.
-                return '#${:02X}'.format(state.current_operand)
-
-            if addressing_mode.formatter:
-                return addressing_mode.formatter(state)
-
-            syntax = addressing_mode.syntax
-            if syntax:
-                return syntax.format(state.current_operand)
-
-            return str()
 
     global_dicts = globals()
     #inst_classes = {}
@@ -379,11 +397,10 @@ def _build_instruction_classes():
         attrs['add_if_m_zero'] = annotation == '*'
         attrs['add_if_x_zero'] = annotation == '+'
 
-        method = global_dicts.get('_execute_{:02x}'.format(opcode))
-        if method:
+        if method := global_dicts.get('_execute_{:02x}'.format(opcode)):
             attrs['execute'] = method
 
-        class_name = 'Instruction{:02X}'.format(attrs['opcode'])
+        class_name = 'Instruction{:02X}'.format(opcode)
         cls = type(
             class_name,
             (AbstractInstruction,),
@@ -394,13 +411,13 @@ def _build_instruction_classes():
     #global_dicts.update(inst_classes)
     return instructions
 
-def get_instruction(opcode):
+def get_instruction(opcode: bytes | int) -> type:
     """Return the instruction object by its opcode.
 
     Parameters
     ----------
     opcode : bytes
-        A 1 byte value. See also `INSTRUCTION_TABLE`.
+        A one byte value. See also `INSTRUCTION_TABLE`.
 
     Returns
     -------

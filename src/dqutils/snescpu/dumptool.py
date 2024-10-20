@@ -7,15 +7,22 @@ $ dumptool.py dqutils.dq3.dumptool 0xC8F323 0x36 10
 #$0035\t#$000001
 [EOF]
 """
+from __future__ import annotations
 
 from argparse import ArgumentParser
 from csv import (reader, writer, QUOTE_NONE)
 import sys
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from _csv import _writer
+    from argparse import Namespace
+    from typing import Sequence, Iterable
+
 from ..bit import get_bits
 from .rom_image import RomImage
 from .mapper import make_mapper
 
-def int_wrapper(string):
+def int_wrapper(string: str) -> int:
     """A helper function."""
 
     if string.startswith('#$'):
@@ -25,7 +32,7 @@ def int_wrapper(string):
 
     return int(string, 0)
 
-def formatter(mask_bits):
+def formatter(mask_bits: int) -> str:
     """A helper function."""
 
     numbits = bin(mask_bits).count("1")
@@ -41,7 +48,14 @@ def formatter(mask_bits):
 COLUMN_OFFSET = 0
 COLUMN_MASK_BITS = 1
 
-def dump(title, address, sizeof_object, sizeof_array, source, destination):
+def dump(
+        title: str,
+        address: int,
+        sizeof_object: int,
+        sizeof_array: int,
+        source: Iterable,
+        destination: _writer
+        ) -> None:
     """Dump a sequence of typed objects in ROM image.
 
     Parameters
@@ -81,7 +95,7 @@ def dump(title, address, sizeof_object, sizeof_array, source, destination):
 
             destination.writerow(output)
 
-def parse_args(args):
+def parse_args(args: Sequence[str]) -> Namespace:
     parser = ArgumentParser(description='A dump tool')
     parser.add_argument(
         'address',
@@ -102,7 +116,10 @@ def parse_args(args):
         help='use SEP as fields separator (default to \\t)')
     return parser.parse_args(args)
 
-def run(title, args=sys.argv[1:]):
+def run(
+        title: str,
+        args: Sequence[str]=sys.argv[1:]
+        ) -> int:
     arguments = parse_args(args=args or ('--help',))
     delimiter = arguments.delimiter
     dump(

@@ -1,14 +1,29 @@
 """
 Provide a state machine for the 65816 Processor.
 """
+from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
+
 from .mapper import make_mapper
+if TYPE_CHECKING:
+    from collections.abc import Iterable
+    import mmap
+    from typimg import Self
+    from .mapper import AbstractMapper
+    from .states import AbstractState
 
 class StateMachine(object):
     """A state machine for the 65816 CPU disassembler."""
 
-    def __init__(self, state_classes, initial_state, rom, mapper=None):
+    def __init__(
+            self: Self,
+            state_classes: Iterable[type[AbstractState]],
+            initial_state: str,
+            rom: mmap.mmap,
+            mapper: type[AbstractMapper]|None=None
+            ) -> None:
         """Initialize an object of class `StateMachine`.
 
         Parameters
@@ -31,22 +46,18 @@ class StateMachine(object):
         """
 
         self.rom = rom
-        if mapper:
-            self.mapper = mapper
-        else:
-            self.mapper = make_mapper(rom=rom)
-
-        self.last_rom_addr = 'dummy'
+        self.mapper = mapper if mapper else make_mapper(rom=rom)
+        self.last_rom_addr: int
 
         self.initial_state = initial_state
         self.current_state = initial_state
-        self.states = {} # {state_name: State}
+        self.states: dict[str, AbstractState] = {}
         self.add_states(state_classes)
 
         self.destination = sys.stdout
 
     @property
-    def program_counter(self):
+    def program_counter(self: Self) -> int:
         """Return the program counter.
 
         Returns
@@ -56,19 +67,21 @@ class StateMachine(object):
         assert self.rom and self.mapper
         return self.mapper.from_rom(self.rom.tell())
 
-    def unlink(self):
+    def unlink(self: Self) -> None:
         """Remove circular references.
 
         Postconditions
         --------------
-        >>> self.states is None
+        >>> self.states == {}
         """
 
         for i in self.states.values():
             i.unlink()
-        self.states = None
+        self.states = {}
 
-    def add_states(self, state_classes):
+    def add_states(
+            self: Self,
+            state_classes: Iterable[type[AbstractState]]) -> None:
         """Add state classes to `self.states`.
 
         Parameters
@@ -80,7 +93,7 @@ class StateMachine(object):
         self.states.update(
             {state_t.__name__: state_t(self) for state_t in state_classes})
 
-    def runtime_init(self, **kwargs):
+    def runtime_init(self: Self, **kwargs) -> None:
         """Initialize states before running the state machine.
 
         Preconditions
@@ -90,7 +103,7 @@ class StateMachine(object):
         for i in self.states.values():
             i.runtime_init(**kwargs)
 
-    def run(self, **kwargs):
+    def run(self: Self, **kwargs) -> None:
         """Run the state machine on `self.rom`.
 
         Parameters
@@ -118,23 +131,21 @@ class StateMachine(object):
         last = kwargs.get('last', -1)
 
         self.rom.seek(self.mapper.from_cpu(first))
-        if last != -1:
-            self.last_rom_addr = self.mapper.from_cpu(last)
-        else:
-            self.last_rom_addr = self.rom.size()
-
+        self.last_rom_addr = self.mapper.from_cpu(last) if last != -1 else self.rom.size()
         self.runtime_init(**kwargs)
 
         state = self.get_state()
-        # TODO: What does `context` contain?
-        context = dict()
+        context: dict[str, AbstractState] = {}
         while state:
             context, next_state = state(context)
             if not next_state:
                 break
             state = self.get_state(next_state)
 
-    def get_state(self, next_state=None):
+    def get_state(
+            self: Self,
+            next_state: str|None=None
+            ) -> AbstractState:
         """Return the current state object.
 
         If `next_state` is specified, then it is set to

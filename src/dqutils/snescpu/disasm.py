@@ -1,14 +1,24 @@
 """
 This module provides command line interface for the disassmbler.
 """
+from __future__ import annotations
 
 from argparse import ArgumentParser
+from typing import TYPE_CHECKING
+
 from ..release import VERSION
 from .rom_image import RomImage
 from .mapper import make_mapper
 from .statemachine import StateMachine
 
-def create_argparser():
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    import mmap
+    from typing import Any
+    from .mapper import AbstractMapper
+    from .states import AbstractState
+
+def create_argparser() -> ArgumentParser:
     """Return a command line parser for the application.
 
     Returns
@@ -52,7 +62,10 @@ def create_argparser():
 
     return parser
 
-def create_args(rom, cmdline_args=None):
+def create_args(
+        rom: mmap.mmap,
+        cmdline_args: Sequence[str] = []
+        ) -> tuple[dict[str, Any], type[AbstractMapper]]:
     """Initialize the arguments of disassember.
 
     Parameters
@@ -60,7 +73,7 @@ def create_args(rom, cmdline_args=None):
     rom : mmap.mmap
         A ROM image object.
 
-    cmdline_args : iterable of str, optional
+    cmdline_args : Sequence[str], optional
         The program arguments passed from the terminal window.
         Default: None.
 
@@ -124,7 +137,10 @@ def create_args(rom, cmdline_args=None):
 
     return context, mapper
 
-def disassemble(game_title, state_classes, initial_state):
+def disassemble(
+        game_title: str,
+        state_classes: Sequence[type[AbstractState]],
+        initial_state: str) -> None:
     """Disassemble the 65816 machine code.
 
     Parameters
@@ -139,8 +155,6 @@ def disassemble(game_title, state_classes, initial_state):
 
     with RomImage(game_title) as rom:
         args, mapper = create_args(rom)
-        fsm = StateMachine(
-            state_classes, initial_state,
-            rom, mapper)
+        fsm = StateMachine(state_classes, initial_state, rom, mapper)
         fsm.run(**args)
         fsm.unlink()

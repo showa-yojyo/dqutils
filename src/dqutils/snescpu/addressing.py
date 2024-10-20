@@ -2,21 +2,27 @@
 This module offers the addressing modes of the 65816 Processor.
 """
 
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typing import Callable
+    from .states import DisassembleState
+
 # Block Move
 
-@staticmethod
-def _format_block_move(state):
+def _format_block_move(state: DisassembleState) -> str:
     """Block Move"""
 
-    operand = state.current_operand
+    operand = state.current_operand or 0
     return '${src:02X},${dest:02X}'.format(
         src=operand & 0x00FF,
         dest=(operand & 0xFF00) >> 8)
 
 # Immediate
 
-@staticmethod
-def _format_immediate(state):
+def _format_immediate(state: DisassembleState) -> str:
     """Immediate"""
 
     actual_operand_size = state.current_operand_size
@@ -26,12 +32,11 @@ def _format_immediate(state):
 
 # Program Counter Relative
 
-@staticmethod
-def _format_program_counter_relative(state):
+def _format_program_counter_relative(state: DisassembleState) -> str:
     """Program Counter Relative"""
 
     program_counter = state.program_counter
-    operand = state.current_operand
+    operand = state.current_operand or 0 # XXX
 
     if operand & 0x80 == 0x00:
         near_addr = (program_counter + operand) & 0xFFFF
@@ -39,12 +44,11 @@ def _format_program_counter_relative(state):
         near_addr = (program_counter - (0x100 - operand)) & 0xFFFF
     return '${:04X}'.format(near_addr)
 
-@staticmethod
-def _format_program_counter_relative_long(state):
+def _format_program_counter_relative_long(state: DisassembleState) -> str:
     """Program Counter Relative Long"""
 
     program_counter = state.program_counter
-    operand = state.current_operand
+    operand = state.current_operand or 0 # XXX
     if operand & 0x8000 == 0x0000:
         addr = (program_counter + operand) & 0xFFFF
     else:
@@ -54,9 +58,9 @@ def _format_program_counter_relative_long(state):
 
 # Stack
 
-@staticmethod
-def _format_stack_program_counter_relative_long(state):
+def _format_stack_program_counter_relative_long(state: DisassembleState) -> str:
     """Stack (PCounter Relative Long)"""
+    assert isinstance(state.current_operand, int)
     return '${:04X}'.format(
         (state.program_counter + state.current_operand) & 0xFFFF)
 
@@ -97,16 +101,16 @@ ADDRESSING_MODE_TABLE = (
     ('Stack/RTI                    ', '               ', None,),
 )
 
-def _build_addressing_mode_classes():
+# pylint: disable=too-few-public-methods
+class AbstractAddressingMode(object):
+    """The base class for all addressing mode classes."""
+
+    name: str
+    syntax: str
+    formatter: Callable[[DisassembleState], str] | None
+
+def _build_addressing_mode_classes() -> None:
     """Register newly generated types to this module."""
-
-    # pylint: disable=too-few-public-methods
-    class AbstractAddressingMode(object):
-        """The base class for all addressing mode classes."""
-
-        name = None
-        syntax = None
-        formatter = None
 
     global_dicts = globals()
     addr_classes = {}
@@ -126,7 +130,7 @@ def _build_addressing_mode_classes():
 
     global_dicts.update(addr_classes)
 
-def get_addressing_mode(name):
+def get_addressing_mode(name: str) -> AbstractAddressingMode | None:
     """Return the addressing mode object by its name.
 
     If `name` is empty, ``None`` is returned.
@@ -147,11 +151,10 @@ def get_addressing_mode(name):
         If `name` is neither valid for addressing mode nor empty.
     """
 
-    name_stripped = name.strip()
-    if not name_stripped:
-        # WDM
-        return None
+    if name_stripped := name.strip():
+        return globals()[name_stripped]
 
-    return globals()[name_stripped]
+    # WDM
+    return None
 
 _build_addressing_mode_classes()

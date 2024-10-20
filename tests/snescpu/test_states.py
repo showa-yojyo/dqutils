@@ -74,7 +74,7 @@ class DumpStateTestCase(TestCase):
         fsm = Mock(program_counter='dummy')
         state = DumpState(fsm)
         self.assertEqual(state.state_machine, fsm)
-        self.assertEqual(state.byte_count, [])
+        self.assertEqual(state.byte_count, ())
         self.assertEqual(state.record_count, 0)
 
     def test_runtime_init(self):
@@ -89,5 +89,5 @@ class DumpStateTestCase(TestCase):
         self.assertEqual(state.record_count, 47894)
 
         state.runtime_init()
-        self.assertEqual(state.byte_count, [])
+        self.assertEqual(state.byte_count, ())
         self.assertEqual(state.record_count, 0)

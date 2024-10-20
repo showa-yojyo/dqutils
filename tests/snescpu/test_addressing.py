@@ -38,7 +38,7 @@ class AddressingTestCase(TestCase):
             self.assertEqual(addrmode.syntax, syntax.strip())
 
             if formatter:
-                self.assertEqual(addrmode.formatter.__name__,
-                                 formatter.__func__.__name__)
+                self.assertEqual(
+                    addrmode.formatter.__name__, formatter.__name__)
             else:
                 self.assertIsNone(addrmode.formatter)

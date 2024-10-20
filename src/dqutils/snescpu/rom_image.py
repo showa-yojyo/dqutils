@@ -1,9 +1,14 @@
 """This module provides features dealing with SNES ROM images.
 """
+from __future__ import annotations
 
 import mmap
-from typing import BinaryIO, Self
-from types import TracebackType
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from typimg import BinaryIO, Self
+    from types import TracebackType
+
 from ..config import get_config
 
 # pylint: disable=too-few-public-methods

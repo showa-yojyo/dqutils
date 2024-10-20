@@ -1,14 +1,20 @@
 """
 A simple hexdump.
 """
+from __future__ import annotations
 
 from argparse import ArgumentParser
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 from ..release import VERSION
 from .rom_image import RomImage
 from .statemachine import StateMachine
 from .states import DumpState
 
-def create_argparser():
+def create_argparser() -> ArgumentParser:
     """
     Return a command line parser for the application.
 
@@ -35,7 +41,10 @@ def create_argparser():
         help='the number of records/objects')
     return parser
 
-def dump(game_title, cmdline=None):
+def dump(
+        game_title: str,
+        cmdline: Sequence[str]|None=None
+        ) -> None:
     """
     Print the contents of a ROM, byte-by-byte, in hexadecimal
     format.
@@ -53,9 +62,7 @@ def dump(game_title, cmdline=None):
     args = parser.parse_args(cmdline)
 
     with RomImage(game_title) as rom:
-        fsm = StateMachine(
-            [DumpState], 'DumpState', rom)
-
+        fsm = StateMachine([DumpState], 'DumpState', rom)
         first = int(args.start, 16)
         delattr(args, 'start')
         last = first + sum(args.byte_count) * args.record_count

@@ -2,16 +2,28 @@
 Provide class State and subclasses.
 """
 
+from __future__ import annotations
+
 from abc import ABCMeta
 from itertools import (chain, repeat)
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import MutableMapping
+    from typing import Any, Sequence, Self, TypeAlias
+    ContextT: TypeAlias = MutableMapping[str, Any]
+
 from .instructions import DEFAULT_INSTRUCTIONS
+if TYPE_CHECKING:
+    from .instructions import AbstractInstruction
+    from .statemachine import StateMachine
 
 class AbstractState(metaclass=ABCMeta):
     """
     The base class of state subclasses for class `StateMachine`.
     """
 
-    def __init__(self, state_machine):
+    def __init__(self: Self, state_machine: StateMachine) -> None:
         """Create an object of class `AbstractState`.
 
         This class is abstract and cannot be directly instantiated.
@@ -25,9 +37,9 @@ class AbstractState(metaclass=ABCMeta):
         --------------
         >>> self.state_machine is state_machine
         """
-        self.state_machine = state_machine
+        self.state_machine: StateMachine | None = state_machine
 
-    def __call__(self, context):
+    def __call__(self: Self, context: ContextT) -> tuple[ContextT, str|None]:
         """Do something and return the name of the next state.
 
         An empty string will be returned to tell that this state is
@@ -48,16 +60,17 @@ class AbstractState(metaclass=ABCMeta):
         return context, None
 
     @property
-    def program_counter(self):
+    def program_counter(self: Self) -> int:
         """Return the program counter.
 
         Returns
         -------
         pc : int
         """
+        assert self.state_machine
         return self.state_machine.program_counter
 
-    def runtime_init(self, **kwargs):
+    def runtime_init(self: Self, **kwargs) -> None:
         """Initialize before running the state machine.
 
         See also
@@ -66,7 +79,7 @@ class AbstractState(metaclass=ABCMeta):
         """
         pass
 
-    def unlink(self):
+    def unlink(self: Self) -> None:
         """Remove circular references.
 
         Postconditions
@@ -83,7 +96,7 @@ OUTPUT_FORMAT = ('{bank:02X}/{addr:04X}:\t'
 class DisassembleState(AbstractState):
     """This state provides a disassembler."""
 
-    def __init__(self, state_machine):
+    def __init__(self: Self, state_machine: StateMachine) -> None:
         """
         Create an object of class `DisassembleState`.
 
@@ -101,8 +114,8 @@ class DisassembleState(AbstractState):
         >>> not self.until_return
         """
         super().__init__(state_machine)
-        self.current_opcode = None
-        self.current_operand = None
+        self.current_opcode: bytes | None = None
+        self.current_operand: int | None = None
         self.current_operand_size = 0
         self.flags = 0x00
         self.until_return = False
@@ -114,7 +127,7 @@ class DisassembleState(AbstractState):
             instructions[opcode] = instruction
         self.instructions = instructions
 
-    def __call__(self, context):
+    def __call__(self: Self, context: ContextT) -> tuple[ContextT, str|None]:
         """Disassemble bytes.
 
         Parameters
@@ -141,7 +154,7 @@ class DisassembleState(AbstractState):
 
         return context, None
 
-    def runtime_init(self, **kwargs):
+    def runtime_init(self: Self, **kwargs) -> None:
         """Initialize before running the state machine.
 
         Parameters
@@ -171,7 +184,7 @@ class DisassembleState(AbstractState):
         self.flags = kwargs.get('flags', 0)
         self.until_return = kwargs.get('until_return', False)
 
-    def _is_terminated(self):
+    def _is_terminated(self: Self) -> bool:
         """Determine if this state machine is terminated.
 
         When --until-return option is enabled,
@@ -184,6 +197,8 @@ class DisassembleState(AbstractState):
             True if this state machine is to be terminated.
         """
 
+        assert self.state_machine
+
         fsm = self.state_machine
         assert fsm.rom
 
@@ -193,9 +208,12 @@ class DisassembleState(AbstractState):
 
         return fsm.last_rom_addr <= fsm.rom.tell()
 
-    def _read_instruction(self):
+    def _read_instruction(
+            self: Self
+            ) -> tuple[type[AbstractInstruction], bytes, bool]:
         """Read the current instruction and return as an object."""
 
+        assert self.state_machine
         fsm = self.state_machine
 
         # Read the opcode.
@@ -209,7 +227,7 @@ class DisassembleState(AbstractState):
         # instraction's opcode has been read.
         if fsm.program_counter & 0xFFFF == 0x0000 and self.current_operand_size:
             self.current_operand_size = 0
-            return instruction, '', True
+            return instruction, bytes(), True
 
         # Test if PC crossed the bank boundary after the opcode
         # has been read.
@@ -225,11 +243,16 @@ class DisassembleState(AbstractState):
             operand_raw = fsm.rom.read(self.current_operand_size)
             self.current_operand = int.from_bytes(operand_raw, 'little')
         else:
-            operand_raw, self.current_operand = None, None
+            operand_raw, self.current_operand = bytes(), None
 
         return instruction, operand_raw, across_bb
 
-    def _eval_instruction(self, instruction, across_bb, context):
+    def _eval_instruction(
+            self: Self,
+            instruction: type[AbstractInstruction],
+            across_bb: bool,
+            context: ContextT
+            ) -> tuple[ContextT, str | None]:
         """Execute the current instruction.
 
         Parameters
@@ -254,7 +277,12 @@ class DisassembleState(AbstractState):
 
         return context, None
 
-    def _print_instruction(self, instruction, operand_raw, across_bb):
+    def _print_instruction(
+            self: Self,
+            instruction: type[AbstractInstruction],
+            operand_raw: bytes|None,
+            across_bb: bool
+            ) -> None:
         """Output disassembled code in one line.
 
         Parameters
@@ -265,22 +293,16 @@ class DisassembleState(AbstractState):
             The unprocessed operand bytes in the ROM image.
         across_bb : bool
             True if this line goes across the PB boundary.
-
-        Returns
-        -------
-        context : dict
-            Depends on your application.
-        next_state : str
-            The name of the next state for the state machine.
         """
 
+        assert self.state_machine
         fsm = self.state_machine
 
         # cpu_addr is the value of PC immediately before reading
         # the current opcode.
         addr = fsm.program_counter - self.current_operand_size - 1
         out = fsm.destination
-        operand_raw = operand_raw.hex().upper() if operand_raw else ''
+        operand_str = operand_raw.hex().upper() if operand_raw else ''
         mnemonic = instruction.mnemonic if not across_bb else ''
         operand = instruction.format(self) if not across_bb else ''
 
@@ -288,12 +310,12 @@ class DisassembleState(AbstractState):
             bank=(addr & 0xFF0000) >> 16,
             addr=addr & 0x00FFFF,
             opcode=instruction.opcode,
-            operand_raw=operand_raw,
+            operand_raw=operand_str,
             mnemonic=mnemonic,
             operand=operand).strip(),
               file=out)
 
-    def _init_instructions(self):
+    def _init_instructions(self: Self) -> dict:
         """Return specialized instructions.
 
         Override this method if necessary, especially for BRK, COP,
@@ -308,7 +330,10 @@ class DisassembleState(AbstractState):
 
         return {}
 
-    def get_instruction(self, opcode):
+    def get_instruction(
+            self: Self,
+            opcode: bytes
+            ) -> type[AbstractInstruction]:
         """Return an object of class `AbstractInstruction`.
 
         Parameters
@@ -332,16 +357,16 @@ class DisassembleState(AbstractState):
         """
 
         if isinstance(opcode, bytes):
-            opcode = int.from_bytes(opcode, 'little')
-
-        return self.instructions[opcode]
+            return self.instructions[int.from_bytes(opcode, 'little')]
+        else:
+            return self.instructions[opcode]
 
 FORMAT_STRING = '{:02X}/{:04X}:\t{}'
 
 class DumpState(AbstractState):
     """This state provides `hexdump`."""
 
-    def __init__(self, state_machine):
+    def __init__(self: Self, state_machine: StateMachine) -> None:
         """
         Create an object of class `DumpState`.
 
@@ -352,17 +377,16 @@ class DumpState(AbstractState):
 
         Postconditions
         --------------
-        >>> self.byte_count == []
+        >>> self.byte_count == tuple()
         >>> self.record_count == 0
         """
         super().__init__(state_machine)
-        self.byte_count = []
+        self.byte_count: Sequence = ()
         self.record_count = 0
 
-    def __call__(self, context):
+    def __call__(self: Self, context: ContextT) -> tuple[ContextT, str | None]:
         """
-        Perform byte-by-byte dump the contents of a ROM, in
-        hexadecimal format.
+        Perform byte-by-byte dump the contents of a ROM, in hexadecimal format.
 
         Parameters
         ----------
@@ -376,6 +400,8 @@ class DumpState(AbstractState):
         next_state : str
             The name of the next state for the state machine.
         """
+
+        assert self.state_machine
 
         # Expermentally implement Disasm-Dump-Disasm
         # state-transition.
@@ -411,7 +437,7 @@ class DumpState(AbstractState):
 
         return context, next_state
 
-    def runtime_init(self, **kwargs):
+    def runtime_init(self: Self, **kwargs) -> None:
         """Initialize before running the state machine.
 
         Parameters
@@ -426,5 +452,5 @@ class DumpState(AbstractState):
         `StateMachine.runtime_init`
         """
 
-        self.byte_count = kwargs.get('byte_count', [])
+        self.byte_count = kwargs.get('byte_count', ())
         self.record_count = kwargs.get('record_count', 0)
