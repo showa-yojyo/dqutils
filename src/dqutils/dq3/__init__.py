@@ -6,7 +6,7 @@ from .message import (print_all_battle,
                       print_all_scenario)
 from .string import print_all
 
-def main():
+def main() -> None:
     """See :code:`python -m dqutils.dq3 --help`."""
 
     commands = (
@@ -23,7 +23,7 @@ def main():
             help='print strings',
             func=print_all),)
 
-    return run(commands)
+    run(commands)
 
 if __name__ == '__main__':
     main()

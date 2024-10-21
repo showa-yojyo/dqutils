@@ -1,10 +1,18 @@
 """dqutils.dq3.string - DQ3-specific string components.
 """
 
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
 from ..string import (enum_string as _enum_string,
                       print_string as _print_string)
 from ..string_generator import StringGeneratorCStyle
 from .charsmall import CHARMAP
+
+if TYPE_CHECKING:
+    from ..string_generator import StringInfo
 
 CONTEXT = dict(
     title="DRAGONQUEST3",
@@ -14,7 +22,10 @@ CONTEXT = dict(
     string_id_first=0x0000,
     string_id_last=0x03BE,)
 
-def enum_string(first=None, last=None):
+def enum_string(
+        first: int | None=None,
+        last: int | None=None
+        ) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
 
@@ -37,7 +48,10 @@ def enum_string(first=None, last=None):
     yield from _enum_string(
         CONTEXT, StringGeneratorCStyle, first, last)
 
-def print_string(first=None, last=None):
+def print_string(
+        first: int | None=None,
+        last: int | None=None
+        ) -> None:
     """Print string data to sys.stdout.
 
     String data those indices in [`first`, `last`) will be used.
@@ -51,6 +65,6 @@ def print_string(first=None, last=None):
     """
     _print_string(CONTEXT, StringGeneratorCStyle, first, last)
 
-def print_all():
+def print_all() -> None:
     """Print all of the string data to sys.stdout."""
     print_string()

@@ -12,12 +12,17 @@ $ dumptool.py dqutils.dq3.dumptool 0xC8F323 0x36 10
 #$0035\t#$000001
 [EOF]
 """
+from __future__ import annotations
 
 import sys
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+
 from ..snescpu.dumptool import run
 
-def main(args=sys.argv[1:]):
-    run('DRAGONQUEST3', args)
+def main(args: Sequence[str]=sys.argv[1:]) -> int:
+    return run('DRAGONQUEST3', args)
 
 if __name__ == "__main__":
     sys.exit(main())

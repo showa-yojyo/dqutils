@@ -5,7 +5,6 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    # from typing import Any, Mapping, TypeAlias
 
 from ..string import (enum_string as _enum_string,
                       print_string as _print_string)
@@ -25,7 +24,7 @@ CONTEXT = dict(
 
 def enum_string(
         first: int | None=None,
-        last=None
+        last: int | None=None
         ) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.

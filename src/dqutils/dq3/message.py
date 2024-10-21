@@ -1,13 +1,22 @@
 """dqutils.dq3.message module"""
 
+from __future__ import annotations
+
 from array import array
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
 from ..message import (enum_battle as _enum_battle,
-                             enum_scenario as _enum_scenario,
-                             print_battle as _print_battle,
-                             print_scenario as _print_scenario)
+                       enum_scenario as _enum_scenario,
+                       print_battle as _print_battle,
+                       print_scenario as _print_scenario)
 from ..message_generator import MessageGeneratorW
 from .charsmall import CHARMAP as CHARMAP_SMALL
 from .charlarge import CHARMAP as CHARMAP_LARGE
+if TYPE_CHECKING:
+    from ..string_generator import StringInfo
+    from ..message_generator import IteratorT
 
 CONTEXT_MESSAGE_BATTLE = dict(
     title="DRAGONQUEST3",
@@ -32,7 +41,9 @@ CONTEXT_MESSAGE_SCENARIO = dict(
     huffman_root=0x07D2,
     decoding_read_size=2,)
 
-def enum_battle(first=None, last=None):
+def enum_battle(
+        first: int | None=None,
+        last: int | None=None) -> Iterator[StringInfo]:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -54,11 +65,14 @@ def enum_battle(first=None, last=None):
     """
     yield from _enum_battle(CONTEXT_MESSAGE_BATTLE, first, last)
 
-def print_all_battle():
+def print_all_battle() -> None:
     """Print all message data of battle mode to sys.stdout."""
     _print_battle(CONTEXT_MESSAGE_BATTLE)
 
-def enum_scenario(first=None, last=None):
+def enum_scenario(
+        first: int|None=None,
+        last: int|None=None
+        ) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -83,6 +97,6 @@ def enum_scenario(first=None, last=None):
     yield from _enum_scenario(
         CONTEXT_MESSAGE_SCENARIO, MessageGeneratorW, first, last)
 
-def print_all_scenario():
+def print_all_scenario() -> None:
     """Print all message data of conversation mode to sys.stdout."""
     _print_scenario(CONTEXT_MESSAGE_SCENARIO, MessageGeneratorW)
