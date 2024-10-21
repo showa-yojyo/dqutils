@@ -6,16 +6,24 @@ The original implementation is written in the 65816 Processor codes.
 Here are in Python version, which is based on C/C++ implementation
 I wrote a long ago.
 """
+from __future__ import annotations
 
 from abc import (ABCMeta, abstractmethod)
 from array import array
-from collections.abc import Iterator, Mapping
-import mmap
-from typing import Any, Self
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Mapping
+    import mmap
+    from typing import Any, Self, TypeAlias
+    IteratorT: TypeAlias = Iterator[tuple[int, int, array]]
 
 from .bit import (get_bits, get_int)
-from .snescpu.mapper import (AbstractMapper, make_mapper)
+from .snescpu.mapper import make_mapper
 from .snescpu.rom_image import RomImage
+
+if TYPE_CHECKING:
+    from .snescpu.mapper import AbstractMapper
 
 _DUMMY_CODE = 0xFFFFFFFF
 
@@ -268,7 +276,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         return addr, shift, node & self.decoding_mask
 
-    def __iter__(self: Self) -> Iterator[tuple[int, int, array]]:
+    def __iter__(self: Self) -> IteratorT:
         """Return a generator iterator."""
 
         with RomImage(self.title) as mem:
@@ -277,6 +285,8 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             if self.first == self.last:
                 raise StopIteration
 
+            assert isinstance(self.first, int)
+            assert isinstance(self.last, int)
             # Locate the first data location.
             addr_cur, shift_cur = self.locate_message(mem, self.first)
 

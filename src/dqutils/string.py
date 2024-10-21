@@ -7,13 +7,17 @@ windows with the smaller font.
 This module provides functions capable to load strings either in
 forms of raw bytes or human-readable texts.
 """
+from __future__ import annotations
 
 from array import array
-from collections.abc import Iterator
-from typing import Any, Mapping, TypeAlias
-from .string_generator import AbstractStringGenerator, StringInfo
+from typing import TYPE_CHECKING
 
-CodeSeq: TypeAlias = bytes | bytearray | array
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+    from typing import Any, Mapping, TypeAlias
+    CodeSeq: TypeAlias = bytes | bytearray | array
+
+    from .string_generator import AbstractStringGenerator, StringInfo
 
 def get_text(
         code_seq: CodeSeq,

@@ -9,11 +9,20 @@ These decoding functions are based on classical Huffman's algorithm.
 Special thanks to Mr. kobun_c.
 """
 
+from __future__ import annotations
+
 from array import array
-from ..bit import get_int
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from collections.abc import Mapping
+    from typing import cast
+
 from ..message import enum_scenario as _enum_scenario
 from ..message_generator import MessageGeneratorV
 from ..string import get_text
+if TYPE_CHECKING:
+    from ..message_generator import IteratorT
+
 from .charsmall import (CHARMAP as CHARMAP_SMALL,
                         process_dakuten)
 from .charlarge import CHARMAP as CHARMAP_LARGE
@@ -48,7 +57,10 @@ CONTEXT_MESSAGE_SCENARIO = dict(
     decoding_mask=0x1FFF,
     decoding_read_size=2)
 
-def enum_battle(first=None, last=None):
+def enum_battle(
+        first: int | None=None,
+        last: int | None=None
+        ) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -71,18 +83,18 @@ def enum_battle(first=None, last=None):
     yield from _enum_scenario(
         CONTEXT_MESSAGE_BATTLE, MessageGeneratorV, first, last)
 
-def print_all_battle():
+def print_all_battle() -> None:
     """Print all message data of battle mode to sys.stdout."""
 
     context = CONTEXT_MESSAGE_BATTLE
 
     first = context["message_id_first"]
     last = context["message_id_last"]
+    assert isinstance(first, int)
+    assert isinstance(last, int)
     assert first < last
 
-    charmap = context["charmap"]
-    assert charmap is None or isinstance(charmap, dict)
-
+    charmap = cast(Mapping[int, str], context["charmap"])
     delims = context["delimiters"]
     assert delims is None or isinstance(delims, array)
 
@@ -95,7 +107,10 @@ def print_all_battle():
             shift=shift,
             message=text))
 
-def enum_scenario(first=None, last=None):
+def enum_scenario(
+        first: int | None=None,
+        last: int | None=None
+        ) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -120,18 +135,16 @@ def enum_scenario(first=None, last=None):
     yield from _enum_scenario(
         CONTEXT_MESSAGE_SCENARIO, MessageGeneratorV, first, last)
 
-def print_all_scenario():
+def print_all_scenario() -> None:
     """Print all message data of conversation mode to sys.stdout."""
 
     context = CONTEXT_MESSAGE_SCENARIO
 
-    first = context["message_id_first"]
-    last = context["message_id_last"]
+    first = cast(int, context["message_id_first"])
+    last = cast(int, context["message_id_last"])
     assert first < last
 
-    charmap = context["charmap"]
-    assert charmap is None or isinstance(charmap, dict)
-
+    charmap = cast(Mapping[int, str], context["charmap"])
     delims = context["delimiters"]
     assert delims is None or isinstance(delims, array)
 

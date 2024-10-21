@@ -1,15 +1,20 @@
 """This module provides helper classes for the string module.
 """
+from __future__ import annotations
 
 from abc import (ABCMeta, abstractmethod)
-from collections.abc import Iterator, Mapping
 import mmap
-from typing import Any, Self, Tuple, TypeAlias
+from typing import TYPE_CHECKING
 
 from .snescpu.mapper import AbstractMapper, make_mapper
 from .snescpu.rom_image import RomImage
 
-StringInfo: TypeAlias = Tuple[int, bytes | bytearray]
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Mapping
+    from typing import Any, Self, Tuple, TypeAlias
+
+    StringInfo: TypeAlias = Tuple[int, bytes | bytearray]
+    ContextT: TypeAlias = Mapping[str, Any]
 
 # pylint: disable=too-few-public-methods
 class AbstractStringGenerator(metaclass=ABCMeta):
@@ -17,7 +22,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
 
     def __init__(
             self: Self,
-            context: Mapping[str, Any],
+            context: ContextT,
             first: int|None=None,
             last: int|None=None) -> None:
         """Create an object of class AbstractStringGenerator.

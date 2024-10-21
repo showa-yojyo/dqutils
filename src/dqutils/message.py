@@ -9,14 +9,19 @@ conversational messages are rendered with the larger font.
 
 For all of the programs, conversational message data are compressed.
 """
+from __future__ import annotations
 
 from array import array
-from collections.abc import Iterator, Mapping
-from typing import Any
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from collections.abc import Iterator, Mapping
+    from typing import Any
 
 from .string import (get_text, get_hex)
-from .string_generator import StringGeneratorCStyle, StringInfo
-from .message_generator import AbstractMessageGenerator
+from .string_generator import StringGeneratorCStyle
+if TYPE_CHECKING:
+    from .string_generator import StringInfo
+    from .message_generator import AbstractMessageGenerator, IteratorT
 
 def enum_battle(
         context: Mapping[str, Any],
@@ -110,7 +115,7 @@ def enum_scenario(
         context: Mapping[str, Any],
         generator_t: type[AbstractMessageGenerator],
         first: int|None=None,
-        last: int|None=None): # TODO
+        last: int|None=None) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 

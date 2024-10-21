@@ -268,7 +268,7 @@ CHARMAP = {
     #0xFF:"[FF]",
 }
 
-def process_dakuten(text):
+def process_dakuten(text: str) -> str:
     """Convert single dakuten characters into regular kana characters.
 
     Combine all character pairs of a dakuten character followed by a kana

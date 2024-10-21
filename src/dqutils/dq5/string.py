@@ -7,12 +7,19 @@ This module has a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
 from ..string import (enum_string as _enum_string,
                       get_text)
 from ..string_generator import StringGeneratorPascalStyle
+if TYPE_CHECKING:
+    from ..string_generator import (StringInfo, ContextT)
 from .charsmall import (CHARMAP, process_dakuten)
 
-CONTEXT_GROUP = [
+CONTEXT_GROUP = (
     # Partners (human beings).
     dict(addr_string=0x23C5CE, string_id_first=0, string_id_last=8),
     # Classes.
@@ -37,7 +44,7 @@ CONTEXT_GROUP = [
     dict(addr_string=0x23C242, string_id_first=0, string_id_last=168),
     # Destination list.
     dict(addr_string=0x23D5F3, string_id_first=0, string_id_last=23),
-    ]
+)
 """the string table located at $21955B."""
 
 CONTEXT_PROTOTYPE = dict(
@@ -45,9 +52,13 @@ CONTEXT_PROTOTYPE = dict(
     charmap=CHARMAP,)
 
 for group in CONTEXT_GROUP:
-    group.update(CONTEXT_PROTOTYPE)
+    group.update(CONTEXT_PROTOTYPE) # type: ignore[arg-type]
 
-def enum_string(context, first=None, last=None):
+def enum_string(
+        context: ContextT,
+        first: int | None=None,
+        last: int | None=None
+        ) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
 
@@ -70,7 +81,7 @@ def enum_string(context, first=None, last=None):
     yield from _enum_string(
         context, StringGeneratorPascalStyle, first, last)
 
-def print_all():
+def print_all() -> None:
     """Print all of the string data to sys.stdout."""
 
     for i, context in enumerate(CONTEXT_GROUP):
