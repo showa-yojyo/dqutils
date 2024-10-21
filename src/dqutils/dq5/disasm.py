@@ -1,10 +1,17 @@
 #!/usr/bin/env python
 """disasm.py: Disassembler for DRAGONQUEST 5.
 """
+from __future__ import annotations
+
+from typing import cast, TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Self
 
 from ..snescpu.disasm import disassemble
 from ..snescpu.instructions import get_instruction
 from ..snescpu.states import (DisassembleState, DumpState)
+if TYPE_CHECKING:
+    from ..snescpu.instructions import (AbstractInstruction, ContextT)
 
 BRK_BPL = (
     (0,),
@@ -85,11 +92,16 @@ BRK_BMI = (
 class DisassembleStateDQ5(DisassembleState):
     """A specialized state class for disassembling DQ5."""
 
-    def _init_instructions(self):
-        class BRK(get_instruction(0x00)):
+    def _init_instructions(self: Self) -> dict[int, type[AbstractInstruction]]:
+        class BRK(get_instruction(0x00)): # type: ignore[misc]
             @staticmethod
-            def execute(state, context):
-                sigbyte = self.current_operand
+            def execute(
+                state: DisassembleState,
+                context: ContextT
+                ) -> tuple[ContextT, str | None]:
+
+                sigbyte = cast(int, self.current_operand)
+
                 if sigbyte == 0x00 or 0xAD <= sigbyte:
                     return context, None
                 elif sigbyte < 0x1B:

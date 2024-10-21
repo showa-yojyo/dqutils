@@ -315,7 +315,7 @@ class DisassembleState(AbstractState):
             operand=operand).strip(),
               file=out)
 
-    def _init_instructions(self: Self) -> dict:
+    def _init_instructions(self: Self) -> dict[int, type[AbstractInstruction]]:
         """Return specialized instructions.
 
         Override this method if necessary, especially for BRK, COP,
@@ -324,7 +324,7 @@ class DisassembleState(AbstractState):
         Returns
         -------
         instructions : dict
-            A dictionary with integer keys i.e. operand  whose
+            A dictionary with integer keys i.e. operand whose
             values are specialization of class `AbstractInstruction`.
         """
 

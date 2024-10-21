@@ -379,7 +379,7 @@ class AbstractInstruction(object):
 
         return str()
 
-def _build_instruction_classes() -> list[type]:
+def _build_instruction_classes() -> list[type[AbstractInstruction]]:
     """Register newly generated types to this module."""
 
     global_dicts = globals()
@@ -411,7 +411,7 @@ def _build_instruction_classes() -> list[type]:
     #global_dicts.update(inst_classes)
     return instructions
 
-def get_instruction(opcode: bytes | int) -> type:
+def get_instruction(opcode: bytes | int) -> type[AbstractInstruction]:
     """Return the instruction object by its opcode.
 
     Parameters
