@@ -2,10 +2,18 @@
 """disasm.py: Disassembler for DRAGONQUEST 6.
 """
 
+from __future__ import annotations
+
+from typing import cast, TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Self
+
 from ..snescpu.addressing import get_addressing_mode
 from ..snescpu.disasm import disassemble
 from ..snescpu.instructions import get_instruction
 from ..snescpu.states import (DisassembleState, DumpState)
+if TYPE_CHECKING:
+    from ..snescpu.instructions import (AbstractInstruction, ContextT)
 
 # A dictionary of subroutines with following bytes as arguments.
 # key: the address of subroutine
@@ -209,24 +217,26 @@ SPECIAL_SUBROUTINES = {
 class DisassembleStateDQ6(DisassembleState):
     """A specialized state."""
 
-    def _init_instructions(self):
+    def _init_instructions(self: Self) -> dict[int, type[AbstractInstruction]]:
         immed = get_addressing_mode('Immediate')
         implied = get_addressing_mode('Implied')
 
-        class BRK(get_instruction(0x00)):
+        class BRK(get_instruction(0x00)): # type: ignore[misc]
             operand_size = 3
             addressing_mode = immed
 
-        class COP(get_instruction(0x02)):
+        class COP(get_instruction(0x02)): # type: ignore[misc]
             operand_size = 1
             addressing_mode = implied
 
-        class JSR(get_instruction(0x22)):
+        class JSR(get_instruction(0x22)): # type: ignore[misc]
             @staticmethod
-            def execute(state, context):
-                addr = self.current_operand
-                byte_count = SPECIAL_SUBROUTINES.get(addr)
-                if byte_count:
+            def execute(
+                state: DisassembleState,
+                context: ContextT
+                ) -> tuple[ContextT, str | None]:
+                addr = cast(int, self.current_operand)
+                if byte_count := SPECIAL_SUBROUTINES.get(addr):
                     context.update(
                         next_state='DisassembleStateDQ6',
                         byte_count=byte_count,
