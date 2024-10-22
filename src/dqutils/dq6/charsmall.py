@@ -2,7 +2,12 @@
 """dqutils.dq6.charsmall - The dictionary of small size characters.
 """
 
-CHARMAP = {
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Final
+
+CHARMAP: Final[dict[int, str]] = {
     0x00:"",
     0x01:" ",
     0x02:"０",

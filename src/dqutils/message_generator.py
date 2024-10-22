@@ -15,7 +15,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
     import mmap
-    from typing import Any, Self, TypeAlias
+    from typing import Any, Final, Self, TypeAlias
     IteratorT: TypeAlias = Iterator[tuple[int, int, array]]
 
 from .bit import (get_bits, get_int)
@@ -25,7 +25,7 @@ from .snescpu.rom_image import RomImage
 if TYPE_CHECKING:
     from .snescpu.mapper import AbstractMapper
 
-_DUMMY_CODE = 0xFFFFFFFF
+_DUMMY_CODE: Final[int] = 0xFFFFFFFF
 
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """The base class of MessageGenerator subclasses."""

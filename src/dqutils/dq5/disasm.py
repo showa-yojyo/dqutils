@@ -5,7 +5,7 @@ from __future__ import annotations
 
 from typing import cast, TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Self
+    from typing import Final, Self
 
 from ..snescpu.disasm import disassemble
 from ..snescpu.instructions import get_instruction
@@ -13,7 +13,7 @@ from ..snescpu.states import (DisassembleState, DumpState)
 if TYPE_CHECKING:
     from ..snescpu.instructions import (AbstractInstruction, ContextT)
 
-BRK_BPL = (
+BRK_BPL: Final[tuple] = (
     (0,),
     (0,), # BRK #$01
     (0,), # BRK #$02
@@ -42,7 +42,7 @@ BRK_BPL = (
     (2,), # BRK #$19
     (0,),)# BRK #$1A
 
-BRK_BMI = (
+BRK_BMI: Final[tuple] = (
     (0,), # BRK #$80
     (1,), # BRK #$81
     (0,), # BRK #$82

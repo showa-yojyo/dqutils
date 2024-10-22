@@ -5,6 +5,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from typing import Any, Final
 
 from ..string import (enum_string as _enum_string,
                       print_string as _print_string)
@@ -14,7 +15,7 @@ from .charsmall import CHARMAP
 if TYPE_CHECKING:
     from ..string_generator import StringInfo
 
-CONTEXT = dict(
+CONTEXT: Final[dict] = dict(
     title="DRAGONQUEST6",
     delimiters=b'\xAC',
     charmap=CHARMAP,

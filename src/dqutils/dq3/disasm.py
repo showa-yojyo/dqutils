@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import cast, TYPE_CHECKING
 if TYPE_CHECKING:
-    from typing import Self
+    from typing import Final, Self
 
 from ..snescpu.addressing import get_addressing_mode
 from ..snescpu.disasm import disassemble
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 # A dictionary of subroutines with following bytes as arguments.
 # key: the address of subroutine
 # value: the corresponding byte-partition for DumpState.byte_count
-SPECIAL_SUBROUTINES = {
+SPECIAL_SUBROUTINES: Final[dict[int, tuple[int, ...]]] = {
     0xC90566: (1, 2, 3, 2, 3,),
     0xC90572: (1, 2, 3, 2, 3,),
     0xC9062D: (1, 2, 3, 2, 3,),

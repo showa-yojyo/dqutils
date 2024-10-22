@@ -16,7 +16,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from _csv import _writer
     from argparse import Namespace
-    from typing import Sequence, Iterable
+    from typing import (Final, Literal, Sequence, Iterable)
 
 from ..bit import get_bits
 from .rom_image import RomImage
@@ -45,8 +45,8 @@ def formatter(mask_bits: int) -> str:
 
     return '{:02X}'
 
-COLUMN_OFFSET = 0
-COLUMN_MASK_BITS = 1
+COLUMN_OFFSET: Final[int] = 0
+COLUMN_MASK_BITS: Final[int] = 1
 
 def dump(
         title: str,
@@ -119,7 +119,7 @@ def parse_args(args: Sequence[str]) -> Namespace:
 def run(
         title: str,
         args: Sequence[str]=sys.argv[1:]
-        ) -> int:
+        ) -> Literal[0]:
     arguments = parse_args(args=args or ('--help',))
     delimiter = arguments.delimiter
     dump(

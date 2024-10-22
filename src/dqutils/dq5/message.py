@@ -15,7 +15,7 @@ from array import array
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Mapping
-    from typing import cast
+    from typing import cast, Final
 
 from ..message import enum_scenario as _enum_scenario
 from ..message_generator import MessageGeneratorV
@@ -27,7 +27,7 @@ from .charsmall import (CHARMAP as CHARMAP_SMALL,
                         process_dakuten)
 from .charlarge import CHARMAP as CHARMAP_LARGE
 
-CONTEXT_MESSAGE_BATTLE = dict(
+CONTEXT_MESSAGE_BATTLE: Final[dict] = dict(
     title="DRAGONQUEST5",
     delimiters=array('H', (0x00E7, 0x00EF, 0x00FE)),
     charmap=CHARMAP_SMALL,
@@ -42,7 +42,7 @@ CONTEXT_MESSAGE_BATTLE = dict(
     decoding_mask=0x00FF,
     decoding_read_size=1)
 
-CONTEXT_MESSAGE_SCENARIO = dict(
+CONTEXT_MESSAGE_SCENARIO: Final[dict] = dict(
     title="DRAGONQUEST5",
     delimiters=array('H', (0x1001, 0x1010, 0x1018)),
     charmap=CHARMAP_LARGE,

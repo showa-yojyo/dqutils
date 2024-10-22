@@ -2,7 +2,12 @@
 """dqutils.dq6.charlarge - The dictionary of large size characters.
 """
 
-CHARMAP = {
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Final
+
+CHARMAP: Final[dict[int, str]] = {
     0x0200:" ",
     0x0201:"愛",
     0x0202:"悪",

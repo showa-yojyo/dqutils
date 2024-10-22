@@ -11,6 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from typing import Final
 
 from ..string import (enum_string as _enum_string,
                       get_text)
@@ -19,7 +20,7 @@ if TYPE_CHECKING:
     from ..string_generator import (StringInfo, ContextT)
 from .charsmall import (CHARMAP, process_dakuten)
 
-CONTEXT_GROUP = (
+CONTEXT_GROUP: Final[tuple[dict[str, int], ...]] = (
     # Partners (human beings).
     dict(addr_string=0x23C5CE, string_id_first=0, string_id_last=8),
     # Classes.
@@ -47,7 +48,7 @@ CONTEXT_GROUP = (
 )
 """the string table located at $21955B."""
 
-CONTEXT_PROTOTYPE = dict(
+CONTEXT_PROTOTYPE: Final[dict] = dict(
     title="DRAGONQUEST5",
     charmap=CHARMAP,)
 

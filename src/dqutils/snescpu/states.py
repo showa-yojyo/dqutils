@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
-    from typing import Any, Sequence, Self, TypeAlias
+    from typing import Any, Final, Sequence, Self, TypeAlias
     ContextT: TypeAlias = MutableMapping[str, Any]
 
 from .instructions import DEFAULT_INSTRUCTIONS
@@ -89,9 +89,10 @@ class AbstractState(metaclass=ABCMeta):
         self.state_machine = None
 
 # Does it need to be configurable?
-OUTPUT_FORMAT = ('{bank:02X}/{addr:04X}:\t'
-                 '{opcode:02X}{operand_raw:<6}\t'
-                 '{mnemonic} {operand}')
+OUTPUT_FORMAT: Final[str] = (
+    '{bank:02X}/{addr:04X}:\t'
+    '{opcode:02X}{operand_raw:<6}\t'
+    '{mnemonic} {operand}')
 
 class DisassembleState(AbstractState):
     """This state provides a disassembler."""
@@ -361,7 +362,7 @@ class DisassembleState(AbstractState):
         else:
             return self.instructions[opcode]
 
-FORMAT_STRING = '{:02X}/{:04X}:\t{}'
+FORMAT_STRING: Final[str] = '{:02X}/{:04X}:\t{}'
 
 class DumpState(AbstractState):
     """This state provides `hexdump`."""

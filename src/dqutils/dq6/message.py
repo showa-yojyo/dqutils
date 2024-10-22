@@ -6,6 +6,7 @@ from array import array
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterator
+    from typing import Final
 
 from ..message import (enum_battle as _enum_battle,
                        enum_scenario as _enum_scenario,
@@ -18,7 +19,7 @@ if TYPE_CHECKING:
     from ..string_generator import StringInfo
     from ..message_generator import IteratorT
 
-CONTEXT_MESSAGE_BATTLE = dict(
+CONTEXT_MESSAGE_BATTLE: Final[dict] = dict(
     title="DRAGONQUEST6",
     delimiters=b'\xAC\xAE',
     charmap=CHARMAP_SMALL,
@@ -27,7 +28,7 @@ CONTEXT_MESSAGE_BATTLE = dict(
     addr_message=0xF6DEBD,
     decoding_read_size=2,)
 
-CONTEXT_MESSAGE_SCENARIO = dict(
+CONTEXT_MESSAGE_SCENARIO: Final[dict] = dict(
     title="DRAGONQUEST6",
     delimiters=array('H', (0x00AC, 0x00AE,)),
     charmap=CHARMAP_LARGE,

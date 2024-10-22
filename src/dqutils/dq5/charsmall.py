@@ -9,7 +9,12 @@ References
 [2] See dq3encode.c of dq_analyzer <Index of ~/s-endo, http://s-endo.skr.jp>
 """
 
-CHARMAP = {
+from __future__ import annotations
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Final
+
+CHARMAP: Final[dict[int, str]] = {
     0x00:"",
     0x01:" ",
     0x02:"０",
