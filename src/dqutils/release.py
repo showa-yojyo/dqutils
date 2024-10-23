@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import datetime
 import os
+from pathlib import Path
 import sys
 import time
 from typing import TYPE_CHECKING
@@ -14,7 +15,7 @@ if TYPE_CHECKING:
 
 # pylint: disable=import-error
 
-_BASEDIR = os.path.abspath(os.path.split(__file__)[0])
+_BASEDIR = Path(__file__).parent.absolute()
 
 _VERSION_TEMPLATE: Final[str] = '''\
 """dqutils.version - version information of dqutils."""
@@ -48,9 +49,9 @@ def write_versionfile() -> str:
         The version number.
     """
 
-    version_file = os.path.join(_BASEDIR, 'version.py')
-    if os.path.isfile(version_file):
-        sys.path.insert(0, _BASEDIR)
+    version_file = _BASEDIR / 'version.py'
+    if version_file.is_file():
+        sys.path.insert(0, _BASEDIR.as_posix())
         from dqutils.version import version
         del sys.path[0]
         return version
@@ -58,7 +59,7 @@ def write_versionfile() -> str:
     # Try to update all information
     date, date_info, version, version_info = get_info()
 
-    with open(version_file, mode='w', newline='') as fout:
+    with version_file.open(mode='w', newline='') as fout:
         fout.write(_VERSION_TEMPLATE.format(
             dev=_DEV,
             version=version,
@@ -92,7 +93,7 @@ def get_info(dynamic=True) -> tuple[str, datetime.datetime, str, VersionInfo]:
 
     import_failed = False
     if not dynamic:
-        sys.path.insert(0, _BASEDIR)
+        sys.path.insert(0, _BASEDIR.as_posix())
         try:
             from version import date, date_info, version, version_info
         except ImportError:
