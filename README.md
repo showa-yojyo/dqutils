@@ -12,20 +12,18 @@ This package provides the following features:
 
 ### Installation
 
-If you want to use this package, you need Python 3.0 or higher.
-Python 2.x are no longer supported.
-
-    $ git clone https://github.com/showa-yojyo/dqutils.git
-    $ pip install -e ./dqutils
+TBW
 
 ### Setting
 
-First, you must make the directory `.dqutils` in your home directory.
-This directory contains the setting files that dqutils package refers to.
+Before run a dqutils tool, you must make one of the directory below:
 
-    $ mkdir -p ~/.dqutils
+* `$XDG_CONFIG_HOME/dqutils`
+* `$HOME/.config/dqutils`
+* `$HOME/.dqutils`
 
-Then, touch the file `config` and edit as follows for example:
+Under one of the directory above, put the file `config` and edit as follows for
+example:
 
     # dqutils rc file
     [ROM]
