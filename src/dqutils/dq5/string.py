@@ -11,7 +11,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Final
+    from typing import cast, Final, Mapping
 
 from ..string import (enum_string as _enum_string,
                       get_text)
@@ -86,14 +86,10 @@ def print_all() -> None:
     """Print all of the string data to sys.stdout."""
 
     for i, context in enumerate(CONTEXT_GROUP):
-        print('Group #{0:d}'.format(i))
+        print(f'Group #{i:d}')
 
-        charmap = context["charmap"]
-        assert charmap is None or isinstance(charmap, dict)
-
-        for j, item in enumerate(StringGeneratorPascalStyle(context)):
-            text = process_dakuten(get_text(item[1], charmap, None))
-            print('{index:04X}:{address:06X}:{data}'.format(
-                index=j,
-                address=item[0],
-                data=text))
+        charmap = cast(Mapping[int, str], context["charmap"])
+        for index, item in enumerate(StringGeneratorPascalStyle(context)):
+            address, code_seq = item
+            text = process_dakuten(get_text(code_seq, charmap, None))
+            print(f'{index:04X}:{address:06X}:{text}')

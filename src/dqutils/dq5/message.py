@@ -95,17 +95,11 @@ def print_all_battle() -> None:
     assert first < last
 
     charmap = cast(Mapping[int, str], context["charmap"])
-    delims = context["delimiters"]
-    assert delims is None or isinstance(delims, array)
-
+    delims = cast(array, context["delimiters"])
     for i, item in enumerate(enum_battle(first, last)):
         address, shift, code_seq = item
         text = process_dakuten(get_text(code_seq, charmap, delims))
-        print("{index:04X}:{address:06X}:{shift:02X}:{message}".format(
-            index=i,
-            address=address,
-            shift=shift,
-            message=text))
+        print(f"{i:04X}:{address:06X}:{shift:02X}:{text}")
 
 def enum_scenario(
         first: int | None=None,
@@ -145,14 +139,8 @@ def print_all_scenario() -> None:
     assert first < last
 
     charmap = cast(Mapping[int, str], context["charmap"])
-    delims = context["delimiters"]
-    assert delims is None or isinstance(delims, array)
-
+    delims = cast(array, context["delimiters"])
     for i, item in enumerate(enum_scenario(first, last)):
         address, shift, code_seq = item
         text = get_text(code_seq, charmap, delims)
-        print("{index:04X}:{address:06X}:{shift:02X}:{message}".format(
-            index=i,
-            address=address,
-            shift=shift,
-            message=text))
+        print(f"{i:04X}:{address:06X}:{shift:02X}:{text}")

@@ -16,9 +16,7 @@ def _format_block_move(state: DisassembleState) -> str:
     """Block Move"""
 
     operand = state.current_operand or 0
-    return '${src:02X},${dest:02X}'.format(
-        src=operand & 0x00FF,
-        dest=(operand & 0xFF00) >> 8)
+    return f'${operand & 0x00FF:02X},${operand & 0xFF00 >> 8:02X}'
 
 # Immediate
 
@@ -26,9 +24,7 @@ def _format_immediate(state: DisassembleState) -> str:
     """Immediate"""
 
     actual_operand_size = state.current_operand_size
-
-    return '#${:0{width}X}'.format(
-        state.current_operand, width=actual_operand_size * 2)
+    return f'#${state.current_operand:0{actual_operand_size * 2}X}'
 
 # Program Counter Relative
 
@@ -42,7 +38,7 @@ def _format_program_counter_relative(state: DisassembleState) -> str:
         near_addr = (program_counter + operand) & 0xFFFF
     else:
         near_addr = (program_counter - (0x100 - operand)) & 0xFFFF
-    return '${:04X}'.format(near_addr)
+    return f'${near_addr:04X}'
 
 def _format_program_counter_relative_long(state: DisassembleState) -> str:
     """Program Counter Relative Long"""
@@ -54,15 +50,14 @@ def _format_program_counter_relative_long(state: DisassembleState) -> str:
     else:
         addr = (program_counter - (0x10000 - operand)) & 0xFFFF
 
-    return '${:04X}'.format(addr)
+    return f'${addr:04X}'
 
 # Stack
 
 def _format_stack_program_counter_relative_long(state: DisassembleState) -> str:
     """Stack (PCounter Relative Long)"""
     assert isinstance(state.current_operand, int)
-    return '${:04X}'.format(
-        (state.program_counter + state.current_operand) & 0xFFFF)
+    return f'${(state.program_counter + state.current_operand) & 0xFFFF:04X}'
 
 # pylint: disable=line-too-long
 ADDRESSING_MODE_TABLE = (

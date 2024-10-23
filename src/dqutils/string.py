@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Any, Mapping, TypeAlias
+    from typing import cast, Any, Mapping, TypeAlias
     CodeSeq: TypeAlias = bytes | bytearray | array
 
     from .string_generator import AbstractStringGenerator, StringInfo
@@ -43,8 +43,7 @@ def get_text(
     if delims and code_seq[-1] in delims:
         code_seq = code_seq[0:-1]
 
-    return ''.join(charmap.get(c, '[{0:02X}]'.format(c))
-                   for c in code_seq)
+    return ''.join(charmap.get(c, f'[{c:02X}]') for c in code_seq)
 
 def get_hex(code_seq: CodeSeq) -> str:
     """Return a hex representation of a string.
@@ -61,7 +60,7 @@ def get_hex(code_seq: CodeSeq) -> str:
     dump : str
         E.g. "26 24 12 24 DC 0E AC".
     """
-    return ' '.join('{:02X}'.format(c) for c in code_seq)
+    return ' '.join(f'{c:02X}' for c in code_seq)
 
 def enum_string(
         context: Mapping[str, Any],
@@ -144,21 +143,9 @@ def print_string(
         The last index + 1 of the range of indices you want.
     """
 
-    # Test preconditions.
-    delim = context["delimiters"]
-    assert isinstance(delim, bytes)
-
-    charmap = context["charmap"]
-    assert isinstance(charmap, dict)
-
+    delim = cast(bytes, context["delimiters"])
+    charmap = cast(Mapping[int, str], context["charmap"])
     start = 0 if first is None else int(first)
     for i, item in enumerate(generator_t(context, start, last), start):
-        if charmap:
-            text = get_text(item[1], charmap, delim)
-        else:
-            text = get_hex(item[1])
-
-        print("{index:04X}:{address:06X}:{data}".format(
-            index=i,
-            address=item[0],
-            data=text))
+        text = get_text(item[1], charmap, delim) if charmap else get_hex(item[1])
+        print(f"{i:04X}:{item[0]:06X}:{text}")

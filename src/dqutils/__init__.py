@@ -17,7 +17,7 @@ from typing import Iterable
 # Release data
 from . import release
 
-__author__ = '{} <{}>'.format(release.AUTHOR, release.AUTHOR_EMAIL)
+__author__ = f'{release.AUTHOR} <{release.AUTHOR_EMAIL}>'
 
 __license__ = release.LICENSE
 

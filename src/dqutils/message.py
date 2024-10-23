@@ -15,7 +15,7 @@ from array import array
 from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
-    from typing import Any
+    from typing import cast, Any
 
 from .string import (get_text, get_hex)
 from .string_generator import StringGeneratorCStyle
@@ -93,23 +93,11 @@ def print_battle(
         The last index + 1 of the range of indices you want.
     """
 
-    # Test preconditions.
-    charmap = context["charmap"]
-    assert charmap is None or isinstance(charmap, dict)
-
-    delims = context["delimiters"]
-    assert delims is None or isinstance(delims, bytes)
-
+    charmap = cast(dict, context["charmap"])
+    delims = cast(bytes, context["delimiters"])
     for i, item in enumerate(enum_battle(context, first, last)):
-        if charmap:
-            text = get_text(item[1], charmap, delims)
-        else:
-            text = get_hex(item[1])
-
-        print("{index:04X}:{address:06X}:{message}".format(
-            index=i,
-            address=item[0],
-            message=text))
+        text = get_text(item[1], charmap, delims) if charmap else get_hex(item[1])
+        print(f"{i:04X}:{item[0]:06X}:{text}")
 
 def enum_scenario(
         context: Mapping[str, Any],
@@ -190,17 +178,9 @@ def print_scenario(
         The last index + 1 of the range of indices you want.
     """
 
-    charmap = context["charmap"]
-    assert isinstance(charmap, dict)
-
-    delims = context["delimiters"]
-    assert delims is None or isinstance(delims, array)
-
+    charmap = cast(dict, context["charmap"])
+    delims = cast(array, context["delimiters"])
     for i, item in enumerate(enum_scenario(context, generator_t, first, last)):
         address, shift, code_seq = item
         text = get_text(code_seq, charmap, delims)
-        print("{index:04X}:{address:06X}:{shift:02X}:{message}".format(
-            index=i,
-            address=address,
-            shift=shift,
-            message=text))
+        print(f"{i:04X}:{address:06X}:{shift:02X}:{text}")

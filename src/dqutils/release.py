@@ -2,16 +2,21 @@
 
 This is modelled after (or a copy of) networkx.release.
 """
+from __future__ import annotations
+
+import datetime
 import os
 import sys
 import time
-import datetime
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from typing import Final, TypeAlias
 
 # pylint: disable=import-error
 
 _BASEDIR = os.path.abspath(os.path.split(__file__)[0])
 
-_VERSION_TEMPLATE = '''\
+_VERSION_TEMPLATE: Final[str] = '''\
 """dqutils.version - version information of dqutils."""
 
 import datetime
@@ -31,7 +36,7 @@ version_info = {version_info!r}
 date_info = {date_info!r}
 '''
 
-def write_versionfile():
+def write_versionfile() -> str:
     """Create version.py in the package directory.
 
     This function is modelled after (or a copy of) the same name function
@@ -63,7 +68,10 @@ def write_versionfile():
 
     return version
 
-def get_info(dynamic=True):
+if TYPE_CHECKING:
+    VersionInfo: TypeAlias = tuple[str, int, int, int]
+
+def get_info(dynamic=True) -> tuple[str, datetime.datetime, str, VersionInfo]:
     """Get current information.
 
     This function is modelled after (or a copy of) the same name function
@@ -102,43 +110,43 @@ def get_info(dynamic=True):
     return date, date_info, version, version_info
 
 # Version information
-NAME = 'dqutils'
-_MAJOR = 1
-_MINOR = 1
-_MICRO = 2
+NAME: Final[str] = 'dqutils'
+_MAJOR: Final[int] = 1
+_MINOR: Final[int] = 1
+_MICRO: Final[int] = 2
 
 # Declare current release as a development release.
-_DEV = True
+_DEV: Final[bool] = True
 
 # Constants mainly for setup.py.
 
-DESCRIPTION = 'dqutils (Dragon Quest Utilities)'
+DESCRIPTION: Final[str] = 'dqutils (Dragon Quest Utilities)'
 #LONG_DESCRIPTION
 
-LICENSE = 'MIT'
+LICENSE: Final[str] = 'MIT'
 
 # Author details.
-AUTHOR = 'プレハブ小屋'
-AUTHOR_EMAIL = 'yojyo@hotmail.com'
+AUTHOR: Final[str] = 'プレハブ小屋'
+AUTHOR_EMAIL: Final[str] = 'yojyo@hotmail.com'
 
 #MAINTAINER
 #MAINTAINER_EMAIL
 
 # The project's main homepage.
-URL = 'https://github.com/showa-yojyo/dqutils'
-DOWNLOAD_URL = 'https://github.com/showa-yojyo/dqutils'
+URL: Final[str] = 'https://github.com/showa-yojyo/dqutils'
+DOWNLOAD_URL: Final[str] = 'https://github.com/showa-yojyo/dqutils'
 
-PLATFORMS = [
+PLATFORMS: Final[tuple[str, ...]] = (
     'Linux',
     'Mac OSX',
     'Windows',
-    'Unix',]
+    'Unix',)
 
 # What does your project relate to?
-KEYWORDS = ['DRAGON QUEST SNES',]
+KEYWORDS: Final[tuple[str, ...]] = ('DRAGON QUEST SNES',)
 
 # See https://pypi.python.org/pypi?%3Aaction=list_classifiers
-CLASSIFIERS = [
+CLASSIFIERS: Final[tuple[str, ...]] = (
     # How mature is this project? Common values are
     #   3 - Alpha
     #   4 - Beta
@@ -154,6 +162,6 @@ CLASSIFIERS = [
 
     # Specify the Python versions you support here. In particular, ensure
     # that you indicate whether you support Python 2, Python 3 or both.
-    'Programming Language :: Python :: 3.4',]
+    'Programming Language :: Python :: 3.12',)
 
 DATE, DATE_INFO, VERSION, VERSION_INFO = get_info()

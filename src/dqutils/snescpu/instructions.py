@@ -369,7 +369,7 @@ class AbstractInstruction(object):
         if not (addressing_mode := cls.addressing_mode):
             # Opcode 42, WDM.
             assert state.current_operand
-            return '#${:02X}'.format(state.current_operand)
+            return f'#${state.current_operand:02X}'
 
         if addressing_mode.formatter:
             return addressing_mode.formatter(state)
@@ -397,12 +397,11 @@ def _build_instruction_classes() -> list[type[AbstractInstruction]]:
         attrs['add_if_m_zero'] = annotation == '*'
         attrs['add_if_x_zero'] = annotation == '+'
 
-        if method := global_dicts.get('_execute_{:02x}'.format(opcode)):
+        if method := global_dicts.get(f'_execute_{opcode:02x}'):
             attrs['execute'] = method
 
-        class_name = 'Instruction{:02X}'.format(opcode)
         cls = type(
-            class_name,
+            f'Instruction{opcode:02X}',
             (AbstractInstruction,),
             attrs)
         #inst_classes[class_name] = cls

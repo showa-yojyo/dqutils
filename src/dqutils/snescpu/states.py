@@ -431,7 +431,7 @@ class DumpState(AbstractState):
 
             print(FORMAT_STRING.format(
                 bank, offset, data.hex().upper()),
-                  file=out)
+                file=out)
 
             if len(data) < i:
                 return context, next_state

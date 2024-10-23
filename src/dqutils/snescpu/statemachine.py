@@ -10,9 +10,9 @@ from .mapper import make_mapper
 if TYPE_CHECKING:
     from collections.abc import Iterable
     import mmap
-    from typimg import Self
+    from typing import Self
     from .mapper import AbstractMapper
-    from .states import AbstractState
+    from .states import AbstractState, ContextT
 
 class StateMachine(object):
     """A state machine for the 65816 CPU disassembler."""
@@ -135,7 +135,7 @@ class StateMachine(object):
         self.runtime_init(**kwargs)
 
         state = self.get_state()
-        context: dict[str, AbstractState] = {}
+        context: ContextT = {}
         while state:
             context, next_state = state(context)
             if not next_state:

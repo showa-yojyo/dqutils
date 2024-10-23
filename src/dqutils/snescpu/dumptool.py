@@ -87,7 +87,7 @@ def dump(
         for i in range(sizeof_array):
             chunk = rom.read(sizeof_object)
 
-            output = ['{:04X}'.format(i)]
+            output = [f'{i:04X}']
             output.extend(
                 formatter.format(
                 get_bits(chunk, member[COLUMN_OFFSET], member[COLUMN_MASK_BITS]))

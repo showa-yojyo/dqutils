@@ -131,8 +131,8 @@ class HiROM(AbstractMapper):
         --------
         >>> mapper = HiROM
         >>> cpuaddr = mapper.from_rom(0x020000)
-        >>> print('0x{:06X}'.format(cpuaddr))
-        0xC20000
+        >>> print(f'{cpuaddr:#06x}')
+        0xc20000
         """
         return 0x00C00000 | (romaddr & 0x003FFFFF)
 
@@ -158,7 +158,7 @@ class HiROM(AbstractMapper):
         --------
         >>> mapper = HiROM
         >>> romaddr = mapper.from_cpu(0xC20000)
-        >>> print('0x{:06X}'.format(romaddr))
+        >>> print(f'{romaddr:#06x}')
         0x020000
         """
         return cpuaddr & 0x003FFFFF
@@ -223,7 +223,7 @@ class LoROM(AbstractMapper):
         --------
         >>> mapper = LoROM
         >>> cpuaddr = mapper.from_rom(0x008000)
-        >>> print('0x{:06X}'.format(cpuaddr))
+        >>> print(f'{cpuaddr:#06X}')
         0x018000
         """
         return ((romaddr & 0x00007FFF)
@@ -247,7 +247,7 @@ class LoROM(AbstractMapper):
         --------
         >>> mapper = LoROM
         >>> romaddr = mapper.from_cpu(0x018000)
-        >>> print('0x{:06X}'.format(romaddr))
+        >>> print(f'{romaddr:#06X}')
         0x008000
         """
         return (cpuaddr & 0x007FFF) | ((cpuaddr & 0x007F0000) >> 1)
