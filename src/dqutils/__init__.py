@@ -15,16 +15,7 @@ import sys
 from typing import Iterable
 
 # Release data
-from . import release
-
-__author__ = f'{release.AUTHOR} <{release.AUTHOR_EMAIL}>'
-
-__license__ = release.LICENSE
-
-__date__ = release.DATE
-
-__version__ = release.VERSION
-"""major.minor.micro version number."""
+from .release import __version__
 
 Command = namedtuple('Command', ('name', 'help', 'func'))
 

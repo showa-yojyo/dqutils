@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-from ..release import VERSION
+from ..release import __version__
 from .rom_image import RomImage
 from .statemachine import StateMachine
 from .states import DumpState
@@ -26,7 +26,7 @@ def create_argparser() -> ArgumentParser:
 
     parser = ArgumentParser(description='A simple hexdump tool')
     parser.add_argument(
-        '--version', action='version', version=VERSION)
+        '--version', action='version', version=__version__)
     parser.add_argument(
         'start',
         help='the hexadecimal base CPU address from which to dump')

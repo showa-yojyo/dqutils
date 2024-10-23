@@ -6,7 +6,7 @@ from __future__ import annotations
 from argparse import ArgumentParser
 from typing import TYPE_CHECKING
 
-from ..release import VERSION
+from ..release import __version__
 from .rom_image import RomImage
 from .mapper import make_mapper
 from .statemachine import StateMachine
@@ -28,7 +28,7 @@ def create_argparser() -> ArgumentParser:
     """
 
     parser = ArgumentParser(description='A 65816 CPU disassembler')
-    parser.add_argument('--version', action='version', version=VERSION)
+    parser.add_argument('--version', action='version', version=__version__)
 
     # Only optional arguments.
     parser.add_argument(

@@ -19,7 +19,8 @@ name = "dqutils"
 #
 # For a discussion on single-sourcing the version, see
 # https://packaging.python.org/guides/single-sourcing-package-version/
-version = "1.1.2"
+# version = "1.1.2"
+dynamic = ["version"]
 
 # This is a one-line description or tagline of what your project does. This
 # corresponds to the "Summary" metadata field:
@@ -137,3 +138,6 @@ requires = ["hatchling"]
 
 # The name of the Python object that frontends will use to perform the build:
 build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "src/dqutils/release.py"
