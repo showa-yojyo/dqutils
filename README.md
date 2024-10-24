@@ -1,5 +1,8 @@
 # About dqutils
 
+[![Test](https://github.com/showa-yojyo/dqutils/actions/workflows/test.yml/badge.svg?branch=develop)](https://github.com/showa-yojyo/dqutils/actions/workflows/test.yml)
+[![Release](https://github.com/showa-yojyo/dqutils/actions/workflows/release.yml/badge.svg?branch=master)](https://github.com/showa-yojyo/dqutils/actions/workflows/release.yml)
+
 **dqutils** is a Python package for looking program data in Dragon Quest series.
 
 This package provides the following features:
