@@ -22,6 +22,12 @@ class DQ6MessageTestCase(TestCase):
         self.assertEqual(cpu_addr, 0xF6F708)
         self.assertEqual(however_nothing_happened, code_seq)
 
+    def test_enum_battle_invalid_range(self):
+        with self.assertRaises(StopIteration):
+            next(enum_battle(0x0140, 0x0140))
+        with self.assertRaises(StopIteration):
+            next(enum_battle(0x00FF, 0x0020))
+
     def test_enum_scenario(self):
         """Test function dqutils.dq6.enum_scenario."""
 
@@ -42,3 +48,9 @@ class DQ6MessageTestCase(TestCase):
             self.assertEqual(result[0], addr)
             # [-1] is one of the delimiter characters.
             self.assertEqual(result[-1][:-1], code)
+
+    def test_enum_scenario_invalid_range(self):
+        with self.assertRaises(StopIteration):
+            next(enum_scenario(0x0023, 0x0023))
+        with self.assertRaises(StopIteration):
+            next(enum_scenario(0x00FF, 0x0020))

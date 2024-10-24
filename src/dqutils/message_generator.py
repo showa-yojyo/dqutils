@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from abc import (ABCMeta, abstractmethod)
 from array import array
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
@@ -73,12 +73,12 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         self.title = context["title"]
         self.delimiters = context["delimiters"]
 
-        if not first:
+        if first is None:
             first = context["message_id_first"]
-        if not last:
+        if last is None:
             last = context["message_id_last"]
-        self.first = first
-        self.last = last
+        self.first = cast(int, first)
+        self.last = cast(int, last)
 
         self.addr_group = context["addr_group"]
         self.addr_shiftbit_array = context["addr_shiftbit_array"]
@@ -120,7 +120,6 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         assert self.first is not None
         assert self.last is not None
-        assert 0 <= self.first <= self.last
 
     def setup(self: Self, mem: mmap.mmap) -> None:
         """Setup this instance.
@@ -279,14 +278,13 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     def __iter__(self: Self) -> IteratorT:
         """Return a generator iterator."""
 
+        if self.first >= self.last:
+            return
+
         with RomImage(self.title) as mem:
             self.setup(mem)
             self._assert_range()
-            if self.first == self.last:
-                raise StopIteration
 
-            assert isinstance(self.first, int)
-            assert isinstance(self.last, int)
             # Locate the first data location.
             addr_cur, shift_cur = self.locate_message(mem, self.first)
 

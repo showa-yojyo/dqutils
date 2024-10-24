@@ -21,6 +21,12 @@ class DQ5MessageTestCase(TestCase):
         self.assertEqual(cpu_addr, 0x078647)
         self.assertEqual(however_nothing_happened, code_seq)
 
+    def test_enum_battle_invalid_range(self):
+        with self.assertRaises(StopIteration):
+            next(enum_battle(0x007C, 0x007C))
+        with self.assertRaises(StopIteration):
+            next(enum_battle(0x00FF, 0x0020))
+
     def test_enum_scenario(self):
         """Test function dqutils.dq5.enum_scenario."""
 
@@ -33,3 +39,9 @@ class DQ5MessageTestCase(TestCase):
 
         self.assertEqual(cpu_addr, 0x0BCCD8)
         self.assertEqual(wai, code_seq)
+
+    def test_enum_scenario_invalid_range(self):
+        with self.assertRaises(StopIteration):
+            next(enum_scenario(0x0B95, 0x0B95))
+        with self.assertRaises(StopIteration):
+            next(enum_scenario(0x00FF, 0x0020))

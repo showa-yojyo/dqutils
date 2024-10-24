@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from abc import (ABCMeta, abstractmethod)
 import mmap
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 from .snescpu.mapper import AbstractMapper, make_mapper
 from .snescpu.rom_image import RomImage
@@ -50,35 +50,26 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             The last index + 1 of the range of indices you want.
         """
 
-        assert "title" in context
-        title = context["title"]
-
         if first is None:
             first = context.get("string_id_first",
                                 context.get("message_id_first"))
         if last is None:
             last = context.get("string_id_last",
                                context.get("message_id_last"))
-        # assert 0 <= first <= last
 
-        addr: int = context.get("addr_string", context.get("addr_message"))
-        assert addr
-
-        delims: bytes|None = context.get("delimiters")
-
-        self.title = title
-        self.first = first
-        self.last = last
-        self.addr = addr
-        self.delims = delims
+        self.title: str = context["title"]
+        self.first: int = cast(int, first)
+        self.last: int = cast(int, last)
+        self.addr: int = context.get("addr_string", context.get("addr_message"))
+        self.delims: bytes|None = context.get("delimiters")
         self.mapper: type[AbstractMapper]
         self.assert_valid()
 
     def __iter__(self: Self) -> Iterator[StringInfo]:
         self.assert_valid()
 
-        if self.first == self.last:
-            raise StopIteration
+        if self.first >= self.last:
+            return
 
         with RomImage(self.title) as mem:
             self.mapper = make_mapper(rom=mem)

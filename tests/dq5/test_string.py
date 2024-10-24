@@ -20,6 +20,14 @@ class DQ5StringTestCase(TestCase):
         self.assertEqual(addr, 0x23CE0E)
         self.assertEqual(code_seq, self.hinokinobou)
 
+    def test_enum_string_0_0(self):
+        """Test enum_string(?, 0, 0)"""
+
+        for ctx in CONTEXT_GROUP:
+            if ctx["string_id_last"] == 0:
+                with self.assertRaises(StopIteration):
+                    next(enum_string(ctx))
+
     def test_make_text(self):
         """Test function dqutils.dq5.charmapsmall.process_dakuten."""
 
