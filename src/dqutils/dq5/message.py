@@ -12,10 +12,10 @@ Special thanks to Mr. kobun_c.
 from __future__ import annotations
 
 from array import array
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 if TYPE_CHECKING:
     from collections.abc import Mapping
-    from typing import cast, Final
+    from typing import Final
 
 from ..message import enum_scenario as _enum_scenario
 from ..message_generator import MessageGeneratorV
@@ -94,7 +94,7 @@ def print_all_battle() -> None:
     assert isinstance(last, int)
     assert first < last
 
-    charmap = cast(Mapping[int, str], context["charmap"])
+    charmap = cast(dict[int, str], context["charmap"])
     delims = cast(array, context["delimiters"])
     for i, item in enumerate(enum_battle(first, last)):
         address, shift, code_seq = item
@@ -138,7 +138,7 @@ def print_all_scenario() -> None:
     last = cast(int, context["message_id_last"])
     assert first < last
 
-    charmap = cast(Mapping[int, str], context["charmap"])
+    charmap = cast(dict[int, str], context["charmap"])
     delims = cast(array, context["delimiters"])
     for i, item in enumerate(enum_scenario(first, last)):
         address, shift, code_seq = item

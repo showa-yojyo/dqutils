@@ -10,11 +10,11 @@ forms of raw bytes or human-readable texts.
 from __future__ import annotations
 
 from array import array
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import cast, Any, Mapping, TypeAlias
+    from typing import Any, Mapping, TypeAlias
     CodeSeq: TypeAlias = bytes | bytearray | array
 
     from .string_generator import AbstractStringGenerator, StringInfo
@@ -144,7 +144,7 @@ def print_string(
     """
 
     delim = cast(bytes, context["delimiters"])
-    charmap = cast(Mapping[int, str], context["charmap"])
+    charmap = cast(dict[int, str], context["charmap"])
     start = 0 if first is None else int(first)
     for i, item in enumerate(generator_t(context, start, last), start):
         text = get_text(item[1], charmap, delim) if charmap else get_hex(item[1])

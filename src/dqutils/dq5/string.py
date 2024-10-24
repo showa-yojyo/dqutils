@@ -8,10 +8,10 @@ raw bytes and legible texts.
 """
 
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import cast, Final, Mapping
+    from typing import Final
 
 from ..string import (enum_string as _enum_string,
                       get_text)
@@ -85,11 +85,10 @@ def enum_string(
 def print_all() -> None:
     """Print all of the string data to sys.stdout."""
 
-    for i, context in enumerate(CONTEXT_GROUP):
-        print(f'Group #{i:d}')
-
-        charmap = cast(Mapping[int, str], context["charmap"])
-        for index, item in enumerate(StringGeneratorPascalStyle(context)):
-            address, code_seq = item
+    for groupid, context in enumerate(CONTEXT_GROUP):
+        print(f'Group #{groupid:d}')
+        charmap = cast(dict[int, str], context["charmap"])
+        for id, entry in enumerate(StringGeneratorPascalStyle(context)):
+            address, code_seq = entry
             text = process_dakuten(get_text(code_seq, charmap, None))
-            print(f'{index:04X}:{address:06X}:{text}')
+            print(f'{id:04X}:{address:06X}:{text}')

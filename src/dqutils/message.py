@@ -12,10 +12,10 @@ For all of the programs, conversational message data are compressed.
 from __future__ import annotations
 
 from array import array
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
-    from typing import cast, Any
+    from typing import Any
 
 from .string import (get_text, get_hex)
 from .string_generator import StringGeneratorCStyle
