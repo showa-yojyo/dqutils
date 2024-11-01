@@ -12,54 +12,64 @@ if TYPE_CHECKING:
 
 # Block Move
 
+
 def _format_block_move(state: DisassembleState) -> str:
     """Block Move"""
 
     operand = state.current_operand or 0
-    return f'${operand & 0x00FF:02X},${operand & 0xFF00 >> 8:02X}'
+    return f"${operand & 0x00FF:02X},${operand & 0xFF00 >> 8:02X}"
+
 
 # Immediate
+
 
 def _format_immediate(state: DisassembleState) -> str:
     """Immediate"""
 
     actual_operand_size = state.current_operand_size
-    return f'#${state.current_operand:0{actual_operand_size * 2}X}'
+    return f"#${state.current_operand:0{actual_operand_size * 2}X}"
+
 
 # Program Counter Relative
+
 
 def _format_program_counter_relative(state: DisassembleState) -> str:
     """Program Counter Relative"""
 
     program_counter = state.program_counter
-    operand = state.current_operand or 0 # XXX
+    operand = state.current_operand or 0  # XXX
 
     if operand & 0x80 == 0x00:
         near_addr = (program_counter + operand) & 0xFFFF
     else:
         near_addr = (program_counter - (0x100 - operand)) & 0xFFFF
-    return f'${near_addr:04X}'
+    return f"${near_addr:04X}"
+
 
 def _format_program_counter_relative_long(state: DisassembleState) -> str:
     """Program Counter Relative Long"""
 
     program_counter = state.program_counter
-    operand = state.current_operand or 0 # XXX
+    operand = state.current_operand or 0  # XXX
     if operand & 0x8000 == 0x0000:
         addr = (program_counter + operand) & 0xFFFF
     else:
         addr = (program_counter - (0x10000 - operand)) & 0xFFFF
 
-    return f'${addr:04X}'
+    return f"${addr:04X}"
+
 
 # Stack
+
 
 def _format_stack_program_counter_relative_long(state: DisassembleState) -> str:
     """Stack (PCounter Relative Long)"""
     assert isinstance(state.current_operand, int)
-    return f'${(state.program_counter + state.current_operand) & 0xFFFF:04X}'
+    return f"${(state.program_counter + state.current_operand) & 0xFFFF:04X}"
+
 
 # pylint: disable=line-too-long
+# fmt: off
 ADDRESSING_MODE_TABLE = (
     ('Absolute                     ', '${:04X}        ', None,),
     ('Absolute Indexed Indirect    ', '(${:04X},X)    ', None,),
@@ -95,6 +105,8 @@ ADDRESSING_MODE_TABLE = (
     ('Stack/Interrupt              ', '#${:02X}       ', None,),
     ('Stack/RTI                    ', '               ', None,),
 )
+# fmt: on
+
 
 # pylint: disable=too-few-public-methods
 class AbstractAddressingMode(object):
@@ -103,6 +115,7 @@ class AbstractAddressingMode(object):
     name: str
     syntax: str
     formatter: Callable[[DisassembleState], str] | None
+
 
 def _build_addressing_mode_classes() -> None:
     """Register newly generated types to this module."""
@@ -118,12 +131,13 @@ def _build_addressing_mode_classes() -> None:
             __slots__=(),
             name=class_name,
             syntax=syntax,
-            formatter=formatter,)
+            formatter=formatter,
+        )
 
-        addr_classes[class_name] = type(
-            class_name, (AbstractAddressingMode,), attrs)
+        addr_classes[class_name] = type(class_name, (AbstractAddressingMode,), attrs)
 
     global_dicts.update(addr_classes)
+
 
 def get_addressing_mode(name: str) -> AbstractAddressingMode | None:
     """Return the addressing mode object by its name.
@@ -151,5 +165,6 @@ def get_addressing_mode(name: str) -> AbstractAddressingMode | None:
 
     # WDM
     return None
+
 
 _build_addressing_mode_classes()

@@ -1,6 +1,7 @@
 """
 Instructions of the 65816 Processor.
 """
+
 from __future__ import annotations
 
 from typing import Any, TYPE_CHECKING
@@ -14,10 +15,8 @@ if TYPE_CHECKING:
 
     ContextT: TypeAlias = MutableMapping[str, Any]
 
-def _execute_c2(
-        state: DisassembleState,
-        context: ContextT
-        ) -> tuple[ContextT, None]:
+
+def _execute_c2(state: DisassembleState, context: ContextT) -> tuple[ContextT, None]:
     """REP: Reset status bits.
 
     When used, it will set the bits specified by the 1 byte immediate
@@ -28,10 +27,8 @@ def _execute_c2(
     state.flags &= ~state.current_operand
     return context, None
 
-def _execute_e2(
-        state: DisassembleState,
-        context: ContextT
-        ) -> tuple[ContextT, None]:
+
+def _execute_e2(state: DisassembleState, context: ContextT) -> tuple[ContextT, None]:
     """SEP: Set status bits.
 
     When used, it will set the bits specified by the 1 byte immediate
@@ -42,7 +39,9 @@ def _execute_e2(
     state.flags |= state.current_operand
     return context, None
 
+
 # 65816 Programming Primer, Appendix B Composite Instruction List
+# fmt: off
 INSTRUCTION_TABLE = (
     ('BRK', 'Stack/Interrupt                ', 2, '**',),  # 00
     ('ORA', 'DP Indexed Indirect,X          ', 2, None,),  # 01
@@ -304,6 +303,8 @@ INSTRUCTION_TABLE = (
 # +  Add 1 byte if x=0 (16-bit index registers).
 # ** Opcode is 1 byte, but program counter value pushed onto stack is
 #    incremented by 2 allowing for optional signature byte.
+# fmt: on
+
 
 class AbstractInstruction(object):
     """The base class for all instruction classes."""
@@ -311,7 +312,7 @@ class AbstractInstruction(object):
     opcode = None
     operand_size: int
     mnemonic = None
-    #aliases = None
+    # aliases = None
     add_if_m_zero: bool
     add_if_x_zero: bool
     addressing_mode = None
@@ -329,10 +330,7 @@ class AbstractInstruction(object):
         return cls.operand_size - 1
 
     @staticmethod
-    def execute(
-        state: DisassembleState,
-        context: ContextT
-        ) -> tuple[ContextT, str | None]:
+    def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:
         """Overrided by subclasses if necessary.
 
         Parameters
@@ -369,7 +367,7 @@ class AbstractInstruction(object):
         if not (addressing_mode := cls.addressing_mode):
             # Opcode 42, WDM.
             assert state.current_operand
-            return f'#${state.current_operand:02X}'
+            return f"#${state.current_operand:02X}"
 
         if addressing_mode.formatter:
             return addressing_mode.formatter(state)
@@ -379,11 +377,12 @@ class AbstractInstruction(object):
 
         return str()
 
+
 def _build_instruction_classes() -> list[type[AbstractInstruction]]:
     """Register newly generated types to this module."""
 
     global_dicts = globals()
-    #inst_classes = {}
+    # inst_classes = {}
     instructions = []
     for opcode, cols in enumerate(INSTRUCTION_TABLE):
         attrs = dict(
@@ -391,24 +390,23 @@ def _build_instruction_classes() -> list[type[AbstractInstruction]]:
             opcode=opcode,
             mnemonic=cols[0],
             addressing_mode=get_addressing_mode(cols[1]),
-            operand_size=int(cols[2]),)
+            operand_size=int(cols[2]),
+        )
 
         annotation = cols[3]
-        attrs['add_if_m_zero'] = annotation == '*'
-        attrs['add_if_x_zero'] = annotation == '+'
+        attrs["add_if_m_zero"] = annotation == "*"
+        attrs["add_if_x_zero"] = annotation == "+"
 
-        if method := global_dicts.get(f'_execute_{opcode:02x}'):
-            attrs['execute'] = method
+        if method := global_dicts.get(f"_execute_{opcode:02x}"):
+            attrs["execute"] = method
 
-        cls = type(
-            f'Instruction{opcode:02X}',
-            (AbstractInstruction,),
-            attrs)
-        #inst_classes[class_name] = cls
+        cls = type(f"Instruction{opcode:02X}", (AbstractInstruction,), attrs)
+        # inst_classes[class_name] = cls
         instructions.append(cls)
 
-    #global_dicts.update(inst_classes)
+    # global_dicts.update(inst_classes)
     return instructions
+
 
 def get_instruction(opcode: bytes | int) -> type[AbstractInstruction]:
     """Return the instruction object by its opcode.
@@ -430,9 +428,10 @@ def get_instruction(opcode: bytes | int) -> type[AbstractInstruction]:
     """
 
     if isinstance(opcode, bytes):
-        opcode = int.from_bytes(opcode, 'little')
+        opcode = int.from_bytes(opcode, "little")
 
     assert isinstance(opcode, int)
     return DEFAULT_INSTRUCTIONS[opcode]
+
 
 DEFAULT_INSTRUCTIONS = tuple(_build_instruction_classes())
