@@ -1,15 +1,15 @@
-"""Tests for dqutils.dq5.string
-"""
+"""Tests for dqutils.dq5.string"""
 
 from unittest import TestCase
-from dqutils.dq5.string import (enum_string, CONTEXT_GROUP)
+from dqutils.dq5.string import enum_string, CONTEXT_GROUP
 from dqutils.dq5.charsmall import process_dakuten
 from dqutils.string import get_text
+
 
 class DQ5StringTestCase(TestCase):
     """Test functions defined in dqutils.dq5.string."""
 
-    hinokinobou = b'\x2A\x28\x16\x28\x84\x2D\x12'
+    hinokinobou = b"\x2a\x28\x16\x28\x84\x2d\x12"
 
     def test_enum_string(self):
         """Test function dqutils.dq5.enum_string."""
@@ -35,4 +35,4 @@ class DQ5StringTestCase(TestCase):
         charmap = context["charmap"]
 
         text = process_dakuten(get_text(self.hinokinobou, charmap, None))
-        self.assertEqual(text, 'ひのきのぼう')
+        self.assertEqual(text, "ひのきのぼう")

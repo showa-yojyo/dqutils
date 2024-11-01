@@ -8,24 +8,25 @@ from dqutils.snescpu.disasm import create_args
 from dqutils.snescpu.rom_image import RomImage
 from dqutils.dq6.disasm import DisassembleStateDQ6
 
+
 class DisasmTestCase(TestCase):
     """Tests dqutils.snescpu.disasm for DQ6."""
 
     def test_create_args_default(self):
         """Test create_args for DQ6 default values."""
 
-        with RomImage('DRAGONQUEST6') as rom:
+        with RomImage("DRAGONQUEST6") as rom:
             args, _ = create_args(rom, [])
 
-            self.assertEqual(args['flags'], 0)
-            self.assertEqual(args['first'], 0xC00000)
-            self.assertEqual(args['last'], -1)
-            self.assertFalse(args['until_return'])
+            self.assertEqual(args["flags"], 0)
+            self.assertEqual(args["first"], 0xC00000)
+            self.assertEqual(args["last"], -1)
+            self.assertFalse(args["until_return"])
 
     def test_specialized_state(self):
         """Test class `DisassembleStateDQ6`."""
 
-        fsm = Mock(program_counter='dummy')
+        fsm = Mock(program_counter="dummy")
         state = DisassembleStateDQ6(fsm)
         state.runtime_init()
 

@@ -1,18 +1,17 @@
 """This module provides functions for low-level bit/byte
 manipulation.
 """
+
 from __future__ import annotations
 
 from itertools import islice
 from typing import TYPE_CHECKING
+
 if TYPE_CHECKING:
     from typing import Iterable
 
-def get_bits(
-        byte_seq: bytes | bytearray | Iterable[int],
-        index: int,
-        mask: int
-        ) -> int:
+
+def get_bits(byte_seq: bytes | bytearray | Iterable[int], index: int, mask: int) -> int:
     """Obtain specified bits as an integer value from a sequence of
     bytes.
 
@@ -45,11 +44,8 @@ def get_bits(
 
     return value
 
-def get_int(
-        byte_seq: bytes | bytearray | Iterable[int],
-        index: int,
-        length: int
-        ) -> int:
+
+def get_int(byte_seq: bytes | bytearray | Iterable[int], index: int, length: int) -> int:
     """Obtain the integer value from a subsequence in a sequence of
     bytes.
 
@@ -87,5 +83,4 @@ def get_int(
     True
     """
 
-    return int.from_bytes(
-        islice(byte_seq, index, index + length), 'little')
+    return int.from_bytes(islice(byte_seq, index, index + length), "little")

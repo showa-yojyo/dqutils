@@ -9,24 +9,25 @@ conversational messages are rendered with the larger font.
 
 For all of the programs, conversational message data are compressed.
 """
+
 from __future__ import annotations
 
 from array import array
 from typing import TYPE_CHECKING, cast
+
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
     from typing import Any
 
-from .string import (get_text, get_hex)
+from .string import get_text, get_hex
 from .string_generator import StringGeneratorCStyle
+
 if TYPE_CHECKING:
     from .string_generator import StringInfo
     from .message_generator import AbstractMessageGenerator, IteratorT
 
-def enum_battle(
-        context: Mapping[str, Any],
-        first: int|None=None,
-        last: int|None=None) -> Iterator[StringInfo]:
+
+def enum_battle(context: Mapping[str, Any], first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -62,10 +63,8 @@ def enum_battle(
     """
     yield from StringGeneratorCStyle(context, first, last)
 
-def print_battle(
-        context: Mapping[str, Any],
-        first: int|None=None,
-        last: int|None=None) -> None:
+
+def print_battle(context: Mapping[str, Any], first: int | None = None, last: int | None = None) -> None:
     """Print message data to sys.stdout.
 
     Message data those indices in [`first`, `last`) will be used.
@@ -99,11 +98,13 @@ def print_battle(
         text = get_text(item[1], charmap, delims) if charmap else get_hex(item[1])
         print(f"{i:04X}:{item[0]:06X}:{text}")
 
+
 def enum_scenario(
-        context: Mapping[str, Any],
-        generator_t: type[AbstractMessageGenerator],
-        first: int|None=None,
-        last: int|None=None) -> IteratorT:
+    context: Mapping[str, Any],
+    generator_t: type[AbstractMessageGenerator],
+    first: int | None = None,
+    last: int | None = None,
+) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -144,11 +145,13 @@ def enum_scenario(
     """
     yield from generator_t(context, first, last)
 
+
 def print_scenario(
-        context: Mapping[str, Any],
-        generator_t: type[AbstractMessageGenerator],
-        first: int|None=None,
-        last: int|None=None) -> None:
+    context: Mapping[str, Any],
+    generator_t: type[AbstractMessageGenerator],
+    first: int | None = None,
+    last: int | None = None,
+) -> None:
     """Print message data to sys.stdout.
 
     Message data those indices in [`first`, `last`) will be returned.

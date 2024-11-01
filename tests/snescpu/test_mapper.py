@@ -3,7 +3,8 @@ Tests for dqutils.mapper module.
 """
 
 import unittest
-from dqutils.snescpu.mapper import (HiROM, LoROM, make_mapper)
+from dqutils.snescpu.mapper import HiROM, LoROM, make_mapper
+
 
 # pylint: disable=too-many-public-methods
 class HiROMTestCase(unittest.TestCase):
@@ -13,7 +14,7 @@ class HiROMTestCase(unittest.TestCase):
 
     def test_make_mapper(self):
         """Test function dqutils.mapper.make_mapper for HiROM."""
-        self.assertEqual(make_mapper(name='HiROM'), self.mapper)
+        self.assertEqual(make_mapper(name="HiROM"), self.mapper)
 
     def test_from_rom(self):
         """Test method dqutils.mapper.HiROM.from_rom."""
@@ -59,6 +60,7 @@ class HiROMTestCase(unittest.TestCase):
         """Test property dqutils.mapper.HiROM.bank_offset_size."""
         self.assertEqual(self.mapper.bank_offset_size, 0x10000)
 
+
 class LoROMTestCase(unittest.TestCase):
     """Test functions defined in dqutils.mapper."""
 
@@ -66,7 +68,7 @@ class LoROMTestCase(unittest.TestCase):
 
     def test_make_mapper(self):
         """Test function dqutils.mapper.make_mapper for LoROM."""
-        self.assertEqual(make_mapper(name='LoROM'), self.mapper)
+        self.assertEqual(make_mapper(name="LoROM"), self.mapper)
 
     def test_from_rom(self):
         """Test method dqutils.mapper.LoROM.from_rom."""

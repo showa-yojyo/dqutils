@@ -3,9 +3,8 @@ Tests for dqutils.snescpu.addressing.
 """
 
 from unittest import TestCase
-from dqutils.snescpu.addressing import (
-    ADDRESSING_MODE_TABLE,
-    get_addressing_mode)
+from dqutils.snescpu.addressing import ADDRESSING_MODE_TABLE, get_addressing_mode
+
 
 # pylint: disable=too-many-public-methods
 class AddressingTestCase(TestCase):
@@ -14,17 +13,17 @@ class AddressingTestCase(TestCase):
     def test_basic(self):
         """Test basic behaviors of get_addressing_mode."""
 
-        addrmode = get_addressing_mode('Immediate')
+        addrmode = get_addressing_mode("Immediate")
         self.assertTrue(addrmode)
 
         # Intentionally add extra space characters.
-        addrmode = get_addressing_mode(' Absolute Long   ')
+        addrmode = get_addressing_mode(" Absolute Long   ")
         self.assertTrue(addrmode)
 
     def test_invalid_args(self):
         """Test get_addressing_mode for invalid arguments."""
 
-        self.assertRaises(KeyError, get_addressing_mode, 'XYZ')
+        self.assertRaises(KeyError, get_addressing_mode, "XYZ")
 
     def test_properties(self):
         """Test AbstractAddressingMode for its properties."""
@@ -38,7 +37,6 @@ class AddressingTestCase(TestCase):
             self.assertEqual(addrmode.syntax, syntax.strip())
 
             if formatter:
-                self.assertEqual(
-                    addrmode.formatter.__name__, formatter.__name__)
+                self.assertEqual(addrmode.formatter.__name__, formatter.__name__)
             else:
                 self.assertIsNone(addrmode.formatter)

@@ -13,6 +13,7 @@ from __future__ import annotations
 
 from array import array
 from typing import TYPE_CHECKING, cast
+
 if TYPE_CHECKING:
     from collections.abc import Mapping
     from typing import Final
@@ -20,16 +21,16 @@ if TYPE_CHECKING:
 from ..message import enum_scenario as _enum_scenario
 from ..message_generator import MessageGeneratorV
 from ..string import get_text
+
 if TYPE_CHECKING:
     from ..message_generator import IteratorT
 
-from .charsmall import (CHARMAP as CHARMAP_SMALL,
-                        process_dakuten)
+from .charsmall import CHARMAP as CHARMAP_SMALL, process_dakuten
 from .charlarge import CHARMAP as CHARMAP_LARGE
 
 CONTEXT_MESSAGE_BATTLE: Final[dict] = dict(
     title="DRAGONQUEST5",
-    delimiters=array('H', (0x00E7, 0x00EF, 0x00FE)),
+    delimiters=array("H", (0x00E7, 0x00EF, 0x00FE)),
     charmap=CHARMAP_SMALL,
     message_id_first=0x0000,
     message_id_last=0x01A3,
@@ -40,11 +41,12 @@ CONTEXT_MESSAGE_BATTLE: Final[dict] = dict(
     addr_huffman_on=0x249C2E,
     huffman_root=0x00E8,
     decoding_mask=0x00FF,
-    decoding_read_size=1)
+    decoding_read_size=1,
+)
 
 CONTEXT_MESSAGE_SCENARIO: Final[dict] = dict(
     title="DRAGONQUEST5",
-    delimiters=array('H', (0x1001, 0x1010, 0x1018)),
+    delimiters=array("H", (0x1001, 0x1010, 0x1018)),
     charmap=CHARMAP_LARGE,
     message_id_first=0x0000,
     message_id_last=0x0C7E,
@@ -55,12 +57,11 @@ CONTEXT_MESSAGE_SCENARIO: Final[dict] = dict(
     addr_huffman_on=0x248CB6,
     huffman_root=0x07BA,
     decoding_mask=0x1FFF,
-    decoding_read_size=2)
+    decoding_read_size=2,
+)
 
-def enum_battle(
-        first: int | None=None,
-        last: int | None=None
-        ) -> IteratorT:
+
+def enum_battle(first: int | None = None, last: int | None = None) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -80,8 +81,8 @@ def enum_battle(
     code_seq : bytearray
         A sequence of characters locating in `addr`.
     """
-    yield from _enum_scenario(
-        CONTEXT_MESSAGE_BATTLE, MessageGeneratorV, first, last)
+    yield from _enum_scenario(CONTEXT_MESSAGE_BATTLE, MessageGeneratorV, first, last)
+
 
 def print_all_battle() -> None:
     """Print all message data of battle mode to sys.stdout."""
@@ -101,10 +102,8 @@ def print_all_battle() -> None:
         text = process_dakuten(get_text(code_seq, charmap, delims))
         print(f"{i:04X}:{address:06X}:{shift:02X}:{text}")
 
-def enum_scenario(
-        first: int | None=None,
-        last: int | None=None
-        ) -> IteratorT:
+
+def enum_scenario(first: int | None = None, last: int | None = None) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -126,8 +125,8 @@ def enum_scenario(
     code_seq : bytearray
         A sequence of characters locating in `addr`.
     """
-    yield from _enum_scenario(
-        CONTEXT_MESSAGE_SCENARIO, MessageGeneratorV, first, last)
+    yield from _enum_scenario(CONTEXT_MESSAGE_SCENARIO, MessageGeneratorV, first, last)
+
 
 def print_all_scenario() -> None:
     """Print all message data of conversation mode to sys.stdout."""

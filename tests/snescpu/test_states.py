@@ -5,7 +5,8 @@ Tests for dqutils.snescpu.states.
 from unittest import TestCase
 from unittest.mock import Mock
 from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
-from dqutils.snescpu.states import (DisassembleState, DumpState)
+from dqutils.snescpu.states import DisassembleState, DumpState
+
 
 class DisassembleStateTestCase(TestCase):
     """A TestCase for class DisassembleState."""
@@ -16,7 +17,7 @@ class DisassembleStateTestCase(TestCase):
         `DisassembleState`.
         """
 
-        fsm = Mock(program_counter='dummy')
+        fsm = Mock(program_counter="dummy")
         state = DisassembleState(fsm)
         self.assertEqual(state.state_machine, fsm)
         self.assertIsNone(state.current_opcode)
@@ -24,15 +25,14 @@ class DisassembleStateTestCase(TestCase):
         self.assertEqual(state.current_operand_size, 0)
         self.assertEqual(state.flags, 0)
         self.assertFalse(state.until_return)
-        self.assertSequenceEqual(
-            state.instructions, DEFAULT_INSTRUCTIONS)
+        self.assertSequenceEqual(state.instructions, DEFAULT_INSTRUCTIONS)
 
     def test_runtime_init(self):
         """
         Test behaviors of `DisassembleState.runtime_init`.
         """
 
-        fsm = Mock(program_counter='dummy')
+        fsm = Mock(program_counter="dummy")
         state = DisassembleState(fsm)
 
         # The default behavior.
@@ -53,14 +53,13 @@ class DisassembleStateTestCase(TestCase):
         Test behaviors of `DisassembleState.get_instruction`.
         """
 
-        fsm = Mock(program_counter='dummy')
+        fsm = Mock(program_counter="dummy")
         state = DisassembleState(fsm)
         state.runtime_init()
 
-        self.assertEqual(
-            state.get_instruction(0x00), DEFAULT_INSTRUCTIONS[0])
-        self.assertEqual(
-            state.get_instruction(b'\x03'), DEFAULT_INSTRUCTIONS[3])
+        self.assertEqual(state.get_instruction(0x00), DEFAULT_INSTRUCTIONS[0])
+        self.assertEqual(state.get_instruction(b"\x03"), DEFAULT_INSTRUCTIONS[3])
+
 
 class DumpStateTestCase(TestCase):
     """Test class DumpState."""
@@ -71,7 +70,7 @@ class DumpStateTestCase(TestCase):
         `DumpState`.
         """
 
-        fsm = Mock(program_counter='dummy')
+        fsm = Mock(program_counter="dummy")
         state = DumpState(fsm)
         self.assertEqual(state.state_machine, fsm)
         self.assertEqual(state.byte_count, ())
@@ -82,7 +81,7 @@ class DumpStateTestCase(TestCase):
         Test behavior of `DumpState.runtime_init`.
         """
 
-        fsm = Mock(program_counter='dummy')
+        fsm = Mock(program_counter="dummy")
         state = DumpState(fsm)
         state.runtime_init(byte_count=[20], record_count=47894)
         self.assertEqual(state.byte_count, [20])

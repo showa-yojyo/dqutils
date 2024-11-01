@@ -8,22 +8,25 @@ from unittest import TestCase
 from unittest.mock import patch
 from dqutils.dq3.dumptool import main
 
-class DumpToolTestCase(TestCase):
 
+class DumpToolTestCase(TestCase):
     def test_run(self):
         """A simple case"""
 
-        input = StringIO(dedent(
-            """\
+        input = StringIO(
+            dedent(
+                """\
             #$0000:#$00001F
             #$0000:#$0003E0
             #$0001:#$00007C
             #$0001:#$000F80
             #$0002:#$0001F0
             #$0003:#$000FC0
-            """))
-        with patch('sys.stdin', input), patch('sys.stdout', StringIO()) as output:
-            main(['0xC8F323', '0x36', '10', '--delimiter', ':'])
+            """
+            )
+        )
+        with patch("sys.stdin", input), patch("sys.stdout", StringIO()) as output:
+            main(["0xC8F323", "0x36", "10", "--delimiter", ":"])
 
         expected = dedent(
             """\
@@ -37,5 +40,6 @@ class DumpToolTestCase(TestCase):
             0007:02:03:01:02:07:10
             0008:02:03:01:02:07:10
             0009:02:03:01:02:07:10
-            """)
+            """
+        )
         self.assertMultiLineEqual(output.getvalue(), expected)

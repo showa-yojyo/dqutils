@@ -1,7 +1,8 @@
 """Tests for dqutils.bit module."""
 
 import unittest
-from dqutils.bit import (get_bits, get_int)
+from dqutils.bit import get_bits, get_int
+
 
 # pylint: disable=too-many-public-methods
 class BitTestCase(unittest.TestCase):
@@ -10,8 +11,10 @@ class BitTestCase(unittest.TestCase):
     def test_get_int(self):
         """Test function dqutils.bit.get_int."""
 
-        targets = ((0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06),
-                   b'\x00\x01\x02\x03\x04\x05\x06',)
+        targets = (
+            (0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06),
+            b"\x00\x01\x02\x03\x04\x05\x06",
+        )
 
         for data in targets:
             self.assertEqual(get_int(data, 0, 1), 0x00)
@@ -26,7 +29,7 @@ class BitTestCase(unittest.TestCase):
         """Test function dqutils.bit.get_int in case of empty value is
         passed.
         """
-        self.assertEqual(get_int(b'', 6, 3), 0)
+        self.assertEqual(get_int(b"", 6, 3), 0)
         self.assertEqual(get_int([], 6, 3), 0)
 
     def test_get_bits(self):

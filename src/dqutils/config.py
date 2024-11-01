@@ -10,6 +10,7 @@ from pathlib import Path
 
 _CONFIG: ConfigParser | None = None
 
+
 def get_config() -> ConfigParser:
     """Return configuration data from :file:`config`.
 
@@ -41,14 +42,16 @@ def get_config() -> ConfigParser:
 
     return _CONFIG
 
+
 def _load_conf() -> ConfigParser:
     """Read and parse configuration data from :file:`config`."""
 
-    with (confdir_home() / 'config').open() as fin:
+    with (confdir_home() / "config").open() as fin:
         confparser = ConfigParser()
         confparser.read_file(fin)
 
     return confparser
+
 
 def confdir_home() -> Path:
     """Return the directory path to dqutils configuration files.
@@ -69,7 +72,7 @@ def confdir_home() -> Path:
     """
 
     def gen_candidates() -> Iterator[Path]:
-        if xdg_config_home := os.environ.get('XDG_CONFIG_HOME'):
+        if xdg_config_home := os.environ.get("XDG_CONFIG_HOME"):
             yield Path(xdg_config_home, "dqutils")
         home_dir = Path.home()
         yield home_dir / ".config" / "dqutils"
@@ -81,6 +84,7 @@ def confdir_home() -> Path:
 
     raise RuntimeError("Could not find configuration directory. See the README")
 
+
 if __name__ == "__main__":
     get_config()
-    print('dqutils config status: OK')
+    print("dqutils config status: OK")

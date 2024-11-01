@@ -9,16 +9,17 @@ raw bytes and legible texts.
 
 from __future__ import annotations
 from typing import TYPE_CHECKING, cast
+
 if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Final
 
-from ..string import (enum_string as _enum_string,
-                      get_text)
+from ..string import enum_string as _enum_string, get_text
 from ..string_generator import StringGeneratorPascalStyle
+
 if TYPE_CHECKING:
-    from ..string_generator import (StringInfo, ContextT)
-from .charsmall import (CHARMAP, process_dakuten)
+    from ..string_generator import StringInfo, ContextT
+from .charsmall import CHARMAP, process_dakuten
 
 CONTEXT_GROUP: Final[tuple[dict[str, int], ...]] = (
     # Partners (human beings).
@@ -50,16 +51,14 @@ CONTEXT_GROUP: Final[tuple[dict[str, int], ...]] = (
 
 CONTEXT_PROTOTYPE: Final[dict] = dict(
     title="DRAGONQUEST5",
-    charmap=CHARMAP,)
+    charmap=CHARMAP,
+)
 
 for group in CONTEXT_GROUP:
-    group.update(CONTEXT_PROTOTYPE) # type: ignore[arg-type]
+    group.update(CONTEXT_PROTOTYPE)  # type: ignore[arg-type]
 
-def enum_string(
-        context: ContextT,
-        first: int | None=None,
-        last: int | None=None
-        ) -> Iterator[StringInfo]:
+
+def enum_string(context: ContextT, first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
 
@@ -79,16 +78,16 @@ def enum_string(
     b : bytearray
         The next bytes of data in the range of 0 to `last` - 1.
     """
-    yield from _enum_string(
-        context, StringGeneratorPascalStyle, first, last)
+    yield from _enum_string(context, StringGeneratorPascalStyle, first, last)
+
 
 def print_all() -> None:
     """Print all of the string data to sys.stdout."""
 
     for groupid, context in enumerate(CONTEXT_GROUP):
-        print(f'Group #{groupid:d}')
+        print(f"Group #{groupid:d}")
         charmap = cast(dict[int, str], context["charmap"])
         for id, entry in enumerate(StringGeneratorPascalStyle(context)):
             address, code_seq = entry
             text = process_dakuten(get_text(code_seq, charmap, None))
-            print(f'{id:04X}:{address:06X}:{text}')
+            print(f"{id:04X}:{address:06X}:{text}")

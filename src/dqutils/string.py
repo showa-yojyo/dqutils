@@ -7,6 +7,7 @@ windows with the smaller font.
 This module provides functions capable to load strings either in
 forms of raw bytes or human-readable texts.
 """
+
 from __future__ import annotations
 
 from array import array
@@ -15,14 +16,13 @@ from typing import TYPE_CHECKING, cast
 if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Any, Mapping, TypeAlias
+
     CodeSeq: TypeAlias = bytes | bytearray | array
 
     from .string_generator import AbstractStringGenerator, StringInfo
 
-def get_text(
-        code_seq: CodeSeq,
-        charmap: Mapping[int, str],
-        delims: CodeSeq | None=None) -> str:
+
+def get_text(code_seq: CodeSeq, charmap: Mapping[int, str], delims: CodeSeq | None = None) -> str:
     """Return a text representation of a string.
 
     Parameters
@@ -43,7 +43,8 @@ def get_text(
     if delims and code_seq[-1] in delims:
         code_seq = code_seq[0:-1]
 
-    return ''.join(charmap.get(c, f'[{c:02X}]') for c in code_seq)
+    return "".join(charmap.get(c, f"[{c:02X}]") for c in code_seq)
+
 
 def get_hex(code_seq: CodeSeq) -> str:
     """Return a hex representation of a string.
@@ -60,13 +61,15 @@ def get_hex(code_seq: CodeSeq) -> str:
     dump : str
         E.g. "26 24 12 24 DC 0E AC".
     """
-    return ' '.join(f'{c:02X}' for c in code_seq)
+    return " ".join(f"{c:02X}" for c in code_seq)
+
 
 def enum_string(
-        context: Mapping[str, Any],
-        generator_t: type[AbstractStringGenerator],
-        first: int|None=None,
-        last: int|None=None) -> Iterator[StringInfo]:
+    context: Mapping[str, Any],
+    generator_t: type[AbstractStringGenerator],
+    first: int | None = None,
+    last: int | None = None,
+) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
 
@@ -107,11 +110,13 @@ def enum_string(
 
     yield from generator_t(context, first, last)
 
+
 def print_string(
-        context: Mapping[str, Any],
-        generator_t: type[AbstractStringGenerator],
-        first: int|None=None,
-        last: int|None=None) -> None:
+    context: Mapping[str, Any],
+    generator_t: type[AbstractStringGenerator],
+    first: int | None = None,
+    last: int | None = None,
+) -> None:
     """Print string data to sys.stdout.
 
     String data those indices in [`first`, `last`) will be used.

@@ -1,5 +1,5 @@
-"""This module provides features dealing with SNES ROM images.
-"""
+"""This module provides features dealing with SNES ROM images."""
+
 from __future__ import annotations
 
 import mmap
@@ -10,6 +10,7 @@ if TYPE_CHECKING:
     from types import TracebackType
 
 from ..config import get_config
+
 
 # pylint: disable=too-few-public-methods
 class RomImage(object):
@@ -25,9 +26,8 @@ class RomImage(object):
 
         Examples
         --------
-        >>> with RomImage('DRAGONQUEST3') as rom:
+        >>> with RomImage("DRAGONQUEST3") as rom:
         ...     header = get_snes_header(rom)
-        ...
 
         See Also
         --------
@@ -39,8 +39,7 @@ class RomImage(object):
         self.image: mmap.mmap
 
     def __enter__(self: Self) -> mmap.mmap:
-        fin = open(
-            get_config().get('ROM', self.title), 'rb')
+        fin = open(get_config().get("ROM", self.title), "rb")
         image = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
 
         self.fin, self.image = fin, image
@@ -56,6 +55,7 @@ class RomImage(object):
             self.image.close()
         if self.fin:
             self.fin.close()
+
 
 def get_snes_header(mem: mmap.mmap) -> bytes:
     """Return the 64 bytes of cartridge information a.k.a. SNES
@@ -80,16 +80,16 @@ def get_snes_header(mem: mmap.mmap) -> bytes:
         # Detect which ROM type it is.
         # For LoROM, SNES header is located in [$7FC0, $8000),
         # while for HiROM, in [$FFC0, $10000).
-        for i in (0x7fc0, 0xffc0):
+        for i in (0x7FC0, 0xFFC0):
             mem.seek(i)
             buffer = mem.read(64)
 
             # [$xFDC, $xFDE): checksum complement (inverse).
             # [$xFDE, $xFE0): checksum bytes.
-            chksum1 = int.from_bytes(buffer[0x1C:0x1E], 'little')
-            chksum2 = int.from_bytes(buffer[0x1E:0x20], 'little')
+            chksum1 = int.from_bytes(buffer[0x1C:0x1E], "little")
+            chksum2 = int.from_bytes(buffer[0x1E:0x20], "little")
             if chksum1 ^ chksum2 == 0xFFFF:
                 return buffer
-        raise RuntimeError('ROM header not found')
+        raise RuntimeError("ROM header not found")
     finally:
         mem.seek(bkp)

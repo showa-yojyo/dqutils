@@ -4,8 +4,8 @@ Tests for dqutils.snescpu.instructions.
 
 from unittest import TestCase
 from unittest.mock import Mock
-from dqutils.snescpu.instructions import (
-    INSTRUCTION_TABLE, get_instruction)
+from dqutils.snescpu.instructions import INSTRUCTION_TABLE, get_instruction
+
 
 # pylint: disable=too-many-public-methods
 class InstructionsTestCase(TestCase):
@@ -30,7 +30,7 @@ class InstructionsTestCase(TestCase):
         """Test REP."""
 
         inst = get_instruction(0xC2)
-        self.assertEqual(inst.mnemonic, 'REP')
+        self.assertEqual(inst.mnemonic, "REP")
 
         fsm = Mock(flags=0xFF, current_operand=0x30)
         inst.execute(fsm, None)
@@ -44,7 +44,7 @@ class InstructionsTestCase(TestCase):
         """Test SEP."""
 
         inst = get_instruction(0xE2)
-        self.assertEqual(inst.mnemonic, 'SEP')
+        self.assertEqual(inst.mnemonic, "SEP")
 
         fsm = Mock(flags=0xFF, current_operand=0x30)
         inst.execute(fsm, None)

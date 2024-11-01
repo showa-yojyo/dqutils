@@ -17,7 +17,8 @@ from typing import Iterable
 # Release data
 from .release import __version__
 
-Command = namedtuple('Command', ('name', 'help', 'func'))
+Command = namedtuple("Command", ("name", "help", "func"))
+
 
 def run(commands: Iterable[Command]) -> None:
     """TBW.
@@ -31,9 +32,9 @@ def run(commands: Iterable[Command]) -> None:
       None
     """
 
-    parser = ArgumentParser(description='dqutils command line interface')
-    parser.add_argument('--version', action='version', version=__version__)
-    subparsers = parser.add_subparsers(help='commands')
+    parser = ArgumentParser(description="dqutils command line interface")
+    parser.add_argument("--version", action="version", version=__version__)
+    subparsers = parser.add_subparsers(help="commands")
     for i in commands:
         subp = subparsers.add_parser(i.name, help=i.help)
         subp.set_defaults(func=i.func)

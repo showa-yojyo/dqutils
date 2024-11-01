@@ -1,6 +1,7 @@
 """
 This module provides command line interface for the disassmbler.
 """
+
 from __future__ import annotations
 
 from argparse import ArgumentParser
@@ -18,6 +19,7 @@ if TYPE_CHECKING:
     from .mapper import AbstractMapper
     from .states import AbstractState
 
+
 def create_argparser() -> ArgumentParser:
     """Return a command line parser for the application.
 
@@ -27,45 +29,37 @@ def create_argparser() -> ArgumentParser:
         Storage of the command line parameters.
     """
 
-    parser = ArgumentParser(description='A 65816 CPU disassembler')
-    parser.add_argument('--version', action='version', version=__version__)
+    parser = ArgumentParser(description="A 65816 CPU disassembler")
+    parser.add_argument("--version", action="version", version=__version__)
 
     # Only optional arguments.
     parser.add_argument(
-        '-a', '--accumulator-8bit',
-        dest='accumulator_8bit',
-        action='store_true',
-        help='start in 8-bit accumulator mode (default is 16-bit)')
+        "-a",
+        "--accumulator-8bit",
+        dest="accumulator_8bit",
+        action="store_true",
+        help="start in 8-bit accumulator mode (default is 16-bit)",
+    )
     parser.add_argument(
-        '-x', '--index-8bit',
-        dest='index_8bit',
-        action='store_true',
-        help='start in 8-bit X/Y mode (default is 16-bit)')
+        "-x", "--index-8bit", dest="index_8bit", action="store_true", help="start in 8-bit X/Y mode (default is 16-bit)"
+    )
 
     # numbers are hex-only, no prefixes
-    parser.add_argument(
-        '-b', '--bank',
-        dest='bank',
-        metavar='BANK',
-        help='disassemble bank BANK only')
-    parser.add_argument(
-        '-r', '--range',
-        dest='range',
-        metavar='FIRST[:LAST]',
-        help='disassemble block [FIRST, LAST)')
+    parser.add_argument("-b", "--bank", dest="bank", metavar="BANK", help="disassemble bank BANK only")
+    parser.add_argument("-r", "--range", dest="range", metavar="FIRST[:LAST]", help="disassemble block [FIRST, LAST)")
 
     parser.add_argument(
-        '-u', '--until-return',
-        dest='until_return',
-        action='store_true',
-        help='exit immediately after processing RTI/RTS/RTL')
+        "-u",
+        "--until-return",
+        dest="until_return",
+        action="store_true",
+        help="exit immediately after processing RTI/RTS/RTL",
+    )
 
     return parser
 
-def create_args(
-        rom: mmap.mmap,
-        cmdline_args: Sequence[str] = []
-        ) -> tuple[dict[str, Any], type[AbstractMapper]]:
+
+def create_args(rom: mmap.mmap, cmdline_args: Sequence[str] = []) -> tuple[dict[str, Any], type[AbstractMapper]]:
     """Initialize the arguments of disassember.
 
     Parameters
@@ -111,7 +105,7 @@ def create_args(
     if args.index_8bit:
         flags |= 0x10
 
-    context['flags'] = flags
+    context["flags"] = flags
 
     # Set the address space [`first`, `last`) to disassemble,
     # where `first` is used to set `program_counter`.
@@ -120,7 +114,7 @@ def create_args(
         first = bank << 0x10
         last = first + mapper.bank_offset_size
     elif args.range:
-        rng = args.range.split(':')
+        rng = args.range.split(":")
         first = int(rng[0], base=16)
         if len(rng) == 2 and rng[1]:
             last = int(rng[1], base=16)
@@ -128,19 +122,14 @@ def create_args(
             last = -1
     else:
         first = mapper.from_rom(0)
-        last = -1 # dummy value; dynamically set
+        last = -1  # dummy value; dynamically set
 
-    context.update(
-        first=first,
-        last=last,
-        until_return=args.until_return)
+    context.update(first=first, last=last, until_return=args.until_return)
 
     return context, mapper
 
-def disassemble(
-        game_title: str,
-        state_classes: Sequence[type[AbstractState]],
-        initial_state: str) -> None:
+
+def disassemble(game_title: str, state_classes: Sequence[type[AbstractState]], initial_state: str) -> None:
     """Disassemble the 65816 machine code.
 
     Parameters

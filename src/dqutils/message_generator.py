@@ -6,9 +6,10 @@ The original implementation is written in the 65816 Processor codes.
 Here are in Python version, which is based on C/C++ implementation
 I wrote a long ago.
 """
+
 from __future__ import annotations
 
-from abc import (ABCMeta, abstractmethod)
+from abc import ABCMeta, abstractmethod
 from array import array
 from typing import TYPE_CHECKING, cast
 
@@ -16,9 +17,10 @@ if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
     import mmap
     from typing import Any, Final, Self, TypeAlias
+
     IteratorT: TypeAlias = Iterator[tuple[int, int, array]]
 
-from .bit import (get_bits, get_int)
+from .bit import get_bits, get_int
 from .snescpu.mapper import make_mapper
 from .snescpu.rom_image import RomImage
 
@@ -27,15 +29,12 @@ if TYPE_CHECKING:
 
 _DUMMY_CODE: Final[int] = 0xFFFFFFFF
 
+
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """The base class of MessageGenerator subclasses."""
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(
-            self: Self,
-            context: Mapping[str, Any],
-            first: int|None=None,
-            last: int|None=None) -> None:
+    def __init__(self: Self, context: Mapping[str, Any], first: int | None = None, last: int | None = None) -> None:
         """Create an object of class AbstractMessageGenerator.
 
         Parameters
@@ -101,7 +100,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         assert self.title
         assert self.mapper
         assert isinstance(self.delimiters, array)
-        assert self.delimiters.typecode == 'H'
+        assert self.delimiters.typecode == "H"
         assert self.addr_group >= 0
         assert self.addr_shiftbit_array >= 0
         assert len(self.shiftbit_array) == 8
@@ -179,10 +178,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         assert len(self.shiftbit_array) == 8
 
-    def locate_message(
-            self: Self,
-            mem: mmap.mmap,
-            message_id: int) -> tuple[int, int]:
+    def locate_message(self: Self, mem: mmap.mmap, message_id: int) -> tuple[int, int]:
         """Return the location where the messege data is stored.
 
         Parameters
@@ -219,11 +215,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         return addr, shift
 
-    def decode(
-            self: Self,
-            mem: mmap.mmap,
-            addr: int,
-            shift: int) -> tuple[int, int, int]:
+    def decode(self: Self, mem: mmap.mmap, addr: int, shift: int) -> tuple[int, int, int]:
         """Decoding algorithm of Huffman coding.
 
         Decode a Huffman-encoded bit string and return a decoded character.
@@ -289,25 +281,22 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             addr_cur, shift_cur = self.locate_message(mem, self.first)
 
             delims = self.delimiters
-            assert isinstance(delims, array) and delims.typecode == 'H'
+            assert isinstance(delims, array) and delims.typecode == "H"
 
             for _ in range(self.first, self.last):
                 addr, shift = addr_cur, shift_cur
 
                 # Array of unsigned short values.
-                code_seq = array('H')
+                code_seq = array("H")
                 code = _DUMMY_CODE
                 while not code in delims:
-                    addr_cur, shift_cur, code = self.decode(
-                        mem, addr_cur, shift_cur)
+                    addr_cur, shift_cur, code = self.decode(mem, addr_cur, shift_cur)
                     code_seq.append(code)
 
                 yield addr, shift, code_seq
 
     @abstractmethod
-    def _do_select_message_group(
-            self: Self,
-            message_id: int) -> tuple[int, int]:
+    def _do_select_message_group(self: Self, message_id: int) -> tuple[int, int]:
         """Return detailed location information of message data.
 
         Parameters
@@ -342,9 +331,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _do_next_location(
-            self: Self,
-            addr: int, shift: int) -> tuple[int, int]:
+    def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
         """Return the next address to read data encoded.
 
         Parameters
@@ -379,12 +366,11 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         """
         pass
 
+
 class MessageGeneratorW(AbstractMessageGenerator):
     """This class is for DQ3 and DQ6."""
 
-    def _do_select_message_group(
-            self: Self,
-            message_id: int) -> tuple[int, int]:
+    def _do_select_message_group(self: Self, message_id: int) -> tuple[int, int]:
         # The message ID gives the folowing information:
         # 1. 0007h bits: the number of AEh occurrences,
         #    e.g., in DQ3, the index of the array $C1B01C (1byte * 8)
@@ -392,15 +378,13 @@ class MessageGeneratorW(AbstractMessageGenerator):
         #    which contains offset values from address $FCC258.
         count = message_id & 0x0007
         group = message_id >> 3
-        group += (group << 1)
+        group += group << 1
         return count, group
 
     def _do_is_leaf_node(self: Self, node: int) -> bool:
         return node & 0x8000 == 0
 
-    def _do_next_location(
-            self: Self,
-            addr: int, shift: int) -> tuple[int, int]:
+    def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
         shift >>= 1
         if shift == 0:
             shift = 0x80
@@ -410,12 +394,11 @@ class MessageGeneratorW(AbstractMessageGenerator):
     def _do_next_node(self: Self, node: int) -> int:
         return node & 0x7FFF
 
+
 class MessageGeneratorV(AbstractMessageGenerator):
     """This class is for DQ5."""
 
-    def _do_select_message_group(
-            self: Self,
-            message_id: int) -> tuple[int, int]:
+    def _do_select_message_group(self: Self, message_id: int) -> tuple[int, int]:
         count = message_id & 0x000F
         group = message_id // 16 * 3
         return count, group
@@ -423,9 +406,7 @@ class MessageGeneratorV(AbstractMessageGenerator):
     def _do_is_leaf_node(self: Self, node: int) -> bool:
         return node & 0x8000 == 0x8000
 
-    def _do_next_location(
-            self: Self,
-            addr: int, shift: int) -> tuple[int, int]:
+    def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
         shift <<= 1
         if shift > 0x80:
             shift = 0x01
@@ -436,4 +417,3 @@ class MessageGeneratorV(AbstractMessageGenerator):
         node &= 0x1FFF
         node <<= 1
         return node
-

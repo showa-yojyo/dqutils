@@ -1,12 +1,14 @@
 """
 Provide a state machine for the 65816 Processor.
 """
+
 from __future__ import annotations
 
 import sys
 from typing import TYPE_CHECKING
 
 from .mapper import make_mapper
+
 if TYPE_CHECKING:
     from collections.abc import Iterable
     import mmap
@@ -14,16 +16,17 @@ if TYPE_CHECKING:
     from .mapper import AbstractMapper
     from .states import AbstractState, ContextT
 
+
 class StateMachine(object):
     """A state machine for the 65816 CPU disassembler."""
 
     def __init__(
-            self: Self,
-            state_classes: Iterable[type[AbstractState]],
-            initial_state: str,
-            rom: mmap.mmap,
-            mapper: type[AbstractMapper]|None=None
-            ) -> None:
+        self: Self,
+        state_classes: Iterable[type[AbstractState]],
+        initial_state: str,
+        rom: mmap.mmap,
+        mapper: type[AbstractMapper] | None = None,
+    ) -> None:
         """Initialize an object of class `StateMachine`.
 
         Parameters
@@ -79,9 +82,7 @@ class StateMachine(object):
             i.unlink()
         self.states = {}
 
-    def add_states(
-            self: Self,
-            state_classes: Iterable[type[AbstractState]]) -> None:
+    def add_states(self: Self, state_classes: Iterable[type[AbstractState]]) -> None:
         """Add state classes to `self.states`.
 
         Parameters
@@ -90,8 +91,7 @@ class StateMachine(object):
             A list of `State` subclasses.
         """
 
-        self.states.update(
-            {state_t.__name__: state_t(self) for state_t in state_classes})
+        self.states.update({state_t.__name__: state_t(self) for state_t in state_classes})
 
     def runtime_init(self: Self, **kwargs) -> None:
         """Initialize states before running the state machine.
@@ -124,11 +124,10 @@ class StateMachine(object):
             The name of initial state.
         """
 
-        self.current_state = kwargs.get('initial_state',
-                                        self.initial_state)
+        self.current_state = kwargs.get("initial_state", self.initial_state)
 
-        first = kwargs.get('first', 0)
-        last = kwargs.get('last', -1)
+        first = kwargs.get("first", 0)
+        last = kwargs.get("last", -1)
 
         self.rom.seek(self.mapper.from_cpu(first))
         self.last_rom_addr = self.mapper.from_cpu(last) if last != -1 else self.rom.size()
@@ -142,10 +141,7 @@ class StateMachine(object):
                 break
             state = self.get_state(next_state)
 
-    def get_state(
-            self: Self,
-            next_state: str|None=None
-            ) -> AbstractState:
+    def get_state(self: Self, next_state: str | None = None) -> AbstractState:
         """Return the current state object.
 
         If `next_state` is specified, then it is set to

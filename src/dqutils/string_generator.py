@@ -1,8 +1,8 @@
-"""This module provides helper classes for the string module.
-"""
+"""This module provides helper classes for the string module."""
+
 from __future__ import annotations
 
-from abc import (ABCMeta, abstractmethod)
+from abc import ABCMeta, abstractmethod
 import mmap
 from typing import TYPE_CHECKING, cast
 
@@ -16,15 +16,12 @@ if TYPE_CHECKING:
     StringInfo: TypeAlias = Tuple[int, bytes | bytearray]
     ContextT: TypeAlias = Mapping[str, Any]
 
+
 # pylint: disable=too-few-public-methods
 class AbstractStringGenerator(metaclass=ABCMeta):
     """The base class of StringGenerator subclasses."""
 
-    def __init__(
-            self: Self,
-            context: ContextT,
-            first: int|None=None,
-            last: int|None=None) -> None:
+    def __init__(self: Self, context: ContextT, first: int | None = None, last: int | None = None) -> None:
         """Create an object of class AbstractStringGenerator.
 
         Parameters
@@ -51,17 +48,15 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         """
 
         if first is None:
-            first = context.get("string_id_first",
-                                context.get("message_id_first"))
+            first = context.get("string_id_first", context.get("message_id_first"))
         if last is None:
-            last = context.get("string_id_last",
-                               context.get("message_id_last"))
+            last = context.get("string_id_last", context.get("message_id_last"))
 
         self.title: str = context["title"]
         self.first: int = cast(int, first)
         self.last: int = cast(int, last)
         self.addr: int = context.get("addr_string", context.get("addr_message"))
-        self.delims: bytes|None = context.get("delimiters")
+        self.delims: bytes | None = context.get("delimiters")
         self.mapper: type[AbstractMapper]
         self.assert_valid()
 
@@ -85,10 +80,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         assert self.delims is None or isinstance(self.delims, bytes)
 
     @abstractmethod
-    def _do_iterate(
-        self: Self,
-        mem: mmap.mmap,
-        addr: int) -> Iterator[StringInfo]:
+    def _do_iterate(self: Self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
         """Iterate pairs of string information.
 
         Parameters
@@ -107,15 +99,13 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         """
         raise StopIteration
 
+
 class StringGeneratorPascalStyle(AbstractStringGenerator):
     """Return generator iterators for Pascal-style (size-included)
     strings information.
     """
 
-    def _do_iterate(
-        self: Self,
-        mem: mmap.mmap,
-        addr: int) -> Iterator[StringInfo]:
+    def _do_iterate(self: Self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
         first, last = self.first, self.last
         assert first is not None
         assert last is not None
@@ -126,15 +116,13 @@ class StringGeneratorPascalStyle(AbstractStringGenerator):
                 yield (addr, mem.read(size))
             addr += size + 1
 
+
 class StringGeneratorCStyle(AbstractStringGenerator):
     """Return generator iterators for C-style (null-terminated)
     strings information.
     """
 
-    def _do_iterate(
-        self: Self,
-        mem: mmap.mmap,
-        addr: int) -> Iterator[StringInfo]:
+    def _do_iterate(self: Self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
         first, last = self.first, self.last
         assert first is not None
         assert last is not None

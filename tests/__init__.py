@@ -1,2 +1,1 @@
-"""dqutils.tests.__init__: dummy module
-"""
+"""dqutils.tests.__init__: dummy module"""

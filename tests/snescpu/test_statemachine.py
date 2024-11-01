@@ -8,12 +8,13 @@ from dqutils.snescpu.rom_image import RomImage
 from dqutils.snescpu.statemachine import StateMachine
 from dqutils.snescpu.states import DisassembleState
 
+
 class AbstractStateMachineTestCase(TestCase):
     """The base class of StateMachineTestCase classes."""
 
     game_title = None
     state_classes = [DisassembleState]
-    initial_state = 'DisassembleState'
+    initial_state = "DisassembleState"
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,8 +30,7 @@ class AbstractStateMachineTestCase(TestCase):
 
     def setUp(self):
         """Prepare the target of testing."""
-        self.fsm = StateMachine(
-            self.state_classes, self.initial_state, self.rom)
+        self.fsm = StateMachine(self.state_classes, self.initial_state, self.rom)
 
     def tearDown(self):
         """Clean up."""
@@ -38,11 +38,16 @@ class AbstractStateMachineTestCase(TestCase):
         self.fsm = None
 
     def _do_test_initial(self):
-        """Test the initial condition of an object of StateMachine.
-        """
+        """Test the initial condition of an object of StateMachine."""
         fsm = self.fsm
 
-        self.assertIn(fsm.program_counter, (0x008000, 0xC00000,))
+        self.assertIn(
+            fsm.program_counter,
+            (
+                0x008000,
+                0xC00000,
+            ),
+        )
         self.assertIsNotNone(fsm.mapper)
 
     def _do_test_until_option(self, first, pattern):
@@ -52,10 +57,10 @@ class AbstractStateMachineTestCase(TestCase):
         fsm.destination = StringIO()
         fsm.run(first=first, until_return=True)
 
-        output_lines = fsm.destination.getvalue().split('\n')
+        output_lines = fsm.destination.getvalue().split("\n")
 
         for line in output_lines[:-2]:
-            self.assertNotRegex(line, r'(RTI|RTS|RTL)')
+            self.assertNotRegex(line, r"(RTI|RTS|RTL)")
 
         self.assertRegex(output_lines[-2], pattern)
-        self.assertEqual(output_lines[-1], '')
+        self.assertEqual(output_lines[-1], "")
