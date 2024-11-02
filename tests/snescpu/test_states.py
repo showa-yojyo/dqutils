@@ -4,6 +4,7 @@ Tests for dqutils.snescpu.states.
 
 from unittest import TestCase
 from unittest.mock import Mock
+
 from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
 from dqutils.snescpu.states import DisassembleState, DumpState
 

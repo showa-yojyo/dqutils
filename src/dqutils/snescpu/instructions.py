@@ -4,16 +4,17 @@ Instructions of the 65816 Processor.
 
 from __future__ import annotations
 
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
-from .addressing import get_addressing_mode
+from dqutils.snescpu.addressing import get_addressing_mode
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping
-    from typing import Any, TypeAlias
-    from .states import DisassembleState
+    from typing import Any
 
-    ContextT: TypeAlias = MutableMapping[str, Any]
+    from dqutils.snescpu.states import DisassembleState
+
+    type ContextT = MutableMapping[str, Any]
 
 
 def _execute_c2(state: DisassembleState, context: ContextT) -> tuple[ContextT, None]:
@@ -306,7 +307,7 @@ INSTRUCTION_TABLE = (
 # fmt: on
 
 
-class AbstractInstruction(object):
+class AbstractInstruction:
     """The base class for all instruction classes."""
 
     opcode = None
@@ -322,9 +323,7 @@ class AbstractInstruction(object):
         """Return the actual size of this operand in bytes."""
 
         # Addition for Immediate mode.
-        if cls.add_if_x_zero and flags & 0x10 == 0x00:
-            return cls.operand_size
-        elif cls.add_if_m_zero and flags & 0x20 == 0x00:
+        if cls.add_if_x_zero and flags & 0x10 == 0x00 or cls.add_if_m_zero and flags & 0x20 == 0x00:
             return cls.operand_size
 
         return cls.operand_size - 1
@@ -375,7 +374,7 @@ class AbstractInstruction(object):
         if syntax := addressing_mode.syntax:
             return syntax.format(state.current_operand)
 
-        return str()
+        return ""
 
 
 def _build_instruction_classes() -> list[type[AbstractInstruction]]:
@@ -385,13 +384,13 @@ def _build_instruction_classes() -> list[type[AbstractInstruction]]:
     # inst_classes = {}
     instructions = []
     for opcode, cols in enumerate(INSTRUCTION_TABLE):
-        attrs = dict(
-            __slots__=(),
-            opcode=opcode,
-            mnemonic=cols[0],
-            addressing_mode=get_addressing_mode(cols[1]),
-            operand_size=int(cols[2]),
-        )
+        attrs = {
+            "__slots__": (),
+            "opcode": opcode,
+            "mnemonic": cols[0],
+            "addressing_mode": get_addressing_mode(cols[1]),
+            "operand_size": int(cols[2]),
+        }
 
         annotation = cols[3]
         attrs["add_if_m_zero"] = annotation == "*"

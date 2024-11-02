@@ -1,8 +1,9 @@
 """Tests for dqutils.dq5.string"""
 
 from unittest import TestCase
-from dqutils.dq5.string import enum_string, CONTEXT_GROUP
+
 from dqutils.dq5.charsmall import process_dakuten
+from dqutils.dq5.string import CONTEXT_GROUP, enum_string
 from dqutils.string import get_text
 
 
@@ -16,7 +17,7 @@ class DQ5StringTestCase(TestCase):
 
         context = CONTEXT_GROUP[5]
 
-        addr, code_seq = tuple(enum_string(context, 0, 1))[0]
+        addr, code_seq = next(iter(enum_string(context, 0, 1)))
         self.assertEqual(addr, 0x23CE0E)
         self.assertEqual(code_seq, self.hinokinobou)
 

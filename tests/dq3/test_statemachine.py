@@ -3,15 +3,17 @@ Tests for dqutils.snescpu.statemachine.
 """
 
 from io import StringIO
+
+from snescpu.test_statemachine import AbstractStateMachineTestCase
+
 from dqutils.dq3.disasm import DisassembleStateDQ3, DumpState
-from ..snescpu.test_statemachine import AbstractStateMachineTestCase
 
 
 class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for disassembling DQ3."""
 
     game_title = "DRAGONQUEST3"
-    state_classes = [DisassembleStateDQ3, DumpState]
+    state_classes = (DisassembleStateDQ3, DumpState)
     initial_state = "DisassembleStateDQ3"
 
     def test_disassembled_code(self):

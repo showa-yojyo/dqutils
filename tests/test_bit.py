@@ -1,6 +1,7 @@
 """Tests for dqutils.bit module."""
 
 import unittest
+
 from dqutils.bit import get_bits, get_int
 
 
@@ -34,7 +35,7 @@ class BitTestCase(unittest.TestCase):
 
     def test_get_bits(self):
         """Test function dqutils.bit.get_bits."""
-        data = [i for i in range(0x06)]
+        data = list(range(0x06))
         self.assertEqual(get_bits(data, 0, 0xFF00), 0x0001)
         self.assertEqual(get_bits(data, 1, 0xFFFF), 0x0201)
         self.assertEqual(get_bits(data, 0, 0x0100), 0x0001)

@@ -7,8 +7,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import Callable
-    from .states import DisassembleState
+    from collections.abc import Callable
+
+    from dqutils.snescpu.states import DisassembleState
 
 # Block Move
 
@@ -37,12 +38,8 @@ def _format_program_counter_relative(state: DisassembleState) -> str:
     """Program Counter Relative"""
 
     program_counter = state.program_counter
-    operand = state.current_operand or 0  # XXX
-
-    if operand & 0x80 == 0x00:
-        near_addr = (program_counter + operand) & 0xFFFF
-    else:
-        near_addr = (program_counter - (0x100 - operand)) & 0xFFFF
+    operand = state.current_operand or 0  # XXX: ?
+    near_addr = (program_counter + operand) & 0xFFFF if operand & 0x80 == 0x00 else (program_counter - (0x100 - operand)) & 0xFFFF
     return f"${near_addr:04X}"
 
 
@@ -50,12 +47,8 @@ def _format_program_counter_relative_long(state: DisassembleState) -> str:
     """Program Counter Relative Long"""
 
     program_counter = state.program_counter
-    operand = state.current_operand or 0  # XXX
-    if operand & 0x8000 == 0x0000:
-        addr = (program_counter + operand) & 0xFFFF
-    else:
-        addr = (program_counter - (0x10000 - operand)) & 0xFFFF
-
+    operand = state.current_operand or 0  # XXX: ?
+    addr = (program_counter + operand) & 0xFFFF if operand & 0x8000 == 0x0000 else (program_counter - (0x10000 - operand)) & 0xFFFF
     return f"${addr:04X}"
 
 
@@ -109,7 +102,7 @@ ADDRESSING_MODE_TABLE = (
 
 
 # pylint: disable=too-few-public-methods
-class AbstractAddressingMode(object):
+class AbstractAddressingMode:
     """The base class for all addressing mode classes."""
 
     name: str
@@ -127,12 +120,12 @@ def _build_addressing_mode_classes() -> None:
         syntax = cols[1].strip()
         formatter = cols[2]
 
-        attrs = dict(
-            __slots__=(),
-            name=class_name,
-            syntax=syntax,
-            formatter=formatter,
-        )
+        attrs = {
+            "__slots__": (),
+            "name": class_name,
+            "syntax": syntax,
+            "formatter": formatter,
+        }
 
         addr_classes[class_name] = type(class_name, (AbstractAddressingMode,), attrs)
 

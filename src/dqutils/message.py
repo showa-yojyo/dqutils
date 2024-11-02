@@ -19,12 +19,12 @@ if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
     from typing import Any
 
-from .string import get_text, get_hex
-from .string_generator import StringGeneratorCStyle
+from dqutils.string import get_hex, get_text
+from dqutils.string_generator import StringGeneratorCStyle
 
 if TYPE_CHECKING:
-    from .string_generator import StringInfo
-    from .message_generator import AbstractMessageGenerator, IteratorT
+    from dqutils.message_generator import AbstractMessageGenerator, IteratorT
+    from dqutils.string_generator import StringInfo
 
 
 def enum_battle(context: Mapping[str, Any], first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:

@@ -3,8 +3,10 @@ Tests for dqutils.snescpu.statemachine.
 """
 
 from io import StringIO
+
+from snescpu.test_statemachine import AbstractStateMachineTestCase
+
 from dqutils.dq6.disasm import DisassembleStateDQ6, DumpState
-from ..snescpu.test_statemachine import AbstractStateMachineTestCase
 
 
 # pylint: disable=too-many-public-methods
@@ -12,7 +14,7 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for disassembling DQ6."""
 
     game_title = "DRAGONQUEST6"
-    state_classes = [DisassembleStateDQ6, DumpState]
+    state_classes = (DisassembleStateDQ6, DumpState)
     initial_state = "DisassembleStateDQ6"
 
     def test_initial(self):
@@ -32,7 +34,7 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
         self.assertRegex(output_lines[-2], r"^C2/B13E:\s+60\s+RTS$")
         self.assertEqual(output_lines[-1], "")
 
-    def test_run_near_boundary_opcode(self):
+    def test_run_near_boundary_opcode_ca(self):
         """Test disassembling near boundary (opcode)."""
 
         fsm = self.fsm
@@ -56,7 +58,7 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
         self.assertRegex(output_lines[-2], r"^CB/FFFD:\s+FFFFFF$")  # !!
         self.assertEqual(output_lines[-1], "")
 
-    def test_run_near_boundary_opcode(self):
+    def test_run_near_boundary_opcode_ce(self):
         """Test disassembling near boundary (opcode)."""
 
         fsm = self.fsm
@@ -120,11 +122,11 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
         fsm.run(first=0xC37D14, until_return=True)
         results = fsm.destination.getvalue().split("\n")
 
-        HEX_RE = r"[0-9A-F]"
+        hex_re = r"[0-9A-F]"
 
         self.assertEqual(results[0], "C3/7D14:\t22B52AC9\tJSR $C92AB5")
-        self.assertRegex(results[1], "^C3/7D18:\t" + HEX_RE + "{2}$")
-        self.assertRegex(results[2], "^C3/7D19:\t" + HEX_RE + "{4}$")
-        self.assertRegex(results[3], "^C3/7D1B:\t" + HEX_RE + "{6}$")
-        self.assertRegex(results[4], "^C3/7D1E:\t" + HEX_RE + "{4}$")
+        self.assertRegex(results[1], "^C3/7D18:\t" + hex_re + "{2}$")
+        self.assertRegex(results[2], "^C3/7D19:\t" + hex_re + "{4}$")
+        self.assertRegex(results[3], "^C3/7D1B:\t" + hex_re + "{6}$")
+        self.assertRegex(results[4], "^C3/7D1E:\t" + hex_re + "{4}$")
         self.assertEqual(results[5], "C3/7D20:\t8D8C38  \tSTA $388C")

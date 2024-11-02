@@ -4,6 +4,7 @@ Tests for dqutils.snescpu.instructions.
 
 from unittest import TestCase
 from unittest.mock import Mock
+
 from dqutils.snescpu.instructions import INSTRUCTION_TABLE, get_instruction
 
 

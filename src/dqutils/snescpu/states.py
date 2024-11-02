@@ -4,21 +4,21 @@ Provide class State and subclasses.
 
 from __future__ import annotations
 
-from abc import ABCMeta
+from abc import ABCMeta, abstractmethod
 from itertools import chain, repeat
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from collections.abc import MutableMapping
-    from typing import Any, Final, Sequence, Self, TypeAlias
+    from collections.abc import MutableMapping, Sequence
+    from typing import Any, Final, Self
 
-    ContextT: TypeAlias = MutableMapping[str, Any]
+    type ContextT = MutableMapping[str, Any]
 
-from .instructions import DEFAULT_INSTRUCTIONS
+from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
 
 if TYPE_CHECKING:
-    from .instructions import AbstractInstruction
-    from .statemachine import StateMachine
+    from dqutils.snescpu.instructions import AbstractInstruction
+    from dqutils.snescpu.statemachine import StateMachine
 
 
 class AbstractState(metaclass=ABCMeta):
@@ -73,6 +73,7 @@ class AbstractState(metaclass=ABCMeta):
         assert self.state_machine
         return self.state_machine.program_counter
 
+    @abstractmethod
     def runtime_init(self: Self, **kwargs) -> None:
         """Initialize before running the state machine.
 
@@ -80,7 +81,6 @@ class AbstractState(metaclass=ABCMeta):
         --------
         `StateMachine.runtime_init`
         """
-        pass
 
     def unlink(self: Self) -> None:
         """Remove circular references.
@@ -147,9 +147,11 @@ class DisassembleState(AbstractState):
         """
 
         while not self._is_terminated():
-            instruction, operand_raw, across_bb = self._read_instruction()
-            context, next_state = self._eval_instruction(instruction, across_bb, context)
-            self._print_instruction(instruction, operand_raw, across_bb)
+            instruction, operand_raw, across_boundary = self._read_instruction()
+            context, next_state = self._eval_instruction(
+                instruction, context, across_boundary=across_boundary)
+            self._print_instruction(
+                instruction, operand_raw, across_boundary=across_boundary)
             if next_state:
                 return context, next_state
 
@@ -225,15 +227,15 @@ class DisassembleState(AbstractState):
         # instraction's opcode has been read.
         if fsm.program_counter & 0xFFFF == 0x0000 and self.current_operand_size:
             self.current_operand_size = 0
-            return instruction, bytes(), True
+            return instruction, b"", True
 
         # Test if PC crossed the bank boundary after the opcode
         # has been read.
-        across_bb = False
+        across_boundary = False
         cur_counter = 0xFFFF & fsm.program_counter
         num_remain_bytes = 0x10000 - cur_counter
         if num_remain_bytes < self.current_operand_size:
-            across_bb = True
+            across_boundary = True
             self.current_operand_size = num_remain_bytes
 
         # Read the operand if necessary.
@@ -241,12 +243,16 @@ class DisassembleState(AbstractState):
             operand_raw = fsm.rom.read(self.current_operand_size)
             self.current_operand = int.from_bytes(operand_raw, "little")
         else:
-            operand_raw, self.current_operand = bytes(), None
+            operand_raw, self.current_operand = b"", None
 
-        return instruction, operand_raw, across_bb
+        return instruction, operand_raw, across_boundary
 
     def _eval_instruction(
-        self: Self, instruction: type[AbstractInstruction], across_bb: bool, context: ContextT
+        self: Self,
+        instruction: type[AbstractInstruction],
+        context: ContextT,
+        *,
+        across_boundary: bool
     ) -> tuple[ContextT, str | None]:
         """Execute the current instruction.
 
@@ -256,7 +262,7 @@ class DisassembleState(AbstractState):
             The instruction to be output to `self.destination`.
         operand_raw : bytes
             The unprocessed operand bytes in the ROM image.
-        across_bb : bool
+        across_boundary : bool
             True if this line goes across the PB boundary.
 
         Returns
@@ -267,13 +273,17 @@ class DisassembleState(AbstractState):
             The name of the next state for the state machine.
         """
 
-        if not across_bb:
+        if not across_boundary:
             return instruction.execute(self, context)
 
         return context, None
 
     def _print_instruction(
-        self: Self, instruction: type[AbstractInstruction], operand_raw: bytes | None, across_bb: bool
+        self: Self,
+        instruction: type[AbstractInstruction],
+        operand_raw: bytes | None,
+        *,
+        across_boundary: bool
     ) -> None:
         """Output disassembled code in one line.
 
@@ -283,7 +293,7 @@ class DisassembleState(AbstractState):
             The instruction to be output to `self.destination`.
         operand_raw : bytes
             The unprocessed operand bytes in the ROM image.
-        across_bb : bool
+        across_boundary : bool
             True if this line goes across the PB boundary.
         """
 
@@ -295,8 +305,8 @@ class DisassembleState(AbstractState):
         addr = fsm.program_counter - self.current_operand_size - 1
         out = fsm.destination
         operand_str = operand_raw.hex().upper() if operand_raw else ""
-        mnemonic = instruction.mnemonic if not across_bb else ""
-        operand = instruction.format(self) if not across_bb else ""
+        mnemonic = instruction.mnemonic if not across_boundary else ""
+        operand = instruction.format(self) if not across_boundary else ""
 
         print(
             OUTPUT_FORMAT.format(
@@ -356,8 +366,7 @@ class DisassembleState(AbstractState):
 
         if isinstance(opcode, bytes):
             return self.instructions[int.from_bytes(opcode, "little")]
-        else:
-            return self.instructions[opcode]
+        return self.instructions[opcode]
 
 
 FORMAT_STRING: Final[str] = "{:02X}/{:04X}:\t{}"
@@ -421,11 +430,7 @@ class DumpState(AbstractState):
             cpu_address = fsm.program_counter
             bank = (cpu_address & 0xFF0000) >> 16
             offset = cpu_address & 0x00FFFF
-
-            if offset + i > 0x10000:
-                data = rom.read(0x10000 - offset)
-            else:
-                data = rom.read(i)
+            data = rom.read(0x10000 - offset if offset + i > 0x10000 else i)
 
             print(FORMAT_STRING.format(bank, offset, data.hex().upper()), file=out)
 

@@ -3,18 +3,18 @@
 
 from __future__ import annotations
 
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from typing import Final, Self
 
-from ..snescpu.addressing import get_addressing_mode
-from ..snescpu.disasm import disassemble
-from ..snescpu.instructions import get_instruction
-from ..snescpu.states import DisassembleState, DumpState
+from dqutils.snescpu.addressing import get_addressing_mode
+from dqutils.snescpu.disasm import disassemble
+from dqutils.snescpu.instructions import get_instruction
+from dqutils.snescpu.states import DisassembleState, DumpState
 
 if TYPE_CHECKING:
-    from ..snescpu.instructions import AbstractInstruction, ContextT
+    from dqutils.snescpu.instructions import AbstractInstruction, ContextT
 
 # A dictionary of subroutines with following bytes as arguments.
 # key: the address of subroutine

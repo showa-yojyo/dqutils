@@ -2,9 +2,9 @@
 
 from abc import ABCMeta, abstractmethod
 import mmap
+from typing import Self
 
-from .rom_image import get_snes_header
-
+from dqutils.snescpu.rom_image import get_snes_header
 
 class AbstractMapper(metaclass=ABCMeta):
     """The abstract class that represents the SNES ROM layout.
@@ -35,7 +35,6 @@ class AbstractMapper(metaclass=ABCMeta):
         matched : bool
             Determine if this mapper matches the `mapper_byte`.
         """
-        pass
 
     @staticmethod
     @abstractmethod
@@ -52,7 +51,6 @@ class AbstractMapper(metaclass=ABCMeta):
         cpuaddr : int
             A CPU address.
         """
-        pass
 
     @staticmethod
     @abstractmethod
@@ -69,7 +67,6 @@ class AbstractMapper(metaclass=ABCMeta):
         romaddr : int
             A ROM address.
         """
-        pass
 
     @staticmethod
     @abstractmethod
@@ -86,7 +83,6 @@ class AbstractMapper(metaclass=ABCMeta):
         cpuaddr : int
             A CPU address.
         """
-        pass
 
 
 class HiROM(AbstractMapper):
@@ -275,6 +271,10 @@ class LoROM(AbstractMapper):
         return addr
 
 
+class MapperNotFoundError(Exception):
+    def __init__(self: Self) -> None:
+        super().__init__("Mapper type not found")
+
 def make_mapper(rom: mmap.mmap | None = None, name: str | None = None) -> type[AbstractMapper]:
     """Return a mapper type.
 
@@ -310,7 +310,8 @@ def make_mapper(rom: mmap.mmap | None = None, name: str | None = None) -> type[A
         # ROM makeup byte.
         mapper_byte = header[0x15]
         return next(cls for cls in mappers if cls.check_header_mapper_byte(mapper_byte))
-    elif name:
+
+    if name:
         return next(cls for cls in mappers if cls.__name__ == name)
 
-    raise RuntimeError("Mapper type not found")
+    raise MapperNotFoundError

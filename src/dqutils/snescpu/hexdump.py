@@ -10,10 +10,10 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-from ..release import __version__
-from .rom_image import RomImage
-from .statemachine import StateMachine
-from .states import DumpState
+from dqutils.release import __version__
+from dqutils.snescpu.rom_image import RomImage
+from dqutils.snescpu.statemachine import StateMachine
+from dqutils.snescpu.states import DumpState
 
 
 def create_argparser() -> ArgumentParser:

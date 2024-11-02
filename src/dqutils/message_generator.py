@@ -14,21 +14,21 @@ from array import array
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
     import mmap
-    from typing import Any, Final, Self, TypeAlias
+    from collections.abc import Iterator, Mapping
+    from typing import Any, Final, Self
 
-    IteratorT: TypeAlias = Iterator[tuple[int, int, array]]
+    type IteratorT = Iterator[tuple[int, int, array]]
 
-from .bit import get_bits, get_int
-from .snescpu.mapper import make_mapper
-from .snescpu.rom_image import RomImage
+from dqutils.bit import get_bits, get_int
+from dqutils.snescpu.mapper import make_mapper
+from dqutils.snescpu.rom_image import RomImage
 
 if TYPE_CHECKING:
-    from .snescpu.mapper import AbstractMapper
+    from dqutils.snescpu.mapper import AbstractMapper
 
 _DUMMY_CODE: Final[int] = 0xFFFFFFFF
-
+_SHIFTBIT_ARRAY_SIZE: Final[int] = 8
 
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """The base class of MessageGenerator subclasses."""
@@ -103,7 +103,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         assert self.delimiters.typecode == "H"
         assert self.addr_group >= 0
         assert self.addr_shiftbit_array >= 0
-        assert len(self.shiftbit_array) == 8
+        assert len(self.shiftbit_array) == _SHIFTBIT_ARRAY_SIZE
         assert self.addr_message >= 0
         self._assert_range()
         assert self.addr_huffman_off >= 0
@@ -174,9 +174,9 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         assert self.addr_shiftbit_array
 
         mem.seek(self.mapper.from_cpu(self.addr_shiftbit_array))
-        self.shiftbit_array = mem.read(8)
+        self.shiftbit_array = mem.read(_SHIFTBIT_ARRAY_SIZE)
 
-        assert len(self.shiftbit_array) == 8
+        assert len(self.shiftbit_array) == _SHIFTBIT_ARRAY_SIZE
 
     def locate_message(self: Self, mem: mmap.mmap, message_id: int) -> tuple[int, int]:
         """Return the location where the messege data is stored.
@@ -210,7 +210,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         # The loop counter depends on message id & 0x0007.
         for _ in range(count):
             code = _DUMMY_CODE
-            while not code in delims:
+            while code not in delims:
                 addr, shift, code = self.decode(mem, addr, shift)
 
         return addr, shift
@@ -281,7 +281,8 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             addr_cur, shift_cur = self.locate_message(mem, self.first)
 
             delims = self.delimiters
-            assert isinstance(delims, array) and delims.typecode == "H"
+            assert isinstance(delims, array)
+            assert delims.typecode == "H"
 
             for _ in range(self.first, self.last):
                 addr, shift = addr_cur, shift_cur
@@ -289,7 +290,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
                 # Array of unsigned short values.
                 code_seq = array("H")
                 code = _DUMMY_CODE
-                while not code in delims:
+                while code not in delims:
                     addr_cur, shift_cur, code = self.decode(mem, addr_cur, shift_cur)
                     code_seq.append(code)
 
@@ -312,7 +313,6 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         group : int
             The ID of grouping.
         """
-        pass
 
     @abstractmethod
     def _do_is_leaf_node(self: Self, node: int) -> bool:
@@ -328,7 +328,6 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         is_leaf : bool
             True if `node` is a leaf, False otherwise.
         """
-        pass
 
     @abstractmethod
     def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
@@ -348,7 +347,6 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         shift : int
             The shift from `addr`.
         """
-        pass
 
     @abstractmethod
     def _do_next_node(self: Self, node: int) -> int:
@@ -364,7 +362,6 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         node : int
             The next node, a two-byte value.
         """
-        pass
 
 
 class MessageGeneratorW(AbstractMessageGenerator):

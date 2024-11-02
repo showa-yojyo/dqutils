@@ -22,7 +22,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from collections.abc import Sequence
 
-from ..snescpu.dumptool import run
+from dqutils.snescpu.dumptool import run
 
 
 def main(args: Sequence[str] = sys.argv[1:]) -> int:

@@ -3,6 +3,7 @@ Tests for dqutils.mapper module.
 """
 
 import unittest
+
 from dqutils.snescpu.mapper import HiROM, LoROM, make_mapper
 
 

@@ -2,8 +2,9 @@
 Tests for dquils.snescpu.hexdump.
 """
 
+from snescpu.test_hexdump import ADDRESS_PATTERN, AbstractHexDumpTestCase
+
 from dqutils.snescpu.hexdump import dump
-from ..snescpu.test_hexdump import AbstractHexDumpTestCase, ADDRESS_PATTERN
 
 
 class HexDumpTestCase(AbstractHexDumpTestCase):

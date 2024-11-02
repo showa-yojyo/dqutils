@@ -3,18 +3,18 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-import mmap
 from typing import TYPE_CHECKING, cast
 
-from .snescpu.mapper import AbstractMapper, make_mapper
-from .snescpu.rom_image import RomImage
+from dqutils.snescpu.mapper import AbstractMapper, make_mapper
+from dqutils.snescpu.rom_image import RomImage
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
-    from typing import Any, Self, Tuple, TypeAlias
+    import mmap
+    from typing import Any, Self
 
-    StringInfo: TypeAlias = Tuple[int, bytes | bytearray]
-    ContextT: TypeAlias = Mapping[str, Any]
+    type StringInfo = tuple[int, bytes | bytearray]
+    type ContextT = Mapping[str, Any]
 
 
 # pylint: disable=too-few-public-methods
@@ -110,7 +110,7 @@ class StringGeneratorPascalStyle(AbstractStringGenerator):
         assert first is not None
         assert last is not None
 
-        for i in range(0, last):
+        for i in range(last):
             size = mem.read(1)[0]
             if size and first <= i:
                 yield (addr, mem.read(size))
@@ -131,7 +131,7 @@ class StringGeneratorCStyle(AbstractStringGenerator):
         assert delims
 
         from_rom_addr = self.mapper.from_rom
-        for i in range(0, last):
+        for i in range(last):
             code_seq = bytearray()
             addr = from_rom_addr(mem.tell())
 

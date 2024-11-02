@@ -2,8 +2,9 @@
 Tests for dqutils.snescpu.statemachine.
 """
 
-from unittest import TestCase
 from io import StringIO
+from unittest import TestCase
+
 from dqutils.snescpu.rom_image import RomImage
 from dqutils.snescpu.statemachine import StateMachine
 from dqutils.snescpu.states import DisassembleState
@@ -13,7 +14,7 @@ class AbstractStateMachineTestCase(TestCase):
     """The base class of StateMachineTestCase classes."""
 
     game_title = None
-    state_classes = [DisassembleState]
+    state_classes = (DisassembleState,)
     initial_state = "DisassembleState"
 
     def __init__(self, *args, **kwargs):

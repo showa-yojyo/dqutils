@@ -6,6 +6,7 @@ from io import StringIO
 from textwrap import dedent
 from unittest import TestCase
 from unittest.mock import patch
+
 from dqutils.dq3.dumptool import main
 
 
@@ -13,7 +14,7 @@ class DumpToolTestCase(TestCase):
     def test_run(self):
         """A simple case"""
 
-        input = StringIO(
+        data = StringIO(
             dedent(
                 """\
             #$0000:#$00001F
@@ -25,7 +26,7 @@ class DumpToolTestCase(TestCase):
             """
             )
         )
-        with patch("sys.stdin", input), patch("sys.stdout", StringIO()) as output:
+        with patch("sys.stdin", data), patch("sys.stdout", StringIO()) as output:
             main(["0xC8F323", "0x36", "10", "--delimiter", ":"])
 
         expected = dedent(

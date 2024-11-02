@@ -6,14 +6,14 @@ import mmap
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import BinaryIO, Self
     from types import TracebackType
+    from typing import BinaryIO, Self
 
-from ..config import get_config
+from dqutils.config import get_config
 
 
 # pylint: disable=too-few-public-methods
-class RomImage(object):
+class RomImage:
     """This class manages the file handler of given SNES ROM image."""
 
     def __init__(self: Self, title: str) -> None:
@@ -57,6 +57,10 @@ class RomImage(object):
             self.fin.close()
 
 
+class RomHeaderNotFoundError(Exception):
+    def __init__(self: Self) -> None:
+        super().__init__("ROM header not found")
+
 def get_snes_header(mem: mmap.mmap) -> bytes:
     """Return the 64 bytes of cartridge information a.k.a. SNES
     header.
@@ -90,6 +94,6 @@ def get_snes_header(mem: mmap.mmap) -> bytes:
             chksum2 = int.from_bytes(buffer[0x1E:0x20], "little")
             if chksum1 ^ chksum2 == 0xFFFF:
                 return buffer
-        raise RuntimeError("ROM header not found")
+        raise RomHeaderNotFoundError
     finally:
         mem.seek(bkp)

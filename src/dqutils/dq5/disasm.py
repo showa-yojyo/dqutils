@@ -3,17 +3,17 @@
 
 from __future__ import annotations
 
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from typing import Final, Self
 
-from ..snescpu.disasm import disassemble
-from ..snescpu.instructions import get_instruction
-from ..snescpu.states import DisassembleState, DumpState
+from dqutils.snescpu.disasm import disassemble
+from dqutils.snescpu.instructions import get_instruction
+from dqutils.snescpu.states import DisassembleState, DumpState
 
 if TYPE_CHECKING:
-    from ..snescpu.instructions import AbstractInstruction, ContextT
+    from dqutils.snescpu.instructions import AbstractInstruction, ContextT
 
 BRK_BPL: Final[tuple] = (
     (0,),
@@ -94,6 +94,11 @@ BRK_BMI: Final[tuple] = (
 )  # BRK #$AC
 
 
+BRK_BPL_RANGE_FIRST = 0x01
+BRK_BPL_RANGE_LAST = 0x1B
+BRK_BMI_RANGE_FIRST = 0x80
+BRK_BMI_RANGE_LAST = 0xAD
+
 class DisassembleStateDQ5(DisassembleState):
     """A specialized state class for disassembling DQ5."""
 
@@ -103,15 +108,16 @@ class DisassembleStateDQ5(DisassembleState):
             def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:
                 sigbyte = cast(int, self.current_operand)
 
-                if sigbyte == 0x00 or 0xAD <= sigbyte:
+                if sigbyte == 0x00 or sigbyte >= BRK_BMI_RANGE_LAST:
                     return context, None
-                elif sigbyte < 0x1B:
+
+                if sigbyte < BRK_BPL_RANGE_LAST:
                     byte_count = BRK_BPL[sigbyte]
-                elif 0x1B <= sigbyte < 0x80:
+                elif BRK_BPL_RANGE_LAST <= sigbyte < BRK_BMI_RANGE_FIRST:
                     # This case is illegal.
                     return context, None
                 else:
-                    byte_count = BRK_BMI[sigbyte - 0x80]
+                    byte_count = BRK_BMI[sigbyte - BRK_BMI_RANGE_FIRST]
 
                 if byte_count == (0,):
                     return context, None

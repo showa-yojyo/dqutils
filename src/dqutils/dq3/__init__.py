@@ -1,8 +1,8 @@
 """This is the dqutils (Dragon Quest Utilities) dq3 subpackage."""
 
-from .. import Command, run
-from .message import print_all_battle, print_all_scenario
-from .string import print_all
+from dqutils import Command, run
+from dqutils.dq3.message import print_all_battle, print_all_scenario
+from dqutils.dq3.string import print_all
 
 
 def main() -> None:

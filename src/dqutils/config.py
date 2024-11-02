@@ -3,12 +3,12 @@
 applications that use this package.
 """
 
+import os
+import sys
 from collections.abc import Iterator
 from configparser import ConfigParser
-import os
 from pathlib import Path
-
-_CONFIG: ConfigParser | None = None
+from typing import Self
 
 
 def get_config() -> ConfigParser:
@@ -36,10 +36,6 @@ def get_config() -> ConfigParser:
         An object of the main configuration parser.
     """
 
-    global _CONFIG
-    if _CONFIG is None:
-        _CONFIG = _load_conf()
-
     return _CONFIG
 
 
@@ -53,6 +49,11 @@ def _load_conf() -> ConfigParser:
     return confparser
 
 
+class ConfigNotFoundError(Exception):
+    def __init__(self: Self) -> None:
+        super().__init__("Could not find configuration directory.")
+
+
 def confdir_home() -> Path:
     """Return the directory path to dqutils configuration files.
 
@@ -62,7 +63,7 @@ def confdir_home() -> Path:
 
       * ``$XDG_CONFIG_HOME/dqutils`` (if ``$XDG_CONFIG_HOME`` is defined)
       * Otherwise, ``$HOME/.config/dqutils``
-    * On other platforms, * ``$HOME/.dqutils`` if ``$HOME`` is defined
+    * On other platforms, ``$HOME/.dqutils`` if ``$HOME`` is defined
 
     Returns
     -------
@@ -78,13 +79,15 @@ def confdir_home() -> Path:
         yield home_dir / ".config" / "dqutils"
         yield home_dir / ".dqutils"
 
-    for dir in gen_candidates():
-        if dir.is_dir():
-            return dir
+    for d in gen_candidates():
+        if d.is_dir():
+            return d
 
-    raise RuntimeError("Could not find configuration directory. See the README")
+    raise ConfigNotFoundError
+
+
+_CONFIG: ConfigParser = _load_conf()
 
 
 if __name__ == "__main__":
-    get_config()
-    print("dqutils config status: OK")
+    sys.exit(1 if get_config() else 0)

@@ -4,9 +4,10 @@ Tests for dqutils.snescpu.disasm.
 
 from unittest import TestCase
 from unittest.mock import Mock
+
+from dqutils.dq6.disasm import DisassembleStateDQ6
 from dqutils.snescpu.disasm import create_args
 from dqutils.snescpu.rom_image import RomImage
-from dqutils.dq6.disasm import DisassembleStateDQ6
 
 
 class DisasmTestCase(TestCase):

@@ -4,15 +4,17 @@ Tests for dqutils.snescpu.statemachine.
 
 from io import StringIO
 from unittest import skip
+
+from snescpu.test_statemachine import AbstractStateMachineTestCase
+
 from dqutils.dq5.disasm import DisassembleStateDQ5, DumpState
-from ..snescpu.test_statemachine import AbstractStateMachineTestCase
 
 
 class StateMachineTestCase(AbstractStateMachineTestCase):
     """Tests for class dqutils.snescpu.statemachine.StateMachine."""
 
     game_title = "DRAGONQUEST5"
-    state_classes = [DisassembleStateDQ5, DumpState]
+    state_classes = (DisassembleStateDQ5, DumpState)
     initial_state = "DisassembleStateDQ5"
 
     def test_initial(self):
@@ -202,7 +204,7 @@ class StateMachineTestCase(AbstractStateMachineTestCase):
         # fmt: on
         self._do_test_brk(expected, first=0x00C46C, last=0x00C472)
 
-    def test_disassemble_brk_9C(self):
+    def test_disassemble_brk_9c(self):
         """Test `BRK #$9C`."""
 
         # fmt: off

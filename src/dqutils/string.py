@@ -10,16 +10,16 @@ forms of raw bytes or human-readable texts.
 
 from __future__ import annotations
 
-from array import array
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator
-    from typing import Any, Mapping, TypeAlias
+    from array import array
+    from collections.abc import Iterator, Mapping
+    from typing import Any
 
-    CodeSeq: TypeAlias = bytes | bytearray | array
+    type CodeSeq = bytes | bytearray | array
 
-    from .string_generator import AbstractStringGenerator, StringInfo
+    from dqutils.string_generator import AbstractStringGenerator, StringInfo
 
 
 def get_text(code_seq: CodeSeq, charmap: Mapping[int, str], delims: CodeSeq | None = None) -> str:

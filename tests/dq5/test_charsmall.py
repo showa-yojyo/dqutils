@@ -1,6 +1,7 @@
 """Tests for dqutils.dq5.charsmall module."""
 
 from unittest import TestCase
+
 from dqutils.dq5.charsmall import process_dakuten
 
 

@@ -9,15 +9,19 @@ This package contains the following sub-packages:
 
 """
 
-from argparse import ArgumentParser
-from collections import namedtuple
 import sys
-from typing import Iterable
+from argparse import ArgumentParser
+from collections.abc import Callable, Iterable
+from typing import NamedTuple
 
 # Release data
-from .release import __version__
+from dqutils.release import __version__
 
-Command = namedtuple("Command", ("name", "help", "func"))
+
+class Command(NamedTuple):
+    name: str
+    help: str
+    func: Callable
 
 
 def run(commands: Iterable[Command]) -> None:

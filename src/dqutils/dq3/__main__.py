@@ -1,3 +1,3 @@
-from . import main
+from dqutils.dq3 import main
 
 main()

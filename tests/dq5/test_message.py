@@ -2,6 +2,7 @@
 
 from array import array
 from unittest import TestCase
+
 from dqutils.dq5.message import enum_battle, enum_scenario
 
 
@@ -11,7 +12,7 @@ class DQ5MessageTestCase(TestCase):
     def test_enum_battle(self):
         """Test function dqutils.dq5.enum_battle."""
 
-        cpu_addr, _, code_seq = tuple(enum_battle(0x007B, 0x007C))[0]
+        cpu_addr, _, code_seq = next(iter(enum_battle(0x007B, 0x007C)))
 
         # しかし なにも おこらなかった！[FE]
         however_nothing_happened = array(
@@ -30,7 +31,7 @@ class DQ5MessageTestCase(TestCase):
     def test_enum_scenario(self):
         """Test function dqutils.dq5.enum_scenario."""
 
-        cpu_addr, _, code_seq = tuple(enum_scenario(0x0B95, 0x0B96))[0]
+        cpu_addr, _, code_seq = next(iter(enum_scenario(0x0B95, 0x0B96)))
 
         # 0B95:0BCCD8:02:わーい わーい！
         wai = array("H", (0x031B, 0x0360, 0x0398, 0x0000, 0x031B, 0x0360, 0x0398, 0x035A, 0x1001))

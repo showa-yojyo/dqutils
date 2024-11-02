@@ -16,7 +16,8 @@ $ dumptool.py dqutils.dq5.dumptool 0x2396F3 0x16 0x55
 """
 
 import sys
-from ..snescpu.dumptool import run
+
+from dqutils.snescpu.dumptool import run
 
 
 def main(args=sys.argv[1:]):

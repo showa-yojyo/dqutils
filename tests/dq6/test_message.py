@@ -2,6 +2,7 @@
 
 from array import array
 from unittest import TestCase
+
 from dqutils.dq6.message import enum_battle, enum_scenario
 
 
@@ -43,7 +44,7 @@ class DQ6MessageTestCase(TestCase):
             ),
         )
 
-        messages = zip(enum_scenario(0x0023, 0x0026), addrs, codes)
+        messages = zip(enum_scenario(0x0023, 0x0026), addrs, codes, strict=False)
         for result, addr, code in messages:
             self.assertEqual(result[0], addr)
             # [-1] is one of the delimiter characters.

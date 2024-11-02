@@ -2,6 +2,7 @@
 
 from array import array
 from unittest import TestCase
+
 from dqutils.dq3.message import enum_battle, enum_scenario
 
 
@@ -36,7 +37,7 @@ class DQ3MessageTestCase(TestCase):
             array("H", [0x05DA, 0x053A, 0x0535, 0x0200, 0x05DA, 0x053A, 0x0535, 0x0529]),
         )
 
-        for result, addr, code in zip(enum_scenario(0x0160, 0x0163), addrs, codes):
+        for result, addr, code in zip(enum_scenario(0x0160, 0x0163), addrs, codes, strict=False):
             self.assertEqual(result[0], addr)
             # [-1] is one of the delimiter characters.
             self.assertEqual(result[-1][:-1], code)

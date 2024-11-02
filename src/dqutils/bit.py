@@ -8,7 +8,7 @@ from itertools import islice
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from typing import Iterable
+    from collections.abc import Iterable
 
 
 def get_bits(byte_seq: bytes | bytearray | Iterable[int], index: int, mask: int) -> int:

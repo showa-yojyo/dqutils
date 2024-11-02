@@ -6,6 +6,7 @@ from io import StringIO
 from os import devnull
 from unittest import TestCase
 from unittest.mock import patch
+
 from dqutils.snescpu.hexdump import create_argparser
 
 
@@ -38,8 +39,8 @@ class AbstractHexDumpTestCase(TestCase):
 
     game_title = None
 
-    def __init__(self, methodName="runTest"):
-        super().__init__(methodName)
+    def __init__(self, method_name="runTest"):
+        super().__init__(methodName=method_name)
         self.patcher = None
         self.out = None
 

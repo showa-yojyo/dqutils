@@ -9,50 +9,48 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Final
 
-from ..message import (
-    enum_battle as _enum_battle,
-    enum_scenario as _enum_scenario,
-    print_battle as _print_battle,
-    print_scenario as _print_scenario,
-)
-from ..message_generator import MessageGeneratorW
-from .charsmall import CHARMAP as CHARMAP_SMALL
-from .charlarge import CHARMAP as CHARMAP_LARGE
+from dqutils.dq3.charlarge import CHARMAP as CHARMAP_LARGE
+from dqutils.dq3.charsmall import CHARMAP as CHARMAP_SMALL
+from dqutils.message import enum_battle as _enum_battle
+from dqutils.message import enum_scenario as _enum_scenario
+from dqutils.message import print_battle as _print_battle
+from dqutils.message import print_scenario as _print_scenario
+from dqutils.message_generator import MessageGeneratorW
 
 if TYPE_CHECKING:
-    from ..string_generator import StringInfo
-    from ..message_generator import IteratorT
+    from dqutils.message_generator import IteratorT
+    from dqutils.string_generator import StringInfo
 
-CONTEXT_MESSAGE_BATTLE: Final[dict] = dict(
-    title="DRAGONQUEST3",
-    delimiters=b"\xac\xae",
-    charmap=CHARMAP_SMALL,
-    message_id_first=0x0000,
-    message_id_last=0x0177,
-    addr_message=0xFC9F22,
-    decoding_read_size=2,
-)
+CONTEXT_MESSAGE_BATTLE: Final[dict] = {
+    "title": "DRAGONQUEST3",
+    "delimiters": b"\xac\xae",
+    "charmap": CHARMAP_SMALL,
+    "message_id_first": 0x0000,
+    "message_id_last": 0x0177,
+    "addr_message": 0xFC9F22,
+    "decoding_read_size": 2,
+}
 
-CONTEXT_MESSAGE_SCENARIO: Final[dict] = dict(
-    title="DRAGONQUEST3",
-    delimiters=array(
+CONTEXT_MESSAGE_SCENARIO: Final[dict] = {
+    "title": "DRAGONQUEST3",
+    "delimiters": array(
         "H",
         (
             0x00AC,
             0x00AE,
         ),
     ),
-    charmap=CHARMAP_LARGE,
-    message_id_first=0x0000,
-    message_id_last=0x0FCF,
-    addr_group=0xC15331,
-    addr_shiftbit_array=0xC1B01C,
-    addr_message=0xFCC258,
-    addr_huffman_off=0xC159D3,
-    addr_huffman_on=0xC161A7,
-    huffman_root=0x07D2,
-    decoding_read_size=2,
-)
+    "charmap": CHARMAP_LARGE,
+    "message_id_first": 0x0000,
+    "message_id_last": 0x0FCF,
+    "addr_group": 0xC15331,
+    "addr_shiftbit_array": 0xC1B01C,
+    "addr_message": 0xFCC258,
+    "addr_huffman_off": 0xC159D3,
+    "addr_huffman_on": 0xC161A7,
+    "huffman_root": 0x07D2,
+    "decoding_read_size": 2,
+}
 
 
 def enum_battle(first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:

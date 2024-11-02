@@ -141,3 +141,16 @@ build-backend = "hatchling.build"
 
 [tool.hatch.version]
 path = "src/dqutils/release.py"
+
+[tool.ruff.lint]
+ignore = [
+    "ARG004",
+    "RUF001",
+    "RUF003",
+    "PLR2004",
+    "PT009",
+    "PT027",
+    "S101",
+    "SIM115",
+    "T201",
+]

@@ -3,6 +3,7 @@ Tests for dqutils.snescpu.disasm.
 """
 
 from unittest import TestCase
+
 from dqutils.snescpu.disasm import create_args
 from dqutils.snescpu.rom_image import RomImage
 

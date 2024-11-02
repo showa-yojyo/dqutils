@@ -7,17 +7,18 @@ from __future__ import annotations
 from argparse import ArgumentParser
 from typing import TYPE_CHECKING
 
-from ..release import __version__
-from .rom_image import RomImage
-from .mapper import make_mapper
-from .statemachine import StateMachine
+from dqutils.release import __version__
+from dqutils.snescpu.mapper import make_mapper
+from dqutils.snescpu.rom_image import RomImage
+from dqutils.snescpu.statemachine import StateMachine
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     import mmap
+    from collections.abc import Sequence
     from typing import Any
-    from .mapper import AbstractMapper
-    from .states import AbstractState
+
+    from dqutils.snescpu.mapper import AbstractMapper
+    from dqutils.snescpu.states import AbstractState
 
 
 def create_argparser() -> ArgumentParser:
@@ -116,10 +117,7 @@ def create_args(rom: mmap.mmap, cmdline_args: Sequence[str] = []) -> tuple[dict[
     elif args.range:
         rng = args.range.split(":")
         first = int(rng[0], base=16)
-        if len(rng) == 2 and rng[1]:
-            last = int(rng[1], base=16)
-        else:
-            last = -1
+        last = int(rng[1], base=16) if len(rng) == 2 and rng[1] else -1
     else:
         first = mapper.from_rom(0)
         last = -1  # dummy value; dynamically set

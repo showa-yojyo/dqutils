@@ -1,27 +1,29 @@
 """dqutils.dq6.string - DQ6-specific string components."""
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-    from typing import Any, Final
+    from typing import Final
 
-from ..string import enum_string as _enum_string, print_string as _print_string
-from ..string_generator import StringGeneratorCStyle
-from .charsmall import CHARMAP
+from dqutils.dq6.charsmall import CHARMAP
+from dqutils.string import enum_string as _enum_string
+from dqutils.string import print_string as _print_string
+from dqutils.string_generator import StringGeneratorCStyle
 
 if TYPE_CHECKING:
-    from ..string_generator import StringInfo
+    from dqutils.string_generator import StringInfo
 
-CONTEXT: Final[dict] = dict(
-    title="DRAGONQUEST6",
-    delimiters=b"\xac",
-    charmap=CHARMAP,
-    addr_string=0xFB8703,
-    string_id_first=0x0000,
-    string_id_last=0x09CA,
-)
+CONTEXT: Final[dict] = {
+    "title": "DRAGONQUEST6",
+    "delimiters": b"\xac",
+    "charmap": CHARMAP,
+    "addr_string": 0xFB8703,
+    "string_id_first": 0x0000,
+    "string_id_last": 0x09CA,
+}
 
 
 def enum_string(first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:

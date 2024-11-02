@@ -7,17 +7,18 @@ from __future__ import annotations
 import sys
 from typing import TYPE_CHECKING
 
-from .mapper import make_mapper
+from dqutils.snescpu.mapper import make_mapper
 
 if TYPE_CHECKING:
-    from collections.abc import Iterable
     import mmap
+    from collections.abc import Iterable
     from typing import Self
-    from .mapper import AbstractMapper
-    from .states import AbstractState, ContextT
+
+    from dqutils.snescpu.mapper import AbstractMapper
+    from dqutils.snescpu.states import AbstractState, ContextT
 
 
-class StateMachine(object):
+class StateMachine:
     """A state machine for the 65816 CPU disassembler."""
 
     def __init__(
@@ -67,7 +68,8 @@ class StateMachine(object):
         -------
         pc : int
         """
-        assert self.rom and self.mapper
+        assert self.rom
+        assert self.mapper
         return self.mapper.from_rom(self.rom.tell())
 
     def unlink(self: Self) -> None:

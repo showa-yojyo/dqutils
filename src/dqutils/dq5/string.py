@@ -8,51 +8,53 @@ raw bytes and legible texts.
 """
 
 from __future__ import annotations
+
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Final
 
-from ..string import enum_string as _enum_string, get_text
-from ..string_generator import StringGeneratorPascalStyle
+from dqutils.string import enum_string as _enum_string
+from dqutils.string import get_text
+from dqutils.string_generator import StringGeneratorPascalStyle
 
 if TYPE_CHECKING:
-    from ..string_generator import StringInfo, ContextT
-from .charsmall import CHARMAP, process_dakuten
+    from dqutils.string_generator import ContextT, StringInfo
+from dqutils.dq5.charsmall import CHARMAP, process_dakuten
 
 CONTEXT_GROUP: Final[tuple[dict[str, int], ...]] = (
     # Partners (human beings).
-    dict(addr_string=0x23C5CE, string_id_first=0, string_id_last=8),
+    {"addr_string": 0x23C5CE, "string_id_first": 0, "string_id_last": 8},
     # Classes.
-    dict(addr_string=0x23C5F9, string_id_first=0, string_id_last=17),
+    {"addr_string": 0x23C5F9, "string_id_first": 0, "string_id_last": 17},
     # Distinction (male/female/others!).
-    dict(addr_string=0x23C690, string_id_first=0, string_id_last=3),
+    {"addr_string": 0x23C690, "string_id_first": 0, "string_id_last": 3},
     # Spells and skills.
-    dict(addr_string=0x228000, string_id_first=0, string_id_last=171),
+    {"addr_string": 0x228000, "string_id_first": 0, "string_id_last": 171},
     # Monsters.
-    dict(addr_string=0x23C69C, string_id_first=0, string_id_last=236),
+    {"addr_string": 0x23C69C, "string_id_first": 0, "string_id_last": 236},
     # Items.
-    dict(addr_string=0x23CE0E, string_id_first=0, string_id_last=216),
+    {"addr_string": 0x23CE0E, "string_id_first": 0, "string_id_last": 216},
     # Strategies.
-    dict(addr_string=0x23D5B5, string_id_first=0, string_id_last=6),
+    {"addr_string": 0x23D5B5, "string_id_first": 0, "string_id_last": 6},
     # Unknown 1.
-    dict(addr_string=0x308000, string_id_first=0, string_id_last=0),
+    {"addr_string": 0x308000, "string_id_first": 0, "string_id_last": 0},
     # Unknown 2.
-    dict(addr_string=0x23D6A1, string_id_first=0, string_id_last=0),
+    {"addr_string": 0x23D6A1, "string_id_first": 0, "string_id_last": 0},
     # Ditto.
-    dict(addr_string=0x23D6A1, string_id_first=0, string_id_last=0),
+    {"addr_string": 0x23D6A1, "string_id_first": 0, "string_id_last": 0},
     # Partners (monsters).
-    dict(addr_string=0x23C242, string_id_first=0, string_id_last=168),
+    {"addr_string": 0x23C242, "string_id_first": 0, "string_id_last": 168},
     # Destination list.
-    dict(addr_string=0x23D5F3, string_id_first=0, string_id_last=23),
+    {"addr_string": 0x23D5F3, "string_id_first": 0, "string_id_last": 23},
 )
 """the string table located at $21955B."""
 
-CONTEXT_PROTOTYPE: Final[dict] = dict(
-    title="DRAGONQUEST5",
-    charmap=CHARMAP,
-)
+CONTEXT_PROTOTYPE: Final[dict] = {
+    "title": "DRAGONQUEST5",
+    "charmap": CHARMAP,
+}
 
 for group in CONTEXT_GROUP:
     group.update(CONTEXT_PROTOTYPE)  # type: ignore[arg-type]
@@ -87,7 +89,7 @@ def print_all() -> None:
     for groupid, context in enumerate(CONTEXT_GROUP):
         print(f"Group #{groupid:d}")
         charmap = cast(dict[int, str], context["charmap"])
-        for id, entry in enumerate(StringGeneratorPascalStyle(context)):
+        for i, entry in enumerate(StringGeneratorPascalStyle(context)):
             address, code_seq = entry
             text = process_dakuten(get_text(code_seq, charmap, None))
-            print(f"{id:04X}:{address:06X}:{text}")
+            print(f"{i:04X}:{address:06X}:{text}")

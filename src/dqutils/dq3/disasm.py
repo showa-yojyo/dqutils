@@ -3,18 +3,18 @@
 
 from __future__ import annotations
 
-from typing import cast, TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from typing import Final, Self
 
-from ..snescpu.addressing import get_addressing_mode
-from ..snescpu.disasm import disassemble
-from ..snescpu.instructions import get_instruction
-from ..snescpu.states import DisassembleState, DumpState
+from dqutils.snescpu.addressing import get_addressing_mode
+from dqutils.snescpu.disasm import disassemble
+from dqutils.snescpu.instructions import get_instruction
+from dqutils.snescpu.states import DisassembleState, DumpState
 
 if TYPE_CHECKING:
-    from ..snescpu.instructions import AbstractInstruction, ContextT
+    from dqutils.snescpu.instructions import AbstractInstruction, ContextT
 
 # A dictionary of subroutines with following bytes as arguments.
 # key: the address of subroutine
@@ -198,11 +198,9 @@ SPECIAL_SUBROUTINES: Final[dict[int, tuple[int, ...]]] = {
     0xC2C573: (1,),
     0xC2C739: (1,),
     0xC2C766: (1,),
-    0xC2C766: (1,),
     0xC2C791: (1,),
     0xC2C7C6: (1,),
     0xC32251: (1,),
-    0xC322C6: (1,),
     0xC322C6: (1,),
     0xC3233B: (1,),
     0xC323B0: (1,),
@@ -231,7 +229,6 @@ SPECIAL_SUBROUTINES: Final[dict[int, tuple[int, ...]]] = {
     0xC45AB0: (1,),
     0xC45ADC: (1,),
     0xC45B1A: (1,),
-    0xC45B66: (1,),
     0xC45B66: (1,),
     0xC45BEB: (1,),
     0xC45C5A: (1,),
