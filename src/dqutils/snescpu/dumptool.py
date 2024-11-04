@@ -42,11 +42,11 @@ def formatter(mask_bits: int) -> str:
     """A helper function."""
 
     numbits = bin(mask_bits).count("1")
-    if numbits > 16:
+    if numbits > 16:  # noqa: PLR2004
         return "{:06X}"
-    if numbits > 8:
+    if numbits > 8:  # noqa: PLR2004
         return "{:04X}"
-    if numbits < 4:
+    if numbits < 4:  # noqa: PLR2004
         return "{:d}"
 
     return "{:02X}"

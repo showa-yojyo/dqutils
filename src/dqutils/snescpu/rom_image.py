@@ -39,7 +39,7 @@ class RomImage:
         self.image: mmap.mmap
 
     def __enter__(self: Self) -> mmap.mmap:
-        fin = open(get_config().get("ROM", self.title), "rb")
+        fin = open(get_config().get("ROM", self.title), "rb")  # noqa: SIM115
         image = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
 
         self.fin, self.image = fin, image
@@ -60,6 +60,7 @@ class RomImage:
 class RomHeaderNotFoundError(Exception):
     def __init__(self: Self) -> None:
         super().__init__("ROM header not found")
+
 
 def get_snes_header(mem: mmap.mmap) -> bytes:
     """Return the 64 bytes of cartridge information a.k.a. SNES
@@ -92,7 +93,7 @@ def get_snes_header(mem: mmap.mmap) -> bytes:
             # [$xFDE, $xFE0): checksum bytes.
             chksum1 = int.from_bytes(buffer[0x1C:0x1E], "little")
             chksum2 = int.from_bytes(buffer[0x1E:0x20], "little")
-            if chksum1 ^ chksum2 == 0xFFFF:
+            if chksum1 ^ chksum2 == 0xFFFF:  # noqa: PLR2004
                 return buffer
         raise RomHeaderNotFoundError
     finally:

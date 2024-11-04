@@ -9,8 +9,8 @@ from dqutils.snescpu.mapper import AbstractMapper, make_mapper
 from dqutils.snescpu.rom_image import RomImage
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
     import mmap
+    from collections.abc import Iterator, Mapping
     from typing import Any, Self
 
     type StringInfo = tuple[int, bytes | bytearray]

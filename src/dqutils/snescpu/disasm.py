@@ -117,7 +117,7 @@ def create_args(rom: mmap.mmap, cmdline_args: Sequence[str] = []) -> tuple[dict[
     elif args.range:
         rng = args.range.split(":")
         first = int(rng[0], base=16)
-        last = int(rng[1], base=16) if len(rng) == 2 and rng[1] else -1
+        last = int(rng[1], base=16) if len(rng) == 2 and rng[1] else -1  # noqa: PLR2004
     else:
         first = mapper.from_rom(0)
         last = -1  # dummy value; dynamically set

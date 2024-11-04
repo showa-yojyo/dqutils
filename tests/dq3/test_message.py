@@ -1,5 +1,6 @@
 """Tests for dqutils.dq3.message"""
 
+# ruff: noqa: RUF003
 from array import array
 from unittest import TestCase
 

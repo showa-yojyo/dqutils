@@ -1,10 +1,11 @@
 """dqutils.address - SNES address conversion functions."""
 
-from abc import ABCMeta, abstractmethod
 import mmap
+from abc import ABCMeta, abstractmethod
 from typing import Self
 
 from dqutils.snescpu.rom_image import get_snes_header
+
 
 class AbstractMapper(metaclass=ABCMeta):
     """The abstract class that represents the SNES ROM layout.
@@ -275,6 +276,10 @@ class MapperNotFoundError(Exception):
     def __init__(self: Self) -> None:
         super().__init__("Mapper type not found")
 
+
+HEADER_LENGTH = 0x40
+
+
 def make_mapper(rom: mmap.mmap | None = None, name: str | None = None) -> type[AbstractMapper]:
     """Return a mapper type.
 
@@ -305,7 +310,7 @@ def make_mapper(rom: mmap.mmap | None = None, name: str | None = None) -> type[A
     if rom:
         header = get_snes_header(rom)
         assert isinstance(header, bytes)
-        assert len(header) == 0x40
+        assert len(header) == HEADER_LENGTH
 
         # ROM makeup byte.
         mapper_byte = header[0x15]

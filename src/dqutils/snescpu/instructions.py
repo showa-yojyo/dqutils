@@ -329,7 +329,7 @@ class AbstractInstruction:
         return cls.operand_size - 1
 
     @staticmethod
-    def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:
+    def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:  # noqa: ARG004
         """Overrided by subclasses if necessary.
 
         Parameters

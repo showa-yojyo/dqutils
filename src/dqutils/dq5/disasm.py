@@ -99,13 +99,14 @@ BRK_BPL_RANGE_LAST = 0x1B
 BRK_BMI_RANGE_FIRST = 0x80
 BRK_BMI_RANGE_LAST = 0xAD
 
+
 class DisassembleStateDQ5(DisassembleState):
     """A specialized state class for disassembling DQ5."""
 
     def _init_instructions(self: Self) -> dict[int, type[AbstractInstruction]]:
         class BRK(get_instruction(0x00)):  # type: ignore[misc]
             @staticmethod
-            def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:
+            def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:  # noqa: ARG004
                 sigbyte = cast(int, self.current_operand)
 
                 if sigbyte == 0x00 or sigbyte >= BRK_BMI_RANGE_LAST:

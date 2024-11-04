@@ -39,7 +39,11 @@ def _format_program_counter_relative(state: DisassembleState) -> str:
 
     program_counter = state.program_counter
     operand = state.current_operand or 0  # XXX: ?
-    near_addr = (program_counter + operand) & 0xFFFF if operand & 0x80 == 0x00 else (program_counter - (0x100 - operand)) & 0xFFFF
+    near_addr = (
+        (program_counter + operand) & 0xFFFF
+        if operand & 0x80 == 0x00
+        else (program_counter - (0x100 - operand)) & 0xFFFF
+    )
     return f"${near_addr:04X}"
 
 
@@ -48,7 +52,11 @@ def _format_program_counter_relative_long(state: DisassembleState) -> str:
 
     program_counter = state.program_counter
     operand = state.current_operand or 0  # XXX: ?
-    addr = (program_counter + operand) & 0xFFFF if operand & 0x8000 == 0x0000 else (program_counter - (0x10000 - operand)) & 0xFFFF
+    addr = (
+        (program_counter + operand) & 0xFFFF
+        if operand & 0x8000 == 0x0000
+        else (program_counter - (0x10000 - operand)) & 0xFFFF
+    )
     return f"${addr:04X}"
 
 

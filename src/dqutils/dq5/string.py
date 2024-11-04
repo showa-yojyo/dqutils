@@ -7,6 +7,7 @@ This module has a few functions capable to load strings in the forms of
 raw bytes and legible texts.
 """
 
+# ruff: noqa: T201
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, cast

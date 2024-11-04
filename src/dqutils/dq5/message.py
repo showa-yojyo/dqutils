@@ -8,6 +8,7 @@ These decoding functions are based on classical Huffman's algorithm.
 
 Special thanks to Mr. kobun_c.
 """
+# ruff: noqa: T201
 
 from __future__ import annotations
 

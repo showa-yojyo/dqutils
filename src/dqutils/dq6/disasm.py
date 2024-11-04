@@ -236,7 +236,7 @@ class DisassembleStateDQ6(DisassembleState):
 
         class JSR(get_instruction(0x22)):  # type: ignore[misc]
             @staticmethod
-            def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:
+            def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:  # noqa: ARG004
                 addr = cast(int, self.current_operand)
                 if byte_count := SPECIAL_SUBROUTINES.get(addr):
                     context.update(

@@ -1,5 +1,6 @@
 """dqutils.dq6.charsmall - The dictionary of small size characters."""
 
+# ruff: noqa: RUF001
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

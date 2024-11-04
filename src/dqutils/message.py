@@ -10,6 +10,7 @@ conversational messages are rendered with the larger font.
 For all of the programs, conversational message data are compressed.
 """
 
+# ruff: noqa: T201
 from __future__ import annotations
 
 from array import array

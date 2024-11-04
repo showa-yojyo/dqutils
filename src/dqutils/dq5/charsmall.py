@@ -8,6 +8,7 @@ References
 [2] See dq3encode.c of dq_analyzer <Index of ~/s-endo, http://s-endo.skr.jp>
 """
 
+# ruff: noqa: RUF001
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

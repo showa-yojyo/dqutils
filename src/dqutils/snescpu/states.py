@@ -148,10 +148,8 @@ class DisassembleState(AbstractState):
 
         while not self._is_terminated():
             instruction, operand_raw, across_boundary = self._read_instruction()
-            context, next_state = self._eval_instruction(
-                instruction, context, across_boundary=across_boundary)
-            self._print_instruction(
-                instruction, operand_raw, across_boundary=across_boundary)
+            context, next_state = self._eval_instruction(instruction, context, across_boundary=across_boundary)
+            self._print_instruction(instruction, operand_raw, across_boundary=across_boundary)
             if next_state:
                 return context, next_state
 
@@ -248,11 +246,7 @@ class DisassembleState(AbstractState):
         return instruction, operand_raw, across_boundary
 
     def _eval_instruction(
-        self: Self,
-        instruction: type[AbstractInstruction],
-        context: ContextT,
-        *,
-        across_boundary: bool
+        self: Self, instruction: type[AbstractInstruction], context: ContextT, *, across_boundary: bool
     ) -> tuple[ContextT, str | None]:
         """Execute the current instruction.
 
@@ -279,11 +273,7 @@ class DisassembleState(AbstractState):
         return context, None
 
     def _print_instruction(
-        self: Self,
-        instruction: type[AbstractInstruction],
-        operand_raw: bytes | None,
-        *,
-        across_boundary: bool
+        self: Self, instruction: type[AbstractInstruction], operand_raw: bytes | None, *, across_boundary: bool
     ) -> None:
         """Output disassembled code in one line.
 
@@ -370,6 +360,7 @@ class DisassembleState(AbstractState):
 
 
 FORMAT_STRING: Final[str] = "{:02X}/{:04X}:\t{}"
+BANK_SIZE: Final[int] = 0x10000
 
 
 class DumpState(AbstractState):
@@ -430,7 +421,7 @@ class DumpState(AbstractState):
             cpu_address = fsm.program_counter
             bank = (cpu_address & 0xFF0000) >> 16
             offset = cpu_address & 0x00FFFF
-            data = rom.read(0x10000 - offset if offset + i > 0x10000 else i)
+            data = rom.read(BANK_SIZE - offset if offset + i > BANK_SIZE else i)
 
             print(FORMAT_STRING.format(bank, offset, data.hex().upper()), file=out)
 

@@ -30,6 +30,7 @@ if TYPE_CHECKING:
 _DUMMY_CODE: Final[int] = 0xFFFFFFFF
 _SHIFTBIT_ARRAY_SIZE: Final[int] = 8
 
+
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """The base class of MessageGenerator subclasses."""
 
@@ -364,6 +365,10 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         """
 
 
+_ONLY_MSB_ON_16BIT = 0x8000
+_ONLY_MSB_ON_8BIT = 0x80
+
+
 class MessageGeneratorW(AbstractMessageGenerator):
     """This class is for DQ3 and DQ6."""
 
@@ -379,12 +384,12 @@ class MessageGeneratorW(AbstractMessageGenerator):
         return count, group
 
     def _do_is_leaf_node(self: Self, node: int) -> bool:
-        return node & 0x8000 == 0
+        return node & _ONLY_MSB_ON_16BIT == 0
 
     def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
         shift >>= 1
         if shift == 0:
-            shift = 0x80
+            shift = _ONLY_MSB_ON_8BIT
             addr = self.mapper.increment_address(addr)
         return addr, shift
 
@@ -401,11 +406,11 @@ class MessageGeneratorV(AbstractMessageGenerator):
         return count, group
 
     def _do_is_leaf_node(self: Self, node: int) -> bool:
-        return node & 0x8000 == 0x8000
+        return node & _ONLY_MSB_ON_16BIT == _ONLY_MSB_ON_16BIT
 
     def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
         shift <<= 1
-        if shift > 0x80:
+        if shift > _ONLY_MSB_ON_8BIT:
             shift = 0x01
             addr = self.mapper.increment_address(addr)
         return addr, shift

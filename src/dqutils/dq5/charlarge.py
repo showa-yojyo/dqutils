@@ -1,5 +1,6 @@
 """dqutils.dq5.charlarge - The dictionary of large size characters."""
 
+# ruff: noqa: RUF001
 from __future__ import annotations
 
 from typing import TYPE_CHECKING

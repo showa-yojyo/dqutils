@@ -86,7 +86,11 @@ def confdir_home() -> Path:
     raise ConfigNotFoundError
 
 
-_CONFIG: ConfigParser = _load_conf()
+_CONFIG: ConfigParser | None
+try:
+    _CONFIG = _load_conf()
+except ConfigNotFoundError:
+    _CONFIG = None
 
 
 if __name__ == "__main__":
