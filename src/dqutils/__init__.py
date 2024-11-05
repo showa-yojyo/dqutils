@@ -43,5 +43,5 @@ def run(commands: Iterable[Command]) -> None:
         subp = subparsers.add_parser(i.name, help=i.help)
         subp.set_defaults(func=i.func)
 
-    options = parser.parse_args(sys.argv[1:])
+    options = parser.parse_args(sys.argv[1:] or ["--help"])
     options.func()
