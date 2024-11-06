@@ -22,6 +22,7 @@ if TYPE_CHECKING:
     from typing import Final, Literal
 
 from dqutils.bit import get_bits
+from dqutils.release import __version__
 from dqutils.snescpu.mapper import make_mapper
 from dqutils.snescpu.rom_image import RomImage
 
@@ -104,10 +105,32 @@ def dump(
 
 def parse_args(args: Sequence[str]) -> Namespace:
     parser = ArgumentParser(description="A dump tool")
-    parser.add_argument("address", type=int_wrapper, help="address of the array in ROM space")
-    parser.add_argument("sizeof_object", type=int_wrapper, help="size of the structure, class or object")
-    parser.add_argument("sizeof_array", type=int_wrapper, help="length of the array (or the number of objects)")
-    parser.add_argument("--delimiter", default="\t", metavar="SEP", help="use SEP as fields separator (default to \\t)")
+    parser.add_argument(
+        "address",
+        type=int_wrapper,
+        help="address of the array in ROM space",
+    )
+    parser.add_argument(
+        "sizeof_object",
+        type=int_wrapper,
+        help="size of the structure, class or object",
+    )
+    parser.add_argument(
+        "sizeof_array",
+        type=int_wrapper,
+        help="length of the array (or the number of objects)",
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=__version__,
+    )
+    parser.add_argument(
+        "--delimiter",
+        default="\t",
+        metavar="SEP",
+        help="use SEP as fields separator (default to \\t)",
+    )
     return parser.parse_args(args)
 
 

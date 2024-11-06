@@ -7,16 +7,24 @@ from os import devnull
 from unittest import TestCase
 from unittest.mock import patch
 
+from dqutils.release import __version__ as DQUTILS_VERSION
 from dqutils.snescpu.hexdump import create_argparser
 
 
 class HexDumpTestCase(TestCase):
     """Tests for dquils.snescpu.hexdump."""
 
+    def setUp(self):
+        self.parser = create_argparser()
+
+    def tearDown(self):
+        del self.parser
+        self.parser = None
+
     def test_create_argparser(self):
         """Test function `create_argparser`."""
 
-        parser = create_argparser()
+        parser = self.parser
 
         # invalid arguments
         with open(devnull, "w") as fout, patch("sys.stderr", fout):
@@ -29,6 +37,18 @@ class HexDumpTestCase(TestCase):
         self.assertEqual(args.start, "C0FF70")
         self.assertEqual(args.byte_count, [16])
         self.assertEqual(args.record_count, 4)
+
+    def test_version(self):
+        """Test `--version`."""
+
+        parser = self.parser
+        with (
+            patch("sys.stdout", StringIO()) as output,
+            self.assertRaises(SystemExit) as cm,
+        ):
+            parser.parse_args(["--version"])
+        self.assertEqual(cm.exception.code, 0)
+        self.assertIn(DQUTILS_VERSION, output.getvalue())
 
 
 ADDRESS_PATTERN = r"^[0-9A-F]{2}/[0-9A-F]{4}:"
