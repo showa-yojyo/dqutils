@@ -44,3 +44,27 @@ class DumpToolTestCase(TestCase):
             """
         )
         self.assertMultiLineEqual(output.getvalue(), expected)
+
+    def test_shop_data(self):
+        data = StringIO(
+            "#$00:#$007F\n"
+            "#$00:#$0080\n"
+            "#$01:#$00FF\n"
+            "#$02:#$00FF\n"
+            "#$03:#$00FF\n"
+            "#$04:#$00FF\n"
+            "#$05:#$00FF\n"
+            "#$06:#$00FF\n"
+            "#$07:#$00FF\n"
+        )
+        expected = (
+            "0000:06:1:08:1A:19:10:18:21:03\n"
+            "0001:02:1:77:B8:B9:BA:BB:00:00\n"
+            "0002:00:0:36:03:0D:3E:3F:55:79\n"
+            "0003:02:1:B8:B9:BA:BB:BF:00:00\n"
+            "0004:00:0:07:06:22:41:66:5C:00\n"
+        )
+        with patch("sys.stdin", data), patch("sys.stdout", StringIO()) as output:
+            main(["0xC30900", "8", "5", "--delimiter", ":"])
+        # self.maxDiff = None
+        self.assertMultiLineEqual(output.getvalue(), expected)
