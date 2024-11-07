@@ -104,6 +104,59 @@ To print all of the string data in Dragon Quest 3, run:
 python -m dqutils.dq3 print-strings
 ```
 
+### Dump data in CSV format
+
+Subpackages `dqutils.dq3`, `dqutils.dq5` and `dqutils.dq6` provide a simple data
+dump CLI tool. All tools have a common interface.
+
+In the command line arguments, specify the address, object size and number of
+objects.
+
+In stdin, specify the layout of the object (not user-friendly)
+
+The tool outputs data in CSV. The first column of output is the object index,
+the rest is the data.
+
+Suppose you want to dump the first five records of shop data. The data are
+stored at address 0xC30900. The size of each object is eight. The structure of a
+shop object is as follows:
+
+| offset | bit mask |
+|-------:|:--------:|
+| 0 | 0x7f |
+| 0 | 0x80 |
+| 1 | 0xff |
+| 2 | 0xff |
+| 3 | 0xff |
+| 4 | 0xff |
+| 5 | 0xff |
+| 6 | 0xff |
+| 7 | 0xff |
+
+In this case, run the following command:
+
+```console
+$ python -m dqutils.dq3.dumptool 0xC30900 8 5 --delimiter : <<< '#$00:#$007F
+#$00:#$0080
+#$01:#$00FF
+#$02:#$00FF
+#$03:#$00FF
+#$04:#$00FF
+#$05:#$00FF
+#$06:#$00FF
+#$07:#$00FF'
+```
+
+The output is:
+
+```text
+0000:06:1:08:1A:19:10:18:21:03
+0001:02:1:77:B8:B9:BA:BB:00:00
+0002:00:0:36:03:0D:3E:3F:55:79
+0003:02:1:B8:B9:BA:BB:BF:00:00
+0004:00:0:07:06:22:41:66:5C:00
+```
+
 ### View Sprites, Sounds, Bytecodes, etc.
 
 TBW
