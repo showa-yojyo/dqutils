@@ -48,16 +48,16 @@ DRAGONQUEST6 = /path/to/DRAGONQUEST6.smc
 
 UNDER CONSTRUCTION (issue #11) (available only for developers?)
 
-For example:
+Run the following command under the project root directory:
 
 ```console
-$ cd $REPOSITORY_ROOT
-$ PYTHONPATH=./src pipenv run python -m unittest discover .
-....................................s.........................................................
-----------------------------------------------------------------------
-Ran 94 tests in 0.130s
+PYTHONPATH=./src:./tests pipenv run python -m unittest discover ./tests
+```
 
-OK (skipped=1)
+You can use Hatch as well as Pipenv:
+
+```console
+PYTHONPATH=./src:./tests hatch test ./tests
 ```
 
 ## Build the Package
