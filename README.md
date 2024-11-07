@@ -157,7 +157,17 @@ The output is:
 0004:00:0:07:06:22:41:66:5C:00
 ```
 
-### View Sprites, Sounds, Bytecodes, etc.
+### Disassemble code
+
+As of version 1.1, it is possible to disassemble only the entire ROM image:
+
+```console
+python -m dqutils.dq3.disasm
+python -m dqutils.dq5.disasm
+python -m dqutils.dq6.disasm
+```
+
+### View Sprites, Sounds, etc.
 
 TBW
 

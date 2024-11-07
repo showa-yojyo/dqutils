@@ -365,7 +365,7 @@ class AbstractInstruction:
 
         if not (addressing_mode := cls.addressing_mode):
             # Opcode 42, WDM.
-            assert state.current_operand
+            # assert state.current_operand
             return f"#${state.current_operand:02X}"
 
         if addressing_mode.formatter:
