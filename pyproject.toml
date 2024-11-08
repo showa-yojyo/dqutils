@@ -138,24 +138,3 @@ requires = ["hatchling"]
 
 # The name of the Python object that frontends will use to perform the build:
 build-backend = "hatchling.build"
-
-[tool.hatch.version]
-path = "src/dqutils/release.py"
-
-[tool.hatch.build]
-exclude = [
-    "/.*",
-    "Pipfile*",
-]
-[tool.hatch.build.targets.wheel]
-exclude = [
-    "/tests",
-]
-ignore-vcs = true
-
-[tool.ruff.lint]
-ignore = [
-    "PT009",  # pytest-unittest-assertion
-    "PT027",  # pytest-unittest-raises-assertion
-    "S101",  # assert
-]

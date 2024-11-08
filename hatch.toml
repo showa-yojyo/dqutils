@@ -1,0 +1,13 @@
+[version]
+path = "src/dqutils/release.py"
+
+[build]
+exclude = [
+    "/.*",
+    "Pipfile*",
+]
+[build.targets.wheel]
+exclude = [
+    "/tests",
+]
+ignore-vcs = true
