@@ -15,7 +15,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
 
 
-def get_config() -> ConfigParser:
+def get_config() -> ConfigParser | None:
     """Return configuration data from :file:`config`.
 
     When the file :file:`config` is located under the path that

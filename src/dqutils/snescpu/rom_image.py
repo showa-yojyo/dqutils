@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from types import TracebackType
     from typing import BinaryIO, Self
 
-from dqutils.config import get_config
+from dqutils.config import get_config, ConfigNotFoundError
 
 
 # pylint: disable=too-few-public-methods
@@ -39,7 +39,11 @@ class RomImage:
         self.image: mmap.mmap
 
     def __enter__(self: Self) -> mmap.mmap:
-        fin = open(get_config().get("ROM", self.title), "rb")  # noqa: SIM115
+        conf = get_config()
+        if not conf:
+            raise ConfigNotFoundError
+
+        fin = open(conf.get("ROM", self.title), "rb")  # noqa: SIM115
         image = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
 
         self.fin, self.image = fin, image
