@@ -7,7 +7,7 @@ from os import devnull
 from unittest import TestCase
 from unittest.mock import patch
 
-from dqutils.release import __version__ as DQUTILS_VERSION
+from dqutils.release import __version__ as dqutils_version
 from dqutils.snescpu.hexdump import create_argparser
 
 
@@ -48,7 +48,7 @@ class HexDumpTestCase(TestCase):
         ):
             parser.parse_args(["--version"])
         self.assertEqual(cm.exception.code, 0)
-        self.assertIn(DQUTILS_VERSION, output.getvalue())
+        self.assertIn(dqutils_version, output.getvalue())
 
 
 ADDRESS_PATTERN = r"^[0-9A-F]{2}/[0-9A-F]{4}:"

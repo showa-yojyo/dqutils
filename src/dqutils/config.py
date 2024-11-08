@@ -3,12 +3,16 @@
 applications that use this package.
 """
 
+from __future__ import annotations
+
 import os
 import sys
-from collections.abc import Iterator
 from configparser import ConfigParser
 from pathlib import Path
-from typing import Self
+from typing import TYPE_CHECKING, Self
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
 
 
 def get_config() -> ConfigParser:

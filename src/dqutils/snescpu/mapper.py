@@ -1,8 +1,12 @@
 """dqutils.address - SNES address conversion functions."""
 
-import mmap
+from __future__ import annotations
+
 from abc import ABCMeta, abstractmethod
-from typing import Self
+from typing import TYPE_CHECKING, Self
+
+if TYPE_CHECKING:
+    import mmap
 
 from dqutils.snescpu.rom_image import get_snes_header
 

@@ -61,8 +61,7 @@ class InstructionsTestCase(TestCase):
         wdm = get_instruction(0x42)
         self.assertEqual(wdm.mnemonic, "WDM")
 
-        flags, operand = 0x11, 0x22 # set arbitrary value
+        flags, operand = 0x11, 0x22  # set arbitrary value
         fsm = Mock(flags=flags, current_operand=operand)
         wdm.execute(fsm, None)
         self.assertEqual(fsm.flags, flags)
-
