@@ -1,0 +1,7 @@
+
+[lint]
+ignore = [
+    "PT009",  # pytest-unittest-assertion
+    "PT027",  # pytest-unittest-raises-assertion
+    "S101",  # assert
+]

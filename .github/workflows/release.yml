@@ -1,0 +1,38 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    permissions:
+      # IMPORTANT: this permission is mandatory for trusted publishing
+      id-token: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5.2.0
+      with:
+        python-version: '3.12'
+
+    - name: Install build dependencies
+      run: |
+        pip install --user pipenv
+        pipenv sync
+
+    - name: Build
+      run: pipenv run python -m build .
+
+    - name: Publish
+      run: echo TODO
+
+#      uses: pypa/gh-action-pypi-publish@release/v1
+#      with:
+#        skip-existing: true

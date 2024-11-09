@@ -1,0 +1,21 @@
+[version]
+path = "src/dqutils/release.py"
+
+[build]
+exclude = [
+    "/.*",
+    "Pipfile*",
+]
+[build.targets.wheel]
+exclude = [
+    "/tests",
+]
+ignore-vcs = true
+
+[envs.typing]
+dependencies = [
+    "mypy"
+]
+[envs.typing.scripts]
+# hatch run typing:mypy
+mypy = "PYTHONPATH=./src mypy --check-untyped-defs --enable-incomplete-feature NewGenericSyntax src/dqutils"

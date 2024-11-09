@@ -1,0 +1,32 @@
+name: Test
+
+on:
+  push:
+  pull_request:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        python: ['3.12']
+        platform: [ubuntu-latest]
+    runs-on: ${{ matrix.platform }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python }}
+      uses: actions/setup-python@v5.2.0
+      with:
+        python-version: ${{ matrix.python }}
+
+    - name: Install test dependencies
+      run: |
+        pip install --user pipenv
+        pipenv sync
+
+    - name: Test
+      run: |
+        PYTHONPATH=./src pipenv run python -m unittest discover tests/snescpu
