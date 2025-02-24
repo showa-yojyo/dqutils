@@ -9,5 +9,5 @@ build = "*"
 [dev-packages]
 
 [requires]
-python_version = "3.12"
-python_full_version = "3.12.7"
+python_version = "3.13"
+python_full_version = "3.13.2"

@@ -41,7 +41,7 @@ readme = "README.md"
 # Language' classifiers in this file, 'pip install' will check this and refuse
 # to install the project if the version does not match. See
 # https://packaging.python.org/guides/distributing-packages-using-setuptools/#python-requires
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 
 # This is either text indicating the license for the distribution, or a file
 # that contains the license.
@@ -77,7 +77,7 @@ classifiers = [
     # you indicate you support Python 3. These classifiers are *not* checked by
     # "pip install". See instead "requires-python" key in this file.
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3 :: Only",
 
     # Pick your license as you wish
@@ -138,3 +138,18 @@ requires = ["hatchling"]
 
 # The name of the Python object that frontends will use to perform the build:
 build-backend = "hatchling.build"
+
+[tool.coverage.run]
+branch = true
+source_pkgs = ["dqutils", "tests"]
+
+[tool.coverage.paths]
+dqutils = ["src/hatch"]
+tests = ["tests"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "no cov",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+]
