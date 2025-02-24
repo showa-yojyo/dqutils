@@ -51,13 +51,13 @@ UNDER CONSTRUCTION (issue #11) (available only for developers?)
 Run the following command under the project root directory:
 
 ```console
-PYTHONPATH=./src:./tests pipenv run python -m unittest discover ./tests
+pipenv run pytest
 ```
 
 You can use Hatch as well as Pipenv:
 
 ```console
-PYTHONPATH=./src:./tests hatch test ./tests
+hatch test
 ```
 
 ## Build the Package

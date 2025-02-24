@@ -107,7 +107,9 @@ dependencies = [
 # https://packaging.python.org/en/latest/specifications/dependency-specifiers/#extras
 [project.optional-dependencies]
 dev = []
-test = []
+test = [
+    "pytest == 8.3.*"
+]
 
 # List URLs that are relevant to your project
 #

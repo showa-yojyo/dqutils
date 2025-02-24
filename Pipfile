@@ -7,6 +7,7 @@ name = "pypi"
 build = "*"
 
 [dev-packages]
+pytest = "8.3.*"
 
 [requires]
 python_version = "3.13"
