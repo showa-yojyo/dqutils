@@ -2,26 +2,17 @@
 Tests for dqutils.snescpu.states.DisassembleState.
 """
 
-from unittest.mock import Mock
-
-import pytest
-
 from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
 from dqutils.snescpu.states import DisassembleState
 
 
-@pytest.fixture
-def fsm():
-    return Mock(program_counter="dummy")
-
-
-def test_initial_properties(fsm):
+def test_initial_properties(fsm_mock):
     """
     Test the initial condition of an object of class `DisassembleState`.
     """
 
-    state = DisassembleState(fsm)
-    assert state.state_machine == fsm
+    state = DisassembleState(fsm_mock)
+    assert state.state_machine == fsm_mock
     assert state.current_opcode is None
     assert state.current_operand is None
     assert state.current_operand_size == 0
@@ -30,12 +21,12 @@ def test_initial_properties(fsm):
     assert tuple(state.instructions) == tuple(DEFAULT_INSTRUCTIONS)
 
 
-def test_runtime_init(fsm):
+def test_runtime_init(fsm_mock):
     """
     Test behaviors of `DisassembleState.runtime_init`.
     """
 
-    state = DisassembleState(fsm)
+    state = DisassembleState(fsm_mock)
 
     # The default behavior.
     state.runtime_init()
@@ -51,12 +42,12 @@ def test_runtime_init(fsm):
     assert state.until_return
 
 
-def test_get_instruction(fsm):
+def test_get_instruction(fsm_mock):
     """
     Test behaviors of `DisassembleState.get_instruction`.
     """
 
-    state = DisassembleState(fsm)
+    state = DisassembleState(fsm_mock)
     state.runtime_init()
 
     assert state.get_instruction(0x00) == DEFAULT_INSTRUCTIONS[0]
