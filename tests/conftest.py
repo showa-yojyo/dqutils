@@ -9,7 +9,7 @@ from dqutils.snescpu.statemachine import StateMachine
 
 
 # Use for dq{3,5,6}/test_hexdump.py
-@pytest.fixture(scope="function")
+@pytest.fixture
 def capture_stdout(monkeypatch):
     out = StringIO()
 
