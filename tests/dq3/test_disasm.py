@@ -2,37 +2,27 @@
 Tests for dqutils.snescpu.disasm.
 """
 
-from unittest import TestCase
-from unittest.mock import Mock
-
 from dqutils.dq3.disasm import DisassembleStateDQ3
 from dqutils.snescpu.disasm import create_args
-from dqutils.snescpu.rom_image import RomImage
 
 
-class DisasmTestCase(TestCase):
-    """Tests dqutils.snescpu.disasm for DQ3."""
+def test_create_args_default(rom):
+    """Test create_args for DQ3 default values."""
+    args, _ = create_args(rom, [])
 
-    def test_create_args_default(self):
-        """Test create_args for DQ3 default values."""
+    assert args["flags"] == 0
+    assert args["first"] == 0xC00000
+    assert args["last"] == -1
+    assert not args["until_return"]
 
-        with RomImage("DRAGONQUEST3") as rom:
-            args, _ = create_args(rom, [])
 
-            self.assertEqual(args["flags"], 0)
-            self.assertEqual(args["first"], 0xC00000)
-            self.assertEqual(args["last"], -1)
-            self.assertFalse(args["until_return"])
+def test_specialized_state(fsm):
+    """Test class `DisassembleStateDQ3`."""
+    state = DisassembleStateDQ3(fsm)
+    state.runtime_init()
 
-    def test_specialized_state(self):
-        """Test class `DisassembleStateDQ3`."""
+    brk = state.get_instruction(0x00)
+    assert brk.operand_size == 3
 
-        fsm = Mock(program_counter="dummy")
-        state = DisassembleStateDQ3(fsm)
-        state.runtime_init()
-
-        brk = state.get_instruction(0x00)
-        self.assertEqual(brk.operand_size, 3)
-
-        cop = state.get_instruction(0x02)
-        self.assertEqual(cop.operand_size, 1)
+    cop = state.get_instruction(0x02)
+    assert cop.operand_size == 1

@@ -8,7 +8,7 @@ from snescpu.test_hexdump import ADDRESS_PATTERN
 
 from dqutils.snescpu.hexdump import dump
 
-GAME_TITLE = "DRAGONQUEST3"
+from .conftest import GAME_TITLE
 
 
 def test_dump(capture_stdout):
