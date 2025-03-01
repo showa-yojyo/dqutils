@@ -7,23 +7,19 @@ import pytest
 from dqutils.snescpu.addressing import ADDRESSING_MODE_TABLE, get_addressing_mode
 
 
-def test_basic():
+@pytest.mark.parametrize("name", (["Immediate", " Absolute Long   "]))
+def test_basic(name):
     """Test basic behaviors of get_addressing_mode."""
 
-    addrmode = get_addressing_mode("Immediate")
-    assert addrmode
-
-    # Intentionally add extra space characters.
-    addrmode = get_addressing_mode(" Absolute Long   ")
-    assert addrmode
+    assert get_addressing_mode(name)
 
 
-def test_invalid_args():
+@pytest.mark.parametrize("name", ("XYZ"))
+def test_invalid_args(name):
     """Test get_addressing_mode for invalid arguments."""
 
-    invalid_arg = "XYZ"
-    with pytest.raises(KeyError, match=invalid_arg):
-        get_addressing_mode(invalid_arg)
+    with pytest.raises(KeyError, match=name):
+        get_addressing_mode(name)
 
 
 def test_properties():

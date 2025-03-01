@@ -7,6 +7,8 @@ import pytest
 from dqutils.release import __version__ as dqutils_version
 from dqutils.snescpu.hexdump import create_argparser
 
+ADDRESS_PATTERN = r"^[0-9A-F]{2}/[0-9A-F]{4}:"
+
 
 @pytest.fixture
 def parser():
@@ -40,6 +42,3 @@ def test_version(parser, capture_stdout):
         parser.parse_args(["--version"])
     assert ei.value.code == 0
     assert dqutils_version in capture_stdout.getvalue()
-
-
-ADDRESS_PATTERN = r"^[0-9A-F]{2}/[0-9A-F]{4}:"

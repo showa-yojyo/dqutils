@@ -39,33 +39,38 @@ def test_index_flag(parser):
     assert args.index_8bit
 
 
-def test_bank(parser):
-    """Test create_argparser for -b option."""
+@pytest.mark.parametrize(
+    "args,expected",
+    (
+        (("--bank", "C0"), "C0"),
+        (("-b", "C1"), "C1"),
+    ),
+)
+def test_bank(parser, args, expected):
+    """Test create_argparser for -b, --bank option."""
 
-    args = parser.parse_args(["--bank", "C0"])
-    assert args.bank == "C0"
-
-    args = parser.parse_args(["-b", "C1"])
-    assert args.bank == "C1"
+    assert parser.parse_args(args).bank == expected
 
 
-def test_range(parser):
-    """Test create_argparser for -r option."""
+@pytest.mark.parametrize(
+    "args,expected",
+    (
+        (["--range", "C2B09A:C2B0DD"], "C2B09A:C2B0DD"),
+        (["-r", "C2B0DD"], "C2B0DD"),
+    ),
+)
+def test_range(parser, args, expected):
+    """Test create_argparser for -r, --range option."""
 
-    args = parser.parse_args(["--range", "C2B09A:C2B0DD"])
-    assert args.range == "C2B09A:C2B0DD"
-
-    args = parser.parse_args(["-r", "C2B0DD"])
-    assert args.range == "C2B0DD"
+    assert parser.parse_args(args).range == expected
 
 
 def test_until_return(parser):
     """Test create_argparser for -u option.
 
-    Note that when -u and -r options are specified, the end
-    of the range of offsets will be simply discarded.
+    Note that when -u and -r options are specified, the end of the range of offsets will
+    be simply discarded.
     """
 
     args = parser.parse_args(["-u"])
-    assert args.until_return
     assert args.until_return

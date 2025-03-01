@@ -2,6 +2,8 @@
 Tests for dqutils.snescpu.states.DisassembleState.
 """
 
+import pytest
+
 from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
 from dqutils.snescpu.states import DisassembleState
 
@@ -42,7 +44,8 @@ def test_runtime_init(fsm_mock):
     assert state.until_return
 
 
-def test_get_instruction(fsm_mock):
+@pytest.mark.parametrize("opcode,index", ([0x00, 0], [b"\x03", 3]))
+def test_get_instruction(fsm_mock, opcode, index):
     """
     Test behaviors of `DisassembleState.get_instruction`.
     """
@@ -50,5 +53,4 @@ def test_get_instruction(fsm_mock):
     state = DisassembleState(fsm_mock)
     state.runtime_init()
 
-    assert state.get_instruction(0x00) == DEFAULT_INSTRUCTIONS[0]
-    assert state.get_instruction(b"\x03") == DEFAULT_INSTRUCTIONS[3]
+    assert state.get_instruction(opcode) == DEFAULT_INSTRUCTIONS[index]
