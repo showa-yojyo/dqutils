@@ -6,30 +6,7 @@ import re
 
 import pytest
 
-from dqutils.dq5.disasm import DisassembleStateDQ5, DumpState
-from dqutils.snescpu.rom_image import RomImage
-
 from ..snescpu.test_statemachine import do_test_initial, do_test_until_option
-
-GAME_TITLE = "DRAGONQUEST5"
-STATE_CLASSES = (DisassembleStateDQ5, DumpState)
-INITIAL_STATE = "DisassembleStateDQ5"
-
-
-@pytest.fixture
-def state_classes():
-    return STATE_CLASSES
-
-
-@pytest.fixture
-def initial_state():
-    return INITIAL_STATE
-
-
-@pytest.fixture
-def rom():
-    with RomImage(GAME_TITLE) as retval:
-        yield retval
 
 
 def test_initial(fsm):
@@ -49,9 +26,7 @@ def test_disassembled_code(fsm):
 
 
 def test_run_until_return(fsm):
-    """Test disassembling with -u option for the first return
-    instruction occurrence.
-    """
+    """Test disassembling with -u option for the first return instruction occurrence."""
 
     do_test_until_option(fsm, 0x008F80, r"^00/8FAB:\s+40\s+RTI$")
 
