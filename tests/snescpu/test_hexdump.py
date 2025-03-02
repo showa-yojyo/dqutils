@@ -15,24 +15,29 @@ def parser():
     return create_argparser()
 
 
-def test_create_argparser(parser):
-    """Test function `create_argparser`."""
-
-    # invalid arguments
-    invalid_arguments = (
+@pytest.mark.parametrize(
+    "invalid_args",
+    (
         (),
         ("C0FF70"),
         ("C0FF70", "16"),
-    )
-    for args in invalid_arguments:
-        with pytest.raises(SystemExit):
-            parser.parse_args(args)
+    ),
+)
+def test_invalid_args(parser, invalid_args):
+    with pytest.raises(SystemExit) as ei:
+        parser.parse_args(invalid_args)
+    assert ei.value.code == 2
 
-    # a normal case
-    args = parser.parse_args(["C0FF70", "16", "4"])
-    assert args.start == "C0FF70"
-    assert args.byte_count == [16]
-    assert args.record_count == 4
+
+@pytest.mark.parametrize(
+    "valid_args",
+    (("C0FF70", "16", "4"),),
+)
+def test_valid_args(parser, valid_args):
+    args = parser.parse_args(valid_args)
+    assert args.start == valid_args[0]
+    assert args.byte_count == [int(valid_args[1])]
+    assert args.record_count == int(valid_args[2])
 
 
 def test_version(parser, capture_stdout):

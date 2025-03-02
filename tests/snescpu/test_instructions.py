@@ -7,20 +7,22 @@ import pytest
 from dqutils.snescpu.instructions import INSTRUCTION_TABLE, get_instruction
 
 
-def test_get_instruction():
+@pytest.mark.parametrize("i,item", enumerate(INSTRUCTION_TABLE))
+def test_get_instruction(i, item):
     """Test get_instruction."""
-    for i, item in enumerate(INSTRUCTION_TABLE):
-        inst = get_instruction(i)
-        assert inst.opcode == i
-        assert inst.mnemonic.upper()
-        assert inst.mnemonic == item[0].upper()
-        assert inst.operand_size == item[2]
+    inst = get_instruction(i)
+    assert inst.opcode == i
+    assert inst.mnemonic.upper()
+    assert inst.mnemonic == item[0].upper()
+    assert inst.operand_size == item[2]
 
 
-def test_invalid_instruction():
+@pytest.mark.parametrize("index", (666,))
+def test_invalid_instruction(index, capture_stderr):
     """Test get_instruction for invalid opcode."""
     with pytest.raises(IndexError):
-        get_instruction(666)
+        get_instruction(index)
+    assert not capture_stderr.getvalue()
 
 
 def test_instruction_rep(fsm_mock):

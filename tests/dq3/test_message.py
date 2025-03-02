@@ -3,6 +3,8 @@
 # ruff: noqa: RUF003
 from array import array
 
+import pytest
+
 from dqutils.dq3.message import enum_battle, enum_scenario
 
 
@@ -19,25 +21,29 @@ def test_enum_battle():
     assert however_nothing_happened == code_seq
 
 
-def test_enum_scenario():
-    """Test function dqutils.dq3.enum_scenario."""
-    # 0160:FCD9D7:08:ぐがー ぐがー！
-    # 0161:FCD9E0:80:ぐごー ぐごー！
-    # 0162:FCD9E9:20:ぐがー ぐがー。
-    addrs = (0xFCD9D7, 0xFCD9E0, 0xFCD9E9)
-
-    codes = (
-        array("H", [0x05DA, 0x053A, 0x0535, 0x0200, 0x05DA, 0x053A, 0x0535, 0x052E]),
-        array("H", [0x05DA, 0x05DB, 0x0535, 0x0200, 0x05DA, 0x05DB, 0x0535, 0x052E]),
-        array("H", [0x05DA, 0x053A, 0x0535, 0x0200, 0x05DA, 0x053A, 0x0535, 0x0529]),
-    )
-
-    for result, addr, code in zip(
+@pytest.mark.parametrize(
+    "actual,addr,expected",
+    zip(
+        # 0160:FCD9D7:08:ぐがー ぐがー！
+        # 0161:FCD9E0:80:ぐごー ぐごー！
+        # 0162:FCD9E9:20:ぐがー ぐがー。
         enum_scenario(0x0160, 0x0163),
-        addrs,
-        codes,
-        strict=False,
-    ):
-        assert result[0] == addr
-        # [-1] is one of the delimiter characters.
-        assert result[-1][:-1] == code
+        (0xFCD9D7, 0xFCD9E0, 0xFCD9E9),
+        (
+            array(
+                "H", [0x05DA, 0x053A, 0x0535, 0x0200, 0x05DA, 0x053A, 0x0535, 0x052E]
+            ),
+            array(
+                "H", [0x05DA, 0x05DB, 0x0535, 0x0200, 0x05DA, 0x05DB, 0x0535, 0x052E]
+            ),
+            array(
+                "H", [0x05DA, 0x053A, 0x0535, 0x0200, 0x05DA, 0x053A, 0x0535, 0x0529]
+            ),
+        ),
+    ),
+)
+def test_enum_scenario(actual, addr, expected):
+    """Test function dqutils.dq3.enum_scenario."""
+    assert actual[0] == addr
+    # [-1] is one of the delimiter characters.
+    assert actual[-1][:-1] == expected

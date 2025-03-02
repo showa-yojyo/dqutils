@@ -1,5 +1,7 @@
 """Tests for dqutils.dq3.string"""
 
+import pytest
+
 from dqutils.dq3.string import CONTEXT, enum_string
 from dqutils.string import get_text
 
@@ -14,20 +16,36 @@ def test_get_text():
     assert "ひのきのぼう" in text
 
 
-def test_enum_string():
+@pytest.mark.parametrize(
+    "actual,expected",
+    zip(
+        enum_string(0x100, 0x110),
+        (
+            "FED659:せいすい",
+            "FED65E:キメラのつばさ",
+            "FED666:せかいじゅのは",
+            "FED66E:しのオルゴール",
+            "FED676:あいのおもいで",
+            "FED67E:まんげつそう",
+            "FED685:みずでっぽう",
+            "FED68C:ふなのりのほね",
+            "FED694:やまびこのふえ",
+            "FED69C:ようせいのふえ",
+            "FED6A4:ぎんのたてごと",
+            "FED6AC:ひかりのたま",
+            "FED6B3:どくがのこな",
+            "FED6BA:まだらくもいと",
+            "FED6C2:たいようのいし",
+            "FED6CA:にじのしずく",
+        ),
+    ),
+)
+def test_enum_string(actual, expected):
     """Test function dqutils.dq3.enum_string."""
-    testdata = tuple(enum_string(0x100, 0x110))
-
-    assert testdata[0][0] == 0xFED659
-    assert "せいすい" in get_text(
-        testdata[0][1],
-        CONTEXT["charmap"],
-        CONTEXT["delimiters"],
-    )
-
-    assert testdata[15][0] == 0xFED6CA
-    assert "にじのしずく" in get_text(
-        testdata[15][1],
+    expected_address, expected_readable = expected.split(":")
+    assert actual[0] == int(expected_address, 16)
+    assert expected_readable in get_text(
+        actual[1],
         CONTEXT["charmap"],
         CONTEXT["delimiters"],
     )

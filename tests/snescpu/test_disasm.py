@@ -72,5 +72,4 @@ def test_until_return(parser):
     be simply discarded.
     """
 
-    args = parser.parse_args(["-u"])
-    assert args.until_return
+    assert parser.parse_args(["-u"]).until_return
