@@ -47,3 +47,5 @@ def test_enum_scenario(actual, addr, expected):
     assert actual[0] == addr
     # [-1] is one of the delimiter characters.
     assert actual[-1][:-1] == expected
+    assert actual[-1][:-1] == expected
+    assert actual[-1][:-1] == expected

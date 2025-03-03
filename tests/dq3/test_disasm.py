@@ -1,6 +1,6 @@
-"""
-Tests for dqutils.snescpu.disasm.
-"""
+"""Tests for dqutils.snescpu.disasm for DQ3."""
+
+import pytest
 
 from dqutils.dq3.disasm import DisassembleStateDQ3
 from dqutils.snescpu.disasm import create_args
@@ -16,13 +16,16 @@ def test_create_args_default(rom):
     assert not args["until_return"]
 
 
-def test_specialized_state(fsm):
+@pytest.mark.parametrize(
+    "opcode,size",
+    (
+        (0x00, 3),
+        (0x02, 1),
+    ),
+)
+def test_specialized_state(fsm, opcode, size):
     """Test class `DisassembleStateDQ3`."""
     state = DisassembleStateDQ3(fsm)
     state.runtime_init()
 
-    brk = state.get_instruction(0x00)
-    assert brk.operand_size == 3
-
-    cop = state.get_instruction(0x02)
-    assert cop.operand_size == 1
+    assert state.get_instruction(opcode).operand_size == size

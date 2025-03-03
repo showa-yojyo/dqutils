@@ -33,45 +33,42 @@ def test_enum_battle_invalid_range(first, last):
         next(enum_battle(first, last))
 
 
-def test_enum_scenario():
-    """Test function dqutils.dq6.enum_scenario."""
-    # 0023:F7199F:08:にゃーん。
-    # 0024:F719A4:40:にゃ～ん。
-    # 0025:F719A9:10:にゃん にゃん にゃん！
-    addrs = (0xF7199F, 0xF719A4, 0xF719A9)
-
-    codes = (
-        array("H", [0x0629, 0x0621, 0x0558, 0x04F7, 0x054C]),
-        array("H", [0x0629, 0x0621, 0x0559, 0x04F7, 0x054C]),
-        array(
-            "H",
-            [
-                0x0629,
-                0x0621,
-                0x04F7,
-                0x0200,
-                0x0629,
-                0x0621,
-                0x04F7,
-                0x0200,
-                0x0629,
-                0x0621,
-                0x04F7,
-                0x0551,
-            ],
-        ),
-    )
-
-    messages = zip(
+@pytest.mark.parametrize(
+    "actual,addr,expected",
+    zip(
+        # 0023:F7199F:08:にゃーん。
+        # 0024:F719A4:40:にゃ～ん。
+        # 0025:F719A9:10:にゃん にゃん にゃん！
         enum_scenario(0x0023, 0x0026),
-        addrs,
-        codes,
-        strict=False,
-    )
-    for result, addr, code in messages:
-        assert result[0] == addr
-        # [-1] is one of the delimiter characters.
-        assert result[-1][:-1] == code
+        (0xF7199F, 0xF719A4, 0xF719A9),
+        (
+            array("H", (0x0629, 0x0621, 0x0558, 0x04F7, 0x054C)),
+            array("H", (0x0629, 0x0621, 0x0559, 0x04F7, 0x054C)),
+            array(
+                "H",
+                (
+                    0x0629,
+                    0x0621,
+                    0x04F7,
+                    0x0200,
+                    0x0629,
+                    0x0621,
+                    0x04F7,
+                    0x0200,
+                    0x0629,
+                    0x0621,
+                    0x04F7,
+                    0x0551,
+                ),
+            ),
+        ),
+    ),
+)
+def test_enum_scenario(actual, addr, expected):
+    """Test function dqutils.dq6.enum_scenario."""
+    assert actual[0] == addr
+    # [-1] is one of the delimiter characters.
+    assert actual[-1][:-1] == expected
 
 
 @pytest.mark.parametrize(

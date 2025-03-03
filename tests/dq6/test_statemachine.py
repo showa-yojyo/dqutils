@@ -1,37 +1,12 @@
 """
-Tests for dqutils.snescpu.statemachine.
+Tests for disassembling DQ6.
 """
 
 import re
 
 import pytest
 
-from dqutils.dq6.disasm import DisassembleStateDQ6, DumpState
-from dqutils.snescpu.rom_image import RomImage
-
 from ..snescpu.test_statemachine import do_test_until_option
-
-# Tests for disassembling DQ6.
-
-GAME_TITLE = "DRAGONQUEST6"
-STATE_CLASSES = (DisassembleStateDQ6, DumpState)
-INITIAL_STATE = "DisassembleStateDQ6"
-
-
-@pytest.fixture
-def state_classes():
-    return STATE_CLASSES
-
-
-@pytest.fixture
-def initial_state():
-    return INITIAL_STATE
-
-
-@pytest.fixture
-def rom():
-    with RomImage(GAME_TITLE) as retval:
-        yield retval
 
 
 def test_disassembled_code(fsm):
@@ -75,13 +50,16 @@ def test_run_near_boundary_opcode_ce(fsm):
     assert output_lines[-1] == ""
 
 
-def test_run_until_return(fsm):
-    """Test disassembling with -u option for the first return
-    instruction occurrence.
-    """
-
-    do_test_until_option(fsm, 0xC2B091, r"^C2/B099:\s+60\s+RTS$")
-    do_test_until_option(fsm, 0xC2B4AF, r"^C2/B501:\s+6B\s+RTL$")
+@pytest.mark.parametrize(
+    "offset,pattern",
+    (
+        (0xC2B091, r"^C2/B099:\s+60\s+RTS$"),
+        (0xC2B4AF, r"^C2/B501:\s+6B\s+RTL$"),
+    ),
+)
+def test_run_until_return(fsm, offset, pattern):
+    """Test disassembling with -u option for the first return instruction occurrence."""
+    do_test_until_option(fsm, offset, pattern)
 
 
 def test_run_brk_operand(fsm):

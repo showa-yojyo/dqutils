@@ -4,6 +4,7 @@ Tests for dquils.snescpu.hexdump.
 
 import re
 
+import pytest
 from snescpu.test_hexdump import ADDRESS_PATTERN
 
 from dqutils.snescpu.hexdump import dump
@@ -40,19 +41,17 @@ def test_dump_bank_boundary(capture_stdout):
     assert lines[-1] == ""
 
 
-def test_dump_zero_input(capture_stdout):
+@pytest.mark.parametrize(
+    "dump_args",
+    (
+        ("C0FFC0", "0", "0"),
+        ("C0FFC0", "1", "0"),
+        ("C0FFC0", "0", "1"),
+    ),
+)
+def test_dump_zero_input(capture_stdout, dump_args):
     """Test the case where zeros are passed to `dump`."""
-    dump(GAME_TITLE, ["C0FFC0", "0", "0"])
-    lines = capture_stdout.getvalue().split("\n")
-    assert len(lines) == 1
-    assert lines[-1] == ""
-
-    dump(GAME_TITLE, ["C0FFC0", "1", "0"])
-    lines = capture_stdout.getvalue().split("\n")
-    assert len(lines) == 1
-    assert lines[-1] == ""
-
-    dump(GAME_TITLE, ["C0FFC0", "0", "1"])
+    dump(GAME_TITLE, dump_args)
     lines = capture_stdout.getvalue().split("\n")
     assert len(lines) == 1
     assert lines[-1] == ""
@@ -62,9 +61,8 @@ def test_dump_nonuniform(capture_stdout):
     """Test nonuniform hexdump."""
 
     dump(GAME_TITLE, "C316DD 1 2 3 2 1".split())
-    lines = capture_stdout.getvalue()
     # fmt: off
-    result = (
+    expected = (
         "C3/16DD:\t00\n"
         "C3/16DE:\t2000\n"
         "C3/16E0:\tB4387E\n"
@@ -72,5 +70,4 @@ def test_dump_nonuniform(capture_stdout):
         ""
     )
     # fmt: on
-
-    assert lines == result
+    assert capture_stdout.getvalue() == expected
