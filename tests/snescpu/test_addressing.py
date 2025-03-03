@@ -2,42 +2,39 @@
 Tests for dqutils.snescpu.addressing.
 """
 
-from unittest import TestCase
+import pytest
 
 from dqutils.snescpu.addressing import ADDRESSING_MODE_TABLE, get_addressing_mode
 
 
-# pylint: disable=too-many-public-methods
-class AddressingTestCase(TestCase):
-    """Tests for dqutils.snescpu.addressing."""
+@pytest.mark.parametrize("name", (["Immediate", " Absolute Long   "]))
+def test_basic(name):
+    """Test basic behaviors of get_addressing_mode."""
 
-    def test_basic(self):
-        """Test basic behaviors of get_addressing_mode."""
+    assert get_addressing_mode(name)
 
-        addrmode = get_addressing_mode("Immediate")
-        self.assertTrue(addrmode)
 
-        # Intentionally add extra space characters.
-        addrmode = get_addressing_mode(" Absolute Long   ")
-        self.assertTrue(addrmode)
+@pytest.mark.parametrize("name", ("XYZ"))
+def test_invalid_args(name):
+    """Test get_addressing_mode for invalid arguments."""
 
-    def test_invalid_args(self):
-        """Test get_addressing_mode for invalid arguments."""
+    with pytest.raises(KeyError, match=name):
+        get_addressing_mode(name)
 
-        self.assertRaises(KeyError, get_addressing_mode, "XYZ")
 
-    def test_properties(self):
-        """Test AbstractAddressingMode for its properties."""
+def test_properties():
+    """Test AbstractAddressingMode for its properties."""
 
-        for mode in ADDRESSING_MODE_TABLE:
-            name, syntax, formatter = mode
+    for mode in ADDRESSING_MODE_TABLE:
+        name, syntax, formatter = mode
 
-            addrmode = get_addressing_mode(name)
-            self.assertIsNotNone(addrmode)
-            self.assertEqual(addrmode.name, name.strip())
-            self.assertEqual(addrmode.syntax, syntax.strip())
+        addrmode = get_addressing_mode(name)
+        assert addrmode is not None
+        assert addrmode.name == name.strip()
+        assert addrmode.syntax == syntax.strip()
 
-            if formatter:
-                self.assertEqual(addrmode.formatter.__name__, formatter.__name__)
-            else:
-                self.assertIsNone(addrmode.formatter)
+        if formatter:
+            assert addrmode.formatter.__name__ == formatter.__name__
+        else:
+            assert addrmode.formatter is None
+            assert addrmode.formatter is None

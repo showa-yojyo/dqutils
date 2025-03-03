@@ -25,8 +25,8 @@ jobs:
     - name: Install test dependencies
       run: |
         pip install --user pipenv
-        pipenv sync
+        pipenv sync --dev
 
     - name: Test
       run: |
-        PYTHONPATH=./src pipenv run python -m unittest discover tests/snescpu
+        pipenv run pytest tests

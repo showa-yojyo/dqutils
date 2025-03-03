@@ -1,27 +1,26 @@
 """
-Tests for dquils.snescpu.hexdump.
+Tests for dquils.snescpu.hexdump
 """
 
-from snescpu.test_hexdump import ADDRESS_PATTERN, AbstractHexDumpTestCase
+import re
+
+from snescpu.test_hexdump import ADDRESS_PATTERN
 
 from dqutils.snescpu.hexdump import dump
 
+from .. import requires_config
+from .conftest import GAME_TITLE
 
-class HexDumpTestCase(AbstractHexDumpTestCase):
-    """Tests for dquils.snescpu.hexdump."""
 
-    game_title = "DRAGONQUEST3"
+@requires_config
+def test_dump(capture_stdout):
+    """Test function `dump`."""
+    dump(GAME_TITLE, ["C808DA", "12", "1389"])
+    lines = capture_stdout.getvalue().split("\n")
 
-    def test_dump(self):
-        """Test function `dump`."""
+    assert lines[0].startswith("C8/08DA:")
+    assert lines[1].startswith("C8/08E6:")
 
-        dump(self.game_title, ["C808DA", "12", "1389"])
-        lines = self.out.getvalue().split("\n")
-
-        self.assertTrue(lines[0].startswith("C8/08DA:"))
-        self.assertTrue(lines[1].startswith("C8/08E6:"))
-
-        for line in lines[:-1]:
-            self.assertRegex(line, ADDRESS_PATTERN)
-            self.assertRegex(line, r"\t[0-9A-F]{24}$")
-        self.assertEqual(lines[-1], "")
+    for line in lines[:-1]:
+        assert re.match(ADDRESS_PATTERN + r"\t[0-9A-F]{24}$", line)
+    assert lines[-1] == ""
