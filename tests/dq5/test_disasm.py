@@ -2,7 +2,10 @@
 
 from dqutils.snescpu.disasm import create_args
 
+from .. import requires_config
 
+
+@requires_config
 def test_create_args_default(rom):
     args, _ = create_args(rom, [])
 

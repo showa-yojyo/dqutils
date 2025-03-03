@@ -5,6 +5,10 @@ import pytest
 from dqutils.dq6.string import CONTEXT, enum_string
 from dqutils.string import get_text
 
+from .. import requires_config
+
+pytestmark = requires_config
+
 
 def test_get_text():
     """Test function dqutils.dq6.get_text."""
@@ -17,9 +21,9 @@ def test_get_text():
 
 
 @pytest.mark.parametrize(
-    "actual,expected",
+    "id,expected",
     zip(
-        enum_string(0x300, 0x310),
+        range(0x300, 0x310),  # should be use enum_string
         (
             "FB97DB:ムドー",
             "FB97DF:しれんその１",
@@ -40,8 +44,10 @@ def test_get_text():
         ),
     ),
 )
-def test_enum_string(actual, expected):
+def test_enum_string(id, expected):
     """Test function dqutils.dq6.enum_string."""
+    actual = next(iter(enum_string(id, id + 1)))
+
     expected_address, expected_readable = expected.split(":")
     assert actual[0] == int(expected_address, 16)
     assert expected_readable in get_text(

@@ -6,6 +6,10 @@ from dqutils.dq5.charsmall import process_dakuten
 from dqutils.dq5.string import CONTEXT_GROUP, enum_string
 from dqutils.string import get_text
 
+from .. import requires_config
+
+pytestmark = requires_config
+
 HINOKINOBOU = b"\x2a\x28\x16\x28\x84\x2d\x12"
 
 

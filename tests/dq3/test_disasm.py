@@ -5,6 +5,10 @@ import pytest
 from dqutils.dq3.disasm import DisassembleStateDQ3
 from dqutils.snescpu.disasm import create_args
 
+from .. import requires_config
+
+pytestmark = requires_config
+
 
 def test_create_args_default(rom):
     """Test create_args for DQ3 default values."""

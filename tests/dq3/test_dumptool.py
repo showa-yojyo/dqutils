@@ -7,6 +7,10 @@ from textwrap import dedent
 
 from dqutils.dq3.dumptool import main
 
+from .. import requires_config
+
+pytestmark = requires_config
+
 
 def test_run(monkeypatch, capture_stdout):
     """A simple case"""

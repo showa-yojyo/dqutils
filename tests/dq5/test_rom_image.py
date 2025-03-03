@@ -4,7 +4,10 @@ Tests for dqutils.snescpu.rom_image.
 
 from dqutils.snescpu.rom_image import get_snes_header
 
+from .. import requires_config
 
+
+@requires_config
 def test_get_snes_header(rom):
     """Test function dqutils.snescpu.rom_image.get_snes_header for DQ5."""
 

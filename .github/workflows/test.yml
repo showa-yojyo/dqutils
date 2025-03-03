@@ -29,4 +29,4 @@ jobs:
 
     - name: Test
       run: |
-        pipenv run pytest tests/snescpu
+        pipenv run pytest tests

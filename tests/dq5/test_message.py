@@ -7,6 +7,10 @@ import pytest
 
 from dqutils.dq5.message import enum_battle, enum_scenario
 
+from .. import requires_config
+
+pytestmark = requires_config
+
 
 def test_enum_battle():
     """Test function dqutils.dq5.enum_battle."""

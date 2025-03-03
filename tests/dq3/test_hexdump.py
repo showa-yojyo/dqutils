@@ -8,9 +8,11 @@ from snescpu.test_hexdump import ADDRESS_PATTERN
 
 from dqutils.snescpu.hexdump import dump
 
+from .. import requires_config
 from .conftest import GAME_TITLE
 
 
+@requires_config
 def test_dump(capture_stdout):
     """Test function `dump`."""
     dump(GAME_TITLE, ["C808DA", "12", "1389"])

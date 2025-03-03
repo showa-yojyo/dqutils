@@ -7,6 +7,10 @@ import pytest
 
 from dqutils.dq3.message import enum_battle, enum_scenario
 
+from .. import requires_config
+
+pytestmark = requires_config
+
 
 def test_enum_battle():
     """Test function dqutils.dq3.enum_battle."""
@@ -22,12 +26,12 @@ def test_enum_battle():
 
 
 @pytest.mark.parametrize(
-    "actual,addr,expected",
+    "id,addr,expected",
     zip(
         # 0160:FCD9D7:08:ぐがー ぐがー！
         # 0161:FCD9E0:80:ぐごー ぐごー！
         # 0162:FCD9E9:20:ぐがー ぐがー。
-        enum_scenario(0x0160, 0x0163),
+        range(0x0160, 0x0163),  # should call enum_scenario
         (0xFCD9D7, 0xFCD9E0, 0xFCD9E9),
         (
             array(
@@ -42,10 +46,10 @@ def test_enum_battle():
         ),
     ),
 )
-def test_enum_scenario(actual, addr, expected):
+def test_enum_scenario(id, addr, expected):
     """Test function dqutils.dq3.enum_scenario."""
+    actual = next(iter(enum_scenario(id, id + 1)))
+
     assert actual[0] == addr
     # [-1] is one of the delimiter characters.
-    assert actual[-1][:-1] == expected
-    assert actual[-1][:-1] == expected
     assert actual[-1][:-1] == expected

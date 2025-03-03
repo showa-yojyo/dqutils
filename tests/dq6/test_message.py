@@ -7,6 +7,10 @@ import pytest
 
 from dqutils.dq6.message import enum_battle, enum_scenario
 
+from .. import requires_config
+
+pytestmark = requires_config
+
 
 def test_enum_battle():
     """Test function dqutils.dq6.enum_battle."""
@@ -22,11 +26,11 @@ def test_enum_battle():
 
 
 @pytest.mark.parametrize(
-    "first, last",
-    [
+    "first,last",
+    (
         (0x0140, 0x0140),
         (0x00FF, 0x0020),
-    ],
+    ),
 )
 def test_enum_battle_invalid_range(first, last):
     with pytest.raises(StopIteration):
@@ -34,12 +38,12 @@ def test_enum_battle_invalid_range(first, last):
 
 
 @pytest.mark.parametrize(
-    "actual,addr,expected",
+    "id,addr,expected",
     zip(
         # 0023:F7199F:08:にゃーん。
         # 0024:F719A4:40:にゃ～ん。
         # 0025:F719A9:10:にゃん にゃん にゃん！
-        enum_scenario(0x0023, 0x0026),
+        range(0x0023, 0x0026),  # should call enum_scenario
         (0xF7199F, 0xF719A4, 0xF719A9),
         (
             array("H", (0x0629, 0x0621, 0x0558, 0x04F7, 0x054C)),
@@ -64,8 +68,10 @@ def test_enum_battle_invalid_range(first, last):
         ),
     ),
 )
-def test_enum_scenario(actual, addr, expected):
+def test_enum_scenario(id, addr, expected):
     """Test function dqutils.dq6.enum_scenario."""
+    actual = next(iter(enum_scenario(id, id + 1)))
+
     assert actual[0] == addr
     # [-1] is one of the delimiter characters.
     assert actual[-1][:-1] == expected
@@ -73,10 +79,10 @@ def test_enum_scenario(actual, addr, expected):
 
 @pytest.mark.parametrize(
     "first, last",
-    [
+    (
         (0x0023, 0x0023),
         (0x00FF, 0x0020),
-    ],
+    ),
 )
 def test_enum_scenario_invalid_range(first, last):
     with pytest.raises(StopIteration):

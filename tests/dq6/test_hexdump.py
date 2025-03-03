@@ -9,7 +9,10 @@ from snescpu.test_hexdump import ADDRESS_PATTERN
 
 from dqutils.snescpu.hexdump import dump
 
+from .. import requires_config
 from .conftest import GAME_TITLE
+
+pytestmark = requires_config
 
 
 def test_dump_simple(capture_stdout):

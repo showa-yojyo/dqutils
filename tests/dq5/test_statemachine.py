@@ -6,7 +6,10 @@ import re
 
 import pytest
 
+from .. import requires_config
 from ..snescpu.test_statemachine import do_test_initial, do_test_until_option
+
+pytestmark = requires_config
 
 
 def test_initial(fsm):

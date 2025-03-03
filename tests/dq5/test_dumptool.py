@@ -7,7 +7,10 @@ from textwrap import dedent
 
 from dqutils.dq5.dumptool import main
 
+from .. import requires_config
 
+
+@requires_config
 def test_run(monkeypatch, capture_stdout):
     """A simple case"""
     data = StringIO(

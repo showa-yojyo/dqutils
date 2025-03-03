@@ -4,6 +4,10 @@ Tests for dqutils.snescpu.statemachine.
 
 import re
 
+from .. import requires_config
+
+pytestmark = requires_config
+
 
 def test_disassembled_code(fsm):
     """Test disassembled code for DQ3."""
