@@ -205,6 +205,6 @@ def test_disassemble_brk_9c(fsm):
 
 
 @pytest.mark.skip(reason="no way of currently testing this")
-def test_disassemble_cop_operand(fsm):
+def test_disassemble_cop_operand():
     """Test if the operand of the COP command varies."""
     pytest.xfail("DQ5 COP")

@@ -1,11 +1,13 @@
 """Tests for dqutils.dq5.charsmall module."""
 
+import pytest
+
 from dqutils.dq5.charsmall import process_dakuten
 
 
-def test_process_replacement():
-    """Test function dqutils.dq5.process_dakuten."""
-    data = (
+@pytest.mark.parametrize(
+    "input",
+    (
         ("゜は", "ぱ"),
         ("゜ひ", "ぴ"),
         ("゜ふ", "ぷ"),
@@ -56,20 +58,23 @@ def test_process_replacement():
         ("゛フ", "ブ"),
         ("゛ヘ", "ベ"),
         ("゛ホ", "ボ"),
-    )
-
-    for i, j in data:
-        assert process_dakuten(i) == j
-
-
-def test_process_preseved():
+    ),
+)
+def test_process_replacement(input):
     """Test function dqutils.dq5.process_dakuten."""
-    data = (
+    native, readable = input
+    assert process_dakuten(native) == readable
+
+
+@pytest.mark.parametrize(
+    "input",
+    (
         "゛",
         "゛゛",
         "゜",
         "゜゜",
-    )
-
-    for i in data:
-        assert process_dakuten(i) == i
+    ),
+)
+def test_process_preseved(input):
+    """Test function dqutils.dq5.process_dakuten."""
+    assert process_dakuten(input) == input

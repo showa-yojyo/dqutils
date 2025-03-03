@@ -18,12 +18,13 @@ def test_enum_string():
     assert code_seq == HINOKINOBOU
 
 
-def test_enum_string_0_0():
+@pytest.mark.parametrize("ctx", CONTEXT_GROUP)
+def test_enum_string_0_0(ctx):
     """Test enum_string(?, 0, 0)"""
-    for ctx in CONTEXT_GROUP:
-        if ctx["string_id_last"] == 0:
-            with pytest.raises(StopIteration):
-                next(enum_string(ctx))
+    if ctx["string_id_last"] == 0:
+        assert ctx["string_id_first"] == 0
+        with pytest.raises(StopIteration):
+            next(enum_string(ctx))
 
 
 def test_make_text():
