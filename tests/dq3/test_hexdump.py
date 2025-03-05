@@ -13,10 +13,10 @@ from .conftest import GAME_TITLE
 
 
 @requires_config
-def test_dump(capture_stdout):
+def test_dump(capsys):
     """Test function `dump`."""
     dump(GAME_TITLE, ["C808DA", "12", "1389"])
-    lines = capture_stdout.getvalue().split("\n")
+    lines = capsys.readouterr().out.split("\n")
 
     assert lines[0].startswith("C8/08DA:")
     assert lines[1].startswith("C8/08E6:")

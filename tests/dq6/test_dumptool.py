@@ -11,7 +11,7 @@ from .. import requires_config
 
 
 @requires_config
-def test_run(monkeypatch, capture_stdout):
+def test_run(monkeypatch, capsys):
     """A simple case"""
     data = StringIO(
         dedent(
@@ -43,4 +43,4 @@ def test_run(monkeypatch, capture_stdout):
         0009:1:03:0:03:0:10
         """
     )
-    assert capture_stdout.getvalue() == expected
+    assert capsys.readouterr().out == expected

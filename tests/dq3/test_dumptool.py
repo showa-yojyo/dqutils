@@ -12,7 +12,7 @@ from .. import requires_config
 pytestmark = requires_config
 
 
-def test_run(monkeypatch, capture_stdout):
+def test_run(monkeypatch, capsys):
     """A simple case"""
     data = StringIO(
         dedent(
@@ -44,10 +44,10 @@ def test_run(monkeypatch, capture_stdout):
         0009:02:03:01:02:07:10
         """
     )
-    assert capture_stdout.getvalue() == expected
+    assert capsys.readouterr().out == expected
 
 
-def test_shop_data(monkeypatch, capture_stdout):
+def test_shop_data(monkeypatch, capsys):
     data = StringIO(
         "#$00:#$007F\n"
         "#$00:#$0080\n"
@@ -70,4 +70,4 @@ def test_shop_data(monkeypatch, capture_stdout):
         monkeypatch.setattr("sys.stdin", data)
         main(["0xC30900", "8", "5", "--delimiter", ":"])
     # self.maxDiff = None
-    assert capture_stdout.getvalue() == expected
+    assert capsys.readouterr().out == expected

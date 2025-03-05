@@ -40,10 +40,10 @@ def test_valid_args(parser, valid_args):
     assert args.record_count == int(valid_args[2])
 
 
-def test_version(parser, capture_stdout):
+def test_version(parser, capsys):
     """Test `--version`."""
 
     with pytest.raises(SystemExit) as ei:
         parser.parse_args(["--version"])
     assert ei.value.code == 0
-    assert dqutils_version in capture_stdout.getvalue()
+    assert dqutils_version in capsys.readouterr().out

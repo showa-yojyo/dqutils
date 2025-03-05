@@ -18,11 +18,11 @@ def test_get_instruction(i, item):
 
 
 @pytest.mark.parametrize("index", (666,))
-def test_invalid_instruction(index, capture_stderr):
+def test_invalid_instruction(index, capsys):
     """Test get_instruction for invalid opcode."""
     with pytest.raises(IndexError):
         get_instruction(index)
-    assert not capture_stderr.getvalue()
+    assert not capsys.readouterr().err
 
 
 def test_instruction_rep(fsm_mock):

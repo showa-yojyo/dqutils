@@ -15,10 +15,10 @@ from .conftest import GAME_TITLE
 pytestmark = requires_config
 
 
-def test_dump_simple(capture_stdout):
+def test_dump_simple(capsys):
     """Test function `dump`."""
     dump(GAME_TITLE, ["C0FFC0", "16", "4"])
-    lines = capture_stdout.getvalue().split("\n")
+    lines = capsys.readouterr().out.split("\n")
 
     assert lines[0].startswith("C0/FFC0:")
     assert lines[1].startswith("C0/FFD0:")
@@ -28,11 +28,11 @@ def test_dump_simple(capture_stdout):
     assert lines[-1] == ""
 
 
-def test_dump_bank_boundary(capture_stdout):
+def test_dump_bank_boundary(capsys):
     """Test function `dump`."""
     # about to be across the bank boundary
     dump(GAME_TITLE, ["C0FFC0", "12", "6"])
-    lines = capture_stdout.getvalue().split("\n")
+    lines = capsys.readouterr().out.split("\n")
 
     assert lines[0].startswith("C0/FFC0:")
     assert lines[1].startswith("C0/FFCC:")
@@ -52,15 +52,15 @@ def test_dump_bank_boundary(capture_stdout):
         ("C0FFC0", "0", "1"),
     ),
 )
-def test_dump_zero_input(capture_stdout, dump_args):
+def test_dump_zero_input(capsys, dump_args):
     """Test the case where zeros are passed to `dump`."""
     dump(GAME_TITLE, dump_args)
-    lines = capture_stdout.getvalue().split("\n")
+    lines = capsys.readouterr().out.split("\n")
     assert len(lines) == 1
     assert lines[-1] == ""
 
 
-def test_dump_nonuniform(capture_stdout):
+def test_dump_nonuniform(capsys):
     """Test nonuniform hexdump."""
 
     dump(GAME_TITLE, "C316DD 1 2 3 2 1".split())
@@ -73,4 +73,4 @@ def test_dump_nonuniform(capture_stdout):
         ""
     )
     # fmt: on
-    assert capture_stdout.getvalue() == expected
+    assert capsys.readouterr().out == expected

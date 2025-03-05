@@ -13,11 +13,11 @@ from .conftest import GAME_TITLE
 
 
 @requires_config
-def test_dump(capture_stdout):
+def test_dump(capsys):
     """Test function `dump`."""
 
     dump(GAME_TITLE, "238000 25 235".split())
-    lines = capture_stdout.getvalue().split("\n")
+    lines = capsys.readouterr().out.split("\n")
 
     assert lines[0].startswith("23/8000:")
     assert lines[0].endswith("A102")
