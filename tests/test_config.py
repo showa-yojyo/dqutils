@@ -24,4 +24,3 @@ def test_confdir_home_error(monkeypatch):
         monkeypatch.setattr(os.environ, "get", lambda _: "")
         monkeypatch.setattr(Path, "home", lambda: Path("/dev/null"))
         confdir_home()
-        confdir_home()
