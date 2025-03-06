@@ -9,6 +9,7 @@ from dqutils.snescpu.disasm import create_argparser
 
 @pytest.fixture
 def parser():
+    """Return a command line parser for disasm."""
     return create_argparser()
 
 

@@ -12,6 +12,7 @@ ADDRESS_PATTERN = r"^[0-9A-F]{2}/[0-9A-F]{4}:"
 
 @pytest.fixture
 def parser():
+    """Return a command line parser for hexdump."""
     return create_argparser()
 
 
