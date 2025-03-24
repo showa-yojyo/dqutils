@@ -10,19 +10,23 @@ forms of raw bytes or human-readable texts.
 
 from __future__ import annotations
 
+from array import array
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
-    from array import array
     from collections.abc import Iterator, Mapping
     from typing import Any
 
-    type CodeSeq = bytes | bytearray | array
-
     from dqutils.string_generator import AbstractStringGenerator, StringInfo
 
+type CodeSeq = bytes | bytearray | array[int]
 
-def get_text(code_seq: CodeSeq, charmap: Mapping[int, str], delims: CodeSeq | None = None) -> str:
+
+def get_text(
+    code_seq: CodeSeq,
+    charmap: Mapping[int, str],
+    delims: CodeSeq | None = None,
+) -> str:
     """Return a text representation of a string.
 
     Parameters

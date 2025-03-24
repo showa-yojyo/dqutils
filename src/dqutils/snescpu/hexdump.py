@@ -28,8 +28,15 @@ def create_argparser() -> ArgumentParser:
 
     parser = ArgumentParser(description="A simple hexdump tool")
     parser.add_argument("--version", action="version", version=__version__)
-    parser.add_argument("start", help="the hexadecimal base CPU address from which to dump")
-    parser.add_argument("byte_count", type=int, nargs="+", help="the numbers of bytes per an object or record")
+    parser.add_argument(
+        "start", help="the hexadecimal base CPU address from which to dump"
+    )
+    parser.add_argument(
+        "byte_count",
+        type=int,
+        nargs="+",
+        help="the numbers of bytes per an object or record",
+    )
     parser.add_argument("record_count", type=int, help="the number of records/objects")
     return parser
 

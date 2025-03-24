@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from types import TracebackType
     from typing import BinaryIO, Self
 
-from dqutils.config import get_config, ConfigNotFoundError
+from dqutils.config import ConfigNotFoundError, get_config
 
 
 # pylint: disable=too-few-public-methods

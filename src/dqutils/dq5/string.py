@@ -24,7 +24,7 @@ if TYPE_CHECKING:
     from dqutils.string_generator import ContextT, StringInfo
 from dqutils.dq5.charsmall import CHARMAP, process_dakuten
 
-CONTEXT_GROUP: Final[tuple[dict[str, int], ...]] = (
+CONTEXT_GROUP: Final = (
     # Partners (human beings).
     {"addr_string": 0x23C5CE, "string_id_first": 0, "string_id_last": 8},
     # Classes.
@@ -52,7 +52,7 @@ CONTEXT_GROUP: Final[tuple[dict[str, int], ...]] = (
 )
 """the string table located at $21955B."""
 
-CONTEXT_PROTOTYPE: Final[dict] = {
+CONTEXT_PROTOTYPE: Final = {
     "title": "DRAGONQUEST5",
     "charmap": CHARMAP,
 }
@@ -61,7 +61,11 @@ for group in CONTEXT_GROUP:
     group.update(CONTEXT_PROTOTYPE)  # type: ignore[arg-type]
 
 
-def enum_string(context: ContextT, first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:
+def enum_string(
+    context: ContextT,
+    first: int | None = None,
+    last: int | None = None,
+) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
 

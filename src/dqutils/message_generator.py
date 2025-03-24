@@ -18,7 +18,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
     from typing import Any, Final, Self
 
-    type IteratorT = Iterator[tuple[int, int, array]]
+    type IteratorT = Iterator[tuple[int, int, array[int]]]
 
 from dqutils.bit import get_bits, get_int
 from dqutils.snescpu.mapper import make_mapper
@@ -35,7 +35,12 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     """The base class of MessageGenerator subclasses."""
 
     # pylint: disable=too-many-instance-attributes
-    def __init__(self: Self, context: Mapping[str, Any], first: int | None = None, last: int | None = None) -> None:
+    def __init__(
+        self: Self,
+        context: Mapping[str, Any],
+        first: int | None = None,
+        last: int | None = None,
+    ) -> None:
         """Create an object of class AbstractMessageGenerator.
 
         Parameters
@@ -216,7 +221,9 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         return addr, shift
 
-    def decode(self: Self, mem: mmap.mmap, addr: int, shift: int) -> tuple[int, int, int]:
+    def decode(
+        self: Self, mem: mmap.mmap, addr: int, shift: int
+    ) -> tuple[int, int, int]:
         """Decoding algorithm of Huffman coding.
 
         Decode a Huffman-encoded bit string and return a decoded character.

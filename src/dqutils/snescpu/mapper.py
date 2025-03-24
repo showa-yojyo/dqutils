@@ -284,7 +284,9 @@ class MapperNotFoundError(Exception):
 HEADER_LENGTH = 0x40
 
 
-def make_mapper(rom: mmap.mmap | None = None, name: str | None = None) -> type[AbstractMapper]:
+def make_mapper(
+    rom: mmap.mmap | None = None, name: str | None = None
+) -> type[AbstractMapper]:
     """Return a mapper type.
 
     You may also directly use subclasses of class AbstractMapper.

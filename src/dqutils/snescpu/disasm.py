@@ -42,12 +42,24 @@ def create_argparser() -> ArgumentParser:
         help="start in 8-bit accumulator mode (default is 16-bit)",
     )
     parser.add_argument(
-        "-x", "--index-8bit", dest="index_8bit", action="store_true", help="start in 8-bit X/Y mode (default is 16-bit)"
+        "-x",
+        "--index-8bit",
+        dest="index_8bit",
+        action="store_true",
+        help="start in 8-bit X/Y mode (default is 16-bit)",
     )
 
     # numbers are hex-only, no prefixes
-    parser.add_argument("-b", "--bank", dest="bank", metavar="BANK", help="disassemble bank BANK only")
-    parser.add_argument("-r", "--range", dest="range", metavar="FIRST[:LAST]", help="disassemble block [FIRST, LAST)")
+    parser.add_argument(
+        "-b", "--bank", dest="bank", metavar="BANK", help="disassemble bank BANK only"
+    )
+    parser.add_argument(
+        "-r",
+        "--range",
+        dest="range",
+        metavar="FIRST[:LAST]",
+        help="disassemble block [FIRST, LAST)",
+    )
 
     parser.add_argument(
         "-u",
@@ -60,7 +72,9 @@ def create_argparser() -> ArgumentParser:
     return parser
 
 
-def create_args(rom: mmap.mmap, cmdline_args: Sequence[str] = []) -> tuple[dict[str, Any], type[AbstractMapper]]:
+def create_args(
+    rom: mmap.mmap, cmdline_args: Sequence[str] = []
+) -> tuple[dict[str, Any], type[AbstractMapper]]:
     """Initialize the arguments of disassember.
 
     Parameters
@@ -127,7 +141,9 @@ def create_args(rom: mmap.mmap, cmdline_args: Sequence[str] = []) -> tuple[dict[
     return context, mapper
 
 
-def disassemble(game_title: str, state_classes: Sequence[type[AbstractState]], initial_state: str) -> None:
+def disassemble(
+    game_title: str, state_classes: Sequence[type[AbstractState]], initial_state: str
+) -> None:
     """Disassemble the 65816 machine code.
 
     Parameters

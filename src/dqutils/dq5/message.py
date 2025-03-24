@@ -20,7 +20,7 @@ if TYPE_CHECKING:
 
 from dqutils.message import enum_scenario as _enum_scenario
 from dqutils.message_generator import MessageGeneratorV
-from dqutils.string import get_text
+from dqutils.string import CodeSeq, get_text
 
 if TYPE_CHECKING:
     from dqutils.message_generator import IteratorT
@@ -29,7 +29,7 @@ from dqutils.dq5.charlarge import CHARMAP as CHARMAP_LARGE
 from dqutils.dq5.charsmall import CHARMAP as CHARMAP_SMALL
 from dqutils.dq5.charsmall import process_dakuten
 
-CONTEXT_MESSAGE_BATTLE: Final[dict] = {
+CONTEXT_MESSAGE_BATTLE: Final = {
     "title": "DRAGONQUEST5",
     "delimiters": array("H", (0x00E7, 0x00EF, 0x00FE)),
     "charmap": CHARMAP_SMALL,
@@ -45,7 +45,7 @@ CONTEXT_MESSAGE_BATTLE: Final[dict] = {
     "decoding_read_size": 1,
 }
 
-CONTEXT_MESSAGE_SCENARIO: Final[dict] = {
+CONTEXT_MESSAGE_SCENARIO: Final = {
     "title": "DRAGONQUEST5",
     "delimiters": array("H", (0x1001, 0x1010, 0x1018)),
     "charmap": CHARMAP_LARGE,
@@ -97,7 +97,7 @@ def print_all_battle() -> None:
     assert first < last
 
     charmap = cast(dict[int, str], context["charmap"])
-    delims = cast(array, context["delimiters"])
+    delims = cast(array[int], context["delimiters"])
     for i, item in enumerate(enum_battle(first, last)):
         address, shift, code_seq = item
         text = process_dakuten(get_text(code_seq, charmap, delims))
@@ -139,7 +139,7 @@ def print_all_scenario() -> None:
     assert first < last
 
     charmap = cast(dict[int, str], context["charmap"])
-    delims = cast(array, context["delimiters"])
+    delims = cast(CodeSeq, context["delimiters"])
     for i, item in enumerate(enum_scenario(first, last)):
         address, shift, code_seq = item
         text = get_text(code_seq, charmap, delims)

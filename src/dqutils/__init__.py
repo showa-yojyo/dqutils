@@ -21,7 +21,7 @@ from dqutils.release import __version__
 class Command(NamedTuple):
     name: str
     help: str
-    func: Callable
+    func: Callable[[], None]
 
 
 def run(commands: Iterable[Command]) -> None:

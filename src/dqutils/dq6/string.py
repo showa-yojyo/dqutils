@@ -16,7 +16,7 @@ from dqutils.string_generator import StringGeneratorCStyle
 if TYPE_CHECKING:
     from dqutils.string_generator import StringInfo
 
-CONTEXT: Final[dict] = {
+CONTEXT: Final = {
     "title": "DRAGONQUEST6",
     "delimiters": b"\xac",
     "charmap": CHARMAP,
@@ -26,7 +26,9 @@ CONTEXT: Final[dict] = {
 }
 
 
-def enum_string(first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:
+def enum_string(
+    first: int | None = None, last: int | None = None
+) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
 

@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping, Sequence
-    from typing import Any, Final, Self
+    from typing import Any, Final, Self, Unpack
 
     type ContextT = MutableMapping[str, Any]
 
@@ -18,7 +18,7 @@ from dqutils.snescpu.instructions import DEFAULT_INSTRUCTIONS
 
 if TYPE_CHECKING:
     from dqutils.snescpu.instructions import AbstractInstruction
-    from dqutils.snescpu.statemachine import StateMachine
+    from dqutils.snescpu.statemachine import StateMachine, StateMachineArgs
 
 
 class AbstractState(metaclass=ABCMeta):
@@ -74,7 +74,7 @@ class AbstractState(metaclass=ABCMeta):
         return self.state_machine.program_counter
 
     @abstractmethod
-    def runtime_init(self: Self, **kwargs) -> None:
+    def runtime_init(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Initialize before running the state machine.
 
         See also
@@ -93,7 +93,9 @@ class AbstractState(metaclass=ABCMeta):
 
 
 # Does it need to be configurable?
-OUTPUT_FORMAT: Final[str] = "{bank:02X}/{addr:04X}:\t" "{opcode:02X}{operand_raw:<6}\t" "{mnemonic} {operand}"
+OUTPUT_FORMAT: Final[str] = (
+    "{bank:02X}/{addr:04X}:\t{opcode:02X}{operand_raw:<6}\t{mnemonic} {operand}"
+)
 
 
 class DisassembleState(AbstractState):
@@ -148,14 +150,18 @@ class DisassembleState(AbstractState):
 
         while not self._is_terminated():
             instruction, operand_raw, across_boundary = self._read_instruction()
-            context, next_state = self._eval_instruction(instruction, context, across_boundary=across_boundary)
-            self._print_instruction(instruction, operand_raw, across_boundary=across_boundary)
+            context, next_state = self._eval_instruction(
+                instruction, context, across_boundary=across_boundary
+            )
+            self._print_instruction(
+                instruction, operand_raw, across_boundary=across_boundary
+            )
             if next_state:
                 return context, next_state
 
         return context, None
 
-    def runtime_init(self: Self, **kwargs) -> None:
+    def runtime_init(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Initialize before running the state machine.
 
         Parameters
@@ -246,7 +252,11 @@ class DisassembleState(AbstractState):
         return instruction, operand_raw, across_boundary
 
     def _eval_instruction(
-        self: Self, instruction: type[AbstractInstruction], context: ContextT, *, across_boundary: bool
+        self: Self,
+        instruction: type[AbstractInstruction],
+        context: ContextT,
+        *,
+        across_boundary: bool,
     ) -> tuple[ContextT, str | None]:
         """Execute the current instruction.
 
@@ -273,7 +283,11 @@ class DisassembleState(AbstractState):
         return context, None
 
     def _print_instruction(
-        self: Self, instruction: type[AbstractInstruction], operand_raw: bytes | None, *, across_boundary: bool
+        self: Self,
+        instruction: type[AbstractInstruction],
+        operand_raw: bytes | None,
+        *,
+        across_boundary: bool,
     ) -> None:
         """Output disassembled code in one line.
 
@@ -381,7 +395,7 @@ class DumpState(AbstractState):
         >>> self.record_count == 0
         """
         super().__init__(state_machine)
-        self.byte_count: Sequence = ()
+        self.byte_count: Sequence[int] = ()
         self.record_count = 0
 
     def __call__(self: Self, context: ContextT) -> tuple[ContextT, str | None]:
@@ -430,7 +444,7 @@ class DumpState(AbstractState):
 
         return context, next_state
 
-    def runtime_init(self: Self, **kwargs) -> None:
+    def runtime_init(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Initialize before running the state machine.
 
         Parameters

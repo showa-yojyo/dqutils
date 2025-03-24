@@ -21,7 +21,9 @@ if TYPE_CHECKING:
 class AbstractStringGenerator(metaclass=ABCMeta):
     """The base class of StringGenerator subclasses."""
 
-    def __init__(self: Self, context: ContextT, first: int | None = None, last: int | None = None) -> None:
+    def __init__(
+        self: Self, context: ContextT, first: int | None = None, last: int | None = None
+    ) -> None:
         """Create an object of class AbstractStringGenerator.
 
         Parameters

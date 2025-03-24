@@ -15,13 +15,20 @@ $ dumptool.py dqutils.dq5.dumptool 0x2396F3 0x16 0x55
 [EOF]
 """
 
+from __future__ import annotations
+
 import sys
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from collections.abc import Sequence
+    from typing import Literal
 
 from dqutils.snescpu.dumptool import run
 
 
-def main(args=sys.argv[1:]):
-    run("DRAGONQUEST5", args)
+def main(args: Sequence[str] = sys.argv[1:]) -> Literal[0]:
+    return run("DRAGONQUEST5", args)
 
 
 if __name__ == "__main__":

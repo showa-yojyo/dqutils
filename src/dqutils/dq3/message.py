@@ -21,7 +21,7 @@ if TYPE_CHECKING:
     from dqutils.message_generator import IteratorT
     from dqutils.string_generator import StringInfo
 
-CONTEXT_MESSAGE_BATTLE: Final[dict] = {
+CONTEXT_MESSAGE_BATTLE: Final = {
     "title": "DRAGONQUEST3",
     "delimiters": b"\xac\xae",
     "charmap": CHARMAP_SMALL,
@@ -31,7 +31,7 @@ CONTEXT_MESSAGE_BATTLE: Final[dict] = {
     "decoding_read_size": 2,
 }
 
-CONTEXT_MESSAGE_SCENARIO: Final[dict] = {
+CONTEXT_MESSAGE_SCENARIO: Final = {
     "title": "DRAGONQUEST3",
     "delimiters": array(
         "H",
@@ -53,7 +53,9 @@ CONTEXT_MESSAGE_SCENARIO: Final[dict] = {
 }
 
 
-def enum_battle(first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:
+def enum_battle(
+    first: int | None = None, last: int | None = None
+) -> Iterator[StringInfo]:
     """Return generator iterators of message data by specifying
     their indices.
 

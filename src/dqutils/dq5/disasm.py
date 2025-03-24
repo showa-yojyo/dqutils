@@ -15,7 +15,7 @@ from dqutils.snescpu.states import DisassembleState, DumpState
 if TYPE_CHECKING:
     from dqutils.snescpu.instructions import AbstractInstruction, ContextT
 
-BRK_BPL: Final[tuple] = (
+BRK_BPL: Final[tuple[tuple[int], ...]] = (
     (0,),
     (0,),  # BRK #$01
     (0,),  # BRK #$02
@@ -45,7 +45,7 @@ BRK_BPL: Final[tuple] = (
     (0,),
 )  # BRK #$1A
 
-BRK_BMI: Final[tuple] = (
+BRK_BMI: Final[tuple[tuple[int], ...]] = (
     (0,),  # BRK #$80
     (1,),  # BRK #$81
     (0,),  # BRK #$82
@@ -106,7 +106,9 @@ class DisassembleStateDQ5(DisassembleState):
     def _init_instructions(self: Self) -> dict[int, type[AbstractInstruction]]:
         class BRK(get_instruction(0x00)):  # type: ignore[misc]
             @staticmethod
-            def execute(state: DisassembleState, context: ContextT) -> tuple[ContextT, str | None]:  # noqa: ARG004
+            def execute(
+                _: DisassembleState, context: ContextT
+            ) -> tuple[ContextT, str | None]:
                 sigbyte = cast(int, self.current_operand)
 
                 if sigbyte == 0x00 or sigbyte >= BRK_BMI_RANGE_LAST:

@@ -45,7 +45,9 @@ def get_bits(byte_seq: bytes | bytearray | Iterable[int], index: int, mask: int)
     return value
 
 
-def get_int(byte_seq: bytes | bytearray | Iterable[int], index: int, length: int) -> int:
+def get_int(
+    byte_seq: bytes | bytearray | Iterable[int], index: int, length: int
+) -> int:
     """Obtain the integer value from a subsequence in a sequence of
     bytes.
 

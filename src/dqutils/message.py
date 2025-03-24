@@ -13,14 +13,13 @@ For all of the programs, conversational message data are compressed.
 # ruff: noqa: T201
 from __future__ import annotations
 
-from array import array
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
     from typing import Any
 
-from dqutils.string import get_hex, get_text
+from dqutils.string import CodeSeq, get_hex, get_text
 from dqutils.string_generator import StringGeneratorCStyle
 
 if TYPE_CHECKING:
@@ -28,7 +27,11 @@ if TYPE_CHECKING:
     from dqutils.string_generator import StringInfo
 
 
-def enum_battle(context: Mapping[str, Any], first: int | None = None, last: int | None = None) -> Iterator[StringInfo]:
+def enum_battle(
+    context: Mapping[str, Any],
+    first: int | None = None,
+    last: int | None = None,
+) -> Iterator[StringInfo]:
     """Return generator iterators of message data by specifying
     their indices.
 
@@ -65,7 +68,11 @@ def enum_battle(context: Mapping[str, Any], first: int | None = None, last: int 
     yield from StringGeneratorCStyle(context, first, last)
 
 
-def print_battle(context: Mapping[str, Any], first: int | None = None, last: int | None = None) -> None:
+def print_battle(
+    context: Mapping[str, Any],
+    first: int | None = None,
+    last: int | None = None,
+) -> None:
     """Print message data to sys.stdout.
 
     Message data those indices in [`first`, `last`) will be used.
@@ -93,7 +100,7 @@ def print_battle(context: Mapping[str, Any], first: int | None = None, last: int
         The last index + 1 of the range of indices you want.
     """
 
-    charmap = cast(dict, context["charmap"])
+    charmap = cast(dict[int, str], context["charmap"])
     delims = cast(bytes, context["delimiters"])
     for i, item in enumerate(enum_battle(context, first, last)):
         text = get_text(item[1], charmap, delims) if charmap else get_hex(item[1])
@@ -182,8 +189,8 @@ def print_scenario(
         The last index + 1 of the range of indices you want.
     """
 
-    charmap = cast(dict, context["charmap"])
-    delims = cast(array, context["delimiters"])
+    charmap = cast(dict[int, str], context["charmap"])
+    delims = cast(CodeSeq, context["delimiters"])
     for i, item in enumerate(enum_scenario(context, generator_t, first, last)):
         address, shift, code_seq = item
         text = get_text(code_seq, charmap, delims)

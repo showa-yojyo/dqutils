@@ -11,11 +11,20 @@ from dqutils.snescpu.mapper import make_mapper
 
 if TYPE_CHECKING:
     import mmap
-    from collections.abc import Iterable
-    from typing import Self
+    from collections.abc import Iterable, Sequence
+    from typing import Self, TypedDict, Unpack
 
     from dqutils.snescpu.mapper import AbstractMapper
     from dqutils.snescpu.states import AbstractState, ContextT
+
+    class StateMachineArgs(TypedDict):
+        byte_count: Sequence[int]
+        initial_state: str
+        first: int
+        flags: int
+        last: int
+        record_count: int
+        until_return: bool
 
 
 class StateMachine:
@@ -82,7 +91,7 @@ class StateMachine:
 
         for i in self.states.values():
             i.unlink()
-        self.states = {}
+        self.states.clear()
 
     def add_states(self: Self, state_classes: Iterable[type[AbstractState]]) -> None:
         """Add state classes to `self.states`.
@@ -93,9 +102,11 @@ class StateMachine:
             A list of `State` subclasses.
         """
 
-        self.states.update({state_t.__name__: state_t(self) for state_t in state_classes})
+        self.states.update({
+            state_t.__name__: state_t(self) for state_t in state_classes
+        })
 
-    def runtime_init(self: Self, **kwargs) -> None:
+    def runtime_init(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Initialize states before running the state machine.
 
         Preconditions
@@ -105,7 +116,7 @@ class StateMachine:
         for i in self.states.values():
             i.runtime_init(**kwargs)
 
-    def run(self: Self, **kwargs) -> None:
+    def run(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Run the state machine on `self.rom`.
 
         Parameters
@@ -132,7 +143,9 @@ class StateMachine:
         last = kwargs.get("last", -1)
 
         self.rom.seek(self.mapper.from_cpu(first))
-        self.last_rom_addr = self.mapper.from_cpu(last) if last != -1 else self.rom.size()
+        self.last_rom_addr = (
+            self.mapper.from_cpu(last) if last != -1 else self.rom.size()
+        )
         self.runtime_init(**kwargs)
 
         state = self.get_state()

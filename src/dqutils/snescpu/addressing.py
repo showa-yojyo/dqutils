@@ -4,7 +4,7 @@ This module offers the addressing modes of the 65816 Processor.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
     from collections.abc import Callable
@@ -162,7 +162,7 @@ def get_addressing_mode(name: str) -> AbstractAddressingMode | None:
     """
 
     if name_stripped := name.strip():
-        return globals()[name_stripped]
+        return cast(AbstractAddressingMode, globals()[name_stripped])
 
     # WDM
     return None
