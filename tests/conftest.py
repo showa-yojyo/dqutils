@@ -7,7 +7,7 @@ import pytest
 from dqutils.snescpu.statemachine import StateMachine
 
 
-@pytest.fixture()
+@pytest.fixture
 def fsm_mock():
     """Return a mock object of :class:`StateMachine`."""
     return type("StateMachine", (object,), {})
@@ -25,4 +25,4 @@ def fsm(state_classes, initial_state, rom):
     """
     retval = StateMachine(state_classes, initial_state, rom)
     retval.destination = StringIO()
-    yield retval
+    return retval
