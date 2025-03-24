@@ -12,10 +12,32 @@ exclude = [
 ]
 ignore-vcs = true
 
-[envs.typing]
+[envs.types]
 dependencies = [
-    "mypy"
+    "mypy~=1.15"
 ]
-[envs.typing.scripts]
-# hatch run typing:mypy
-mypy = "PYTHONPATH=./src mypy --check-untyped-defs --enable-incomplete-feature NewGenericSyntax src/dqutils"
+[envs.types.scripts]
+check = "mypy --strict {args:src/dqutils}"
+
+[envs.hatch-static-analysis]
+config-path = "ruff_defaults.toml"
+dependencies = [
+  "ruff~=0.11"
+]
+
+#[envs.hatch-static-analysis.scripts]
+
+# hatch fmt -f --check src/dqutils
+#format-check = "ruff format --check --diff {args:src/dqutils}"
+
+# hatch fmt -f src/dqutils
+#format-fix = "ruff format {args:src/dqutils}"
+
+# hatch fmt -l --check src/dqutils
+#lint-check = "ruff check {args:src/dqutils}"
+
+# hatch fmt -l src/dqutils
+#lint-fix = "ruff check --fix {args:src/dqutils}"
+
+[[envs.hatch-test.matrix]]
+python = ["3.13"]
