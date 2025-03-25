@@ -140,18 +140,3 @@ requires = ["hatchling"]
 
 # The name of the Python object that frontends will use to perform the build:
 build-backend = "hatchling.build"
-
-[tool.coverage.run]
-branch = true
-source_pkgs = ["dqutils", "tests"]
-
-[tool.coverage.paths]
-dqutils = ["src/hatch"]
-tests = ["tests"]
-
-[tool.coverage.report]
-exclude_lines = [
-    "no cov",
-    "if __name__ == .__main__.:",
-    "if TYPE_CHECKING:",
-]

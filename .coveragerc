@@ -1,0 +1,15 @@
+[run]
+branch = true
+source_pkgs =
+    dqutils
+    tests
+
+[report]
+exclude_lines =
+    no cov
+    if __name__ == .__main__.:
+    if TYPE_CHECKING:
+omit =
+    __main__.py
+    *hexdump.py
+skip_empty = true
