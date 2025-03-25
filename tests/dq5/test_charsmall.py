@@ -6,8 +6,8 @@ from dqutils.dq5.charsmall import process_dakuten
 
 
 @pytest.mark.parametrize(
-    "input",
-    (
+    "pair",
+    [
         ("゜は", "ぱ"),
         ("゜ひ", "ぴ"),
         ("゜ふ", "ぷ"),
@@ -58,23 +58,23 @@ from dqutils.dq5.charsmall import process_dakuten
         ("゛フ", "ブ"),
         ("゛ヘ", "ベ"),
         ("゛ホ", "ボ"),
-    ),
+    ],
 )
-def test_process_replacement(input):
+def test_process_replacement(pair):
     """Test function dqutils.dq5.process_dakuten."""
-    native, readable = input
+    native, readable = pair
     assert process_dakuten(native) == readable
 
 
 @pytest.mark.parametrize(
-    "input",
-    (
+    "fixed",
+    [
         "゛",
         "゛゛",
         "゜",
         "゜゜",
-    ),
+    ],
 )
-def test_process_preseved(input):
+def test_process_preseved(fixed):
     """Test function dqutils.dq5.process_dakuten."""
-    assert process_dakuten(input) == input
+    assert process_dakuten(fixed) == fixed

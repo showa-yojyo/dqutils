@@ -7,7 +7,7 @@ import pytest
 from dqutils.snescpu.instructions import INSTRUCTION_TABLE, get_instruction
 
 
-@pytest.mark.parametrize("i,item", enumerate(INSTRUCTION_TABLE))
+@pytest.mark.parametrize(("i", "item"), enumerate(INSTRUCTION_TABLE))
 def test_get_instruction(i, item):
     """Test get_instruction."""
     inst = get_instruction(i)
@@ -17,7 +17,7 @@ def test_get_instruction(i, item):
     assert inst.operand_size == item[2]
 
 
-@pytest.mark.parametrize("index", (666,))
+@pytest.mark.parametrize("index", [666])
 def test_invalid_instruction(index, capsys):
     """Test get_instruction for invalid opcode."""
     with pytest.raises(IndexError):

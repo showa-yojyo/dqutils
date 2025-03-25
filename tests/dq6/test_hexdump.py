@@ -46,11 +46,11 @@ def test_dump_bank_boundary(capsys):
 
 @pytest.mark.parametrize(
     "dump_args",
-    (
+    [
         ("C0FFC0", "0", "0"),
         ("C0FFC0", "1", "0"),
         ("C0FFC0", "0", "1"),
-    ),
+    ],
 )
 def test_dump_zero_input(capsys, dump_args):
     """Test the case where zeros are passed to `dump`."""

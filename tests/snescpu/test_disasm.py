@@ -41,11 +41,11 @@ def test_index_flag(parser):
 
 
 @pytest.mark.parametrize(
-    "args,expected",
-    (
+    ("args", "expected"),
+    [
         (("--bank", "C0"), "C0"),
         (("-b", "C1"), "C1"),
-    ),
+    ],
 )
 def test_bank(parser, args, expected):
     """Test create_argparser for -b, --bank option."""
@@ -54,11 +54,11 @@ def test_bank(parser, args, expected):
 
 
 @pytest.mark.parametrize(
-    "args,expected",
-    (
+    ("args", "expected"),
+    [
         (["--range", "C2B09A:C2B0DD"], "C2B09A:C2B0DD"),
         (["-r", "C2B0DD"], "C2B0DD"),
-    ),
+    ],
 )
 def test_range(parser, args, expected):
     """Test create_argparser for -r, --range option."""

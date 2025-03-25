@@ -21,7 +21,7 @@ def test_get_text():
 
 
 @pytest.mark.parametrize(
-    "id,expected",
+    ("str_id", "expected"),
     zip(
         range(0x100, 0x110),  # should use enum_string
         (
@@ -42,11 +42,12 @@ def test_get_text():
             "FED6C2:たいようのいし",
             "FED6CA:にじのしずく",
         ),
+        strict=False,
     ),
 )
-def test_enum_string(id, expected):
+def test_enum_string(str_id, expected):
     """Test function dqutils.dq3.enum_string."""
-    actual = next(iter(enum_string(id, id + 1)))
+    actual = next(iter(enum_string(str_id, str_id + 1)))
 
     expected_address, expected_readable = expected.split(":")
     assert actual[0] == int(expected_address, 16)

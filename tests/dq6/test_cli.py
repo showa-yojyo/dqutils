@@ -13,8 +13,9 @@ from ..test_cli import PROG_NAME
 
 @pytest.mark.parametrize("args", [(), ("--help",)])
 def test_cli(monkeypatch, capsys, args):
-    with pytest.raises(SystemExit) as ei, monkeypatch.context():
+    with monkeypatch.context():
         monkeypatch.setattr(sys, "argv", [PROG_NAME, *args])
-        main()
-    assert ei.value.code == 0
+        with pytest.raises(SystemExit) as ei:
+            main()
+        assert ei.value.code == 0
     assert "usage" in capsys.readouterr().out

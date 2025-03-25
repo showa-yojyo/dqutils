@@ -44,7 +44,13 @@ def test_runtime_init(fsm_mock):
     assert state.until_return
 
 
-@pytest.mark.parametrize("opcode,index", ([0x00, 0], [b"\x03", 3]))
+@pytest.mark.parametrize(
+    ("opcode", "index"),
+    [
+        (0x00, 0),
+        (b"\x03", 3),
+    ],
+)
 def test_get_instruction(fsm_mock, opcode, index):
     """
     Test behaviors of `DisassembleState.get_instruction`.

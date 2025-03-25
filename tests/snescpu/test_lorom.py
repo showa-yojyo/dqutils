@@ -11,24 +11,24 @@ def test_make_mapper():
 
 
 @pytest.mark.parametrize(
-    "input,expected",
-    (
+    ("rom_addr", "expected"),
+    [
         (0x000000, 0x008000),
         (0x008000, 0x018000),
         (0x010000, 0x028000),
         (0x018000, 0x038000),
         (0x1F0000, 0x3E8000),
         (0x1F8000, 0x3F8000),
-    ),
+    ],
 )
-def test_from_rom(input, expected):
+def test_from_rom(rom_addr, expected):
     """Test method dqutils.mapper.LoROM.from_rom."""
-    assert LoROM.from_rom(input) == expected
+    assert LoROM.from_rom(rom_addr) == expected
 
 
 @pytest.mark.parametrize(
-    "input,expected",
-    (
+    ("cpu_addr", "expected"),
+    [
         (0x008000, 0x000000),
         (0x018000, 0x008000),
         (0x028000, 0x010000),
@@ -36,23 +36,23 @@ def test_from_rom(input, expected):
         # ...
         (0x3E8000, 0x1F0000),
         (0x3F8000, 0x1F8000),
-    ),
+    ],
 )
-def test_from_cpu(input, expected):
+def test_from_cpu(cpu_addr, expected):
     """Test method dqutils.mapper.LoROM.from_cpu."""
-    assert LoROM.from_cpu(input) == expected
+    assert LoROM.from_cpu(cpu_addr) == expected
 
 
 @pytest.mark.parametrize(
-    "input,expected",
-    (
+    ("cpu_addr", "expected"),
+    [
         (0x008000, 0x008001),
         (0x00FFFF, 0x018000),
-    ),
+    ],
 )
-def test_increment_address(input, expected):
+def test_increment_address(cpu_addr, expected):
     """Test method dqutils.mapper.LoROM.increment_address."""
-    assert LoROM.increment_address(input) == expected
+    assert LoROM.increment_address(cpu_addr) == expected
 
 
 def test_bank_offset_size():

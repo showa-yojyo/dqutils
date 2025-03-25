@@ -21,11 +21,11 @@ def test_create_args_default(rom):
 
 
 @pytest.mark.parametrize(
-    "opcode,size",
-    (
+    ("opcode", "size"),
+    [
         (0x00, 3),
         (0x02, 1),
-    ),
+    ],
 )
 def test_specialized_state(fsm, opcode, size):
     """Test class `DisassembleStateDQ6`."""

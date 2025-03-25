@@ -18,11 +18,11 @@ def parser():
 
 @pytest.mark.parametrize(
     "invalid_args",
-    (
+    [
         (),
         ("C0FF70"),
         ("C0FF70", "16"),
-    ),
+    ],
 )
 def test_invalid_args(parser, invalid_args):
     with pytest.raises(SystemExit) as ei:
@@ -32,7 +32,7 @@ def test_invalid_args(parser, invalid_args):
 
 @pytest.mark.parametrize(
     "valid_args",
-    (("C0FF70", "16", "4"),),
+    [("C0FF70", "16", "4")],
 )
 def test_valid_args(parser, valid_args):
     args = parser.parse_args(valid_args)

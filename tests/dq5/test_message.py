@@ -45,7 +45,7 @@ def test_enum_battle():
 
 
 @pytest.mark.parametrize(
-    "first, last",
+    ("first", "last"),
     [
         (0x007C, 0x007C),
         (0x00FF, 0x0020),
@@ -61,16 +61,14 @@ def test_enum_scenario():
     cpu_addr, _, code_seq = next(iter(enum_scenario(0x0B95, 0x0B96)))
 
     # 0B95:0BCCD8:02:わーい わーい！
-    wai = array(
-        "H", (0x031B, 0x0360, 0x0398, 0x0000, 0x031B, 0x0360, 0x0398, 0x035A, 0x1001)
-    )
+    wai = array("H", (0x031B, 0x0360, 0x0398, 0x0000, 0x031B, 0x0360, 0x0398, 0x035A, 0x1001))
 
     assert cpu_addr == 0x0BCCD8
     assert wai == code_seq
 
 
 @pytest.mark.parametrize(
-    "first, last",
+    ("first", "last"),
     [
         (0x0B95, 0x0B95),
         (0x00FF, 0x0020),

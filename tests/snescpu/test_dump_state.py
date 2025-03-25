@@ -20,11 +20,11 @@ def test_initial_properties(fsm_mock):
 
 
 @pytest.mark.parametrize(
-    "init_kwargs,byte_count,record_count",
-    (
-        [{}, (), 0],
-        [{"byte_count": 20, "record_count": 47894}, (20), 47894],
-    ),
+    ("init_kwargs", "byte_count", "record_count"),
+    [
+        ({}, (), 0),
+        ({"byte_count": 20, "record_count": 47894}, (20), 47894),
+    ],
 )
 def test_runtime_init(fsm_mock, init_kwargs, byte_count, record_count):
     """

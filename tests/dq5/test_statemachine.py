@@ -43,9 +43,7 @@ def _do_test_brk(fsm, expected, **kwargs):
 def test_disassemble_brk_00(fsm):
     """Test `BRK #$00`."""
     expected = (
-        "00/B1ED:	0000    	BRK #$00\n"
-        "00/B1EF:	B705    	LDA [$05],Y\n"
-        "00/B1F1:	2904    	AND #$04\n"
+        "00/B1ED:	0000    	BRK #$00\n00/B1EF:	B705    	LDA [$05],Y\n00/B1F1:	2904    	AND #$04\n"
     )
     _do_test_brk(fsm, expected, first=0x00B1ED, last=0x00B1F3, flags=0x20)
 
@@ -143,10 +141,7 @@ def test_disassemble_brk_0b(fsm):
 def test_disassemble_brk_0d(fsm):
     """Test `BRK #$0D`."""
     expected = (
-        "00/A8F8:	000D    	BRK #$0D\n"
-        "00/A8FA:	7F15\n"
-        "00/A8FC:	000B    	BRK #$0B\n"
-        "00/A8FE:	0126\n"
+        "00/A8F8:	000D    	BRK #$0D\n00/A8FA:	7F15\n00/A8FC:	000B    	BRK #$0B\n00/A8FE:	0126\n"
     )
     _do_test_brk(fsm, expected, first=0x00A8F8, last=0x00A900)
 
@@ -164,12 +159,7 @@ def test_disassemble_brk_0e(fsm):
 
 def test_disassemble_brk_12(fsm):
     """Test `BRK #$12`."""
-    expected = (
-        "00/CA33:	0012    	BRK #$12\n"
-        "00/CA35:	44\n"
-        "00/CA36:	0012    	BRK #$12\n"
-        "00/CA38:	44\n"
-    )
+    expected = "00/CA33:	0012    	BRK #$12\n00/CA35:	44\n00/CA36:	0012    	BRK #$12\n00/CA38:	44\n"
     _do_test_brk(fsm, expected, first=0x00CA33, last=0x00CA39)
 
 

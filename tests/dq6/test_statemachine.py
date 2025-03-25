@@ -54,11 +54,11 @@ def test_run_near_boundary_opcode_ce(fsm):
 
 
 @pytest.mark.parametrize(
-    "offset,pattern",
-    (
+    ("offset", "pattern"),
+    [
         (0xC2B091, r"^C2/B099:\s+60\s+RTS$"),
         (0xC2B4AF, r"^C2/B501:\s+6B\s+RTL$"),
-    ),
+    ],
 )
 def test_run_until_return(fsm, offset, pattern):
     """Test disassembling with -u option for the first return instruction occurrence."""

@@ -16,8 +16,8 @@ def test_from_rom():
 
 
 @pytest.mark.parametrize(
-    "input,expected",
-    (
+    ("cpu_addr", "expected"),
+    [
         # SlowROM
         (0x408000, 0x008000),
         (0x418000, 0x018000),
@@ -34,25 +34,25 @@ def test_from_rom():
         # ...
         (0xFE8000, 0x3E8000),
         (0xFF8000, 0x3F8000),
-    ),
+    ],
 )
-def test_from_cpu(input, expected):
+def test_from_cpu(cpu_addr, expected):
     """Test method dqutils.mapper.HiROM.from_cpu."""
-    assert HiROM.from_cpu(input) == expected
+    assert HiROM.from_cpu(cpu_addr) == expected
 
 
 @pytest.mark.parametrize(
-    "input,expected",
-    (
+    ("cpu_addr", "expected"),
+    [
         (0xC00000, 0xC00001),
         (0xC07FFF, 0xC08000),
         (0xC08000, 0xC08001),
         (0xC0FFFF, 0xC10000),
-    ),
+    ],
 )
-def test_increment_address(input, expected):
+def test_increment_address(cpu_addr, expected):
     """Test method dqutils.mapper.HiROM.increment_address."""
-    assert HiROM.increment_address(input) == expected
+    assert HiROM.increment_address(cpu_addr) == expected
 
 
 def test_bank_offset_size():
