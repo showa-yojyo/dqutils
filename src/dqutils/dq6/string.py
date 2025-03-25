@@ -27,7 +27,8 @@ CONTEXT: Final = {
 
 
 def enum_string(
-    first: int | None = None, last: int | None = None
+    first: int | None = None,
+    last: int | None = None,
 ) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
@@ -51,7 +52,10 @@ def enum_string(
     yield from _enum_string(CONTEXT, StringGeneratorCStyle, first, last)
 
 
-def print_string(first: int | None = None, last: int | None = None) -> None:
+def print_string(
+    first: int | None = None,
+    last: int | None = None,
+) -> None:
     """Print string data to sys.stdout.
 
     String data those indices in [`first`, `last`) will be used.

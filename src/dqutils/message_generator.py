@@ -222,7 +222,10 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         return addr, shift
 
     def decode(
-        self: Self, mem: mmap.mmap, addr: int, shift: int
+        self: Self,
+        mem: mmap.mmap,
+        addr: int,
+        shift: int,
     ) -> tuple[int, int, int]:
         """Decoding algorithm of Huffman coding.
 

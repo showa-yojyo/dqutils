@@ -27,7 +27,8 @@ CONTEXT: Final = {
 
 
 def enum_string(
-    first: int | None = None, last: int | None = None
+    first: int | None = None,
+    last: int | None = None,
 ) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.

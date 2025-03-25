@@ -11,7 +11,11 @@ if TYPE_CHECKING:
     from collections.abc import Iterable
 
 
-def get_bits(byte_seq: bytes | bytearray | Iterable[int], index: int, mask: int) -> int:
+def get_bits(
+    byte_seq: bytes | bytearray | Iterable[int],
+    index: int,
+    mask: int,
+) -> int:
     """Obtain specified bits as an integer value from a sequence of
     bytes.
 
@@ -46,7 +50,9 @@ def get_bits(byte_seq: bytes | bytearray | Iterable[int], index: int, mask: int)
 
 
 def get_int(
-    byte_seq: bytes | bytearray | Iterable[int], index: int, length: int
+    byte_seq: bytes | bytearray | Iterable[int],
+    index: int,
+    length: int,
 ) -> int:
     """Obtain the integer value from a subsequence in a sequence of
     bytes.

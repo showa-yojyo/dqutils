@@ -93,9 +93,7 @@ class AbstractState(metaclass=ABCMeta):
 
 
 # Does it need to be configurable?
-OUTPUT_FORMAT: Final[str] = (
-    "{bank:02X}/{addr:04X}:\t{opcode:02X}{operand_raw:<6}\t{mnemonic} {operand}"
-)
+OUTPUT_FORMAT: Final[str] = "{bank:02X}/{addr:04X}:\t{opcode:02X}{operand_raw:<6}\t{mnemonic} {operand}"
 
 
 class DisassembleState(AbstractState):
@@ -151,10 +149,14 @@ class DisassembleState(AbstractState):
         while not self._is_terminated():
             instruction, operand_raw, across_boundary = self._read_instruction()
             context, next_state = self._eval_instruction(
-                instruction, context, across_boundary=across_boundary
+                instruction,
+                context,
+                across_boundary=across_boundary,
             )
             self._print_instruction(
-                instruction, operand_raw, across_boundary=across_boundary
+                instruction,
+                operand_raw,
+                across_boundary=across_boundary,
             )
             if next_state:
                 return context, next_state

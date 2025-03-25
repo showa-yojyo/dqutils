@@ -51,7 +51,11 @@ def create_argparser() -> ArgumentParser:
 
     # numbers are hex-only, no prefixes
     parser.add_argument(
-        "-b", "--bank", dest="bank", metavar="BANK", help="disassemble bank BANK only"
+        "-b",
+        "--bank",
+        dest="bank",
+        metavar="BANK",
+        help="disassemble bank BANK only",
     )
     parser.add_argument(
         "-r",
@@ -73,7 +77,8 @@ def create_argparser() -> ArgumentParser:
 
 
 def create_args(
-    rom: mmap.mmap, cmdline_args: Sequence[str] = []
+    rom: mmap.mmap,
+    cmdline_args: Sequence[str] = [],
 ) -> tuple[dict[str, Any], type[AbstractMapper]]:
     """Initialize the arguments of disassember.
 
@@ -142,7 +147,9 @@ def create_args(
 
 
 def disassemble(
-    game_title: str, state_classes: Sequence[type[AbstractState]], initial_state: str
+    game_title: str,
+    state_classes: Sequence[type[AbstractState]],
+    initial_state: str,
 ) -> None:
     """Disassemble the 65816 machine code.
 

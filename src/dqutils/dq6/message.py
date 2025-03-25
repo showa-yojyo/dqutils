@@ -54,7 +54,8 @@ CONTEXT_MESSAGE_SCENARIO: Final = {
 
 
 def enum_battle(
-    first: int | None = None, last: int | None = None
+    first: int | None = None,
+    last: int | None = None,
 ) -> Iterator[StringInfo]:
     """Return generator iterators of message data by specifying
     their indices.
@@ -83,7 +84,10 @@ def print_all_battle() -> None:
     _print_battle(CONTEXT_MESSAGE_BATTLE)
 
 
-def enum_scenario(first: int | None = None, last: int | None = None) -> IteratorT:
+def enum_scenario(
+    first: int | None = None,
+    last: int | None = None,
+) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 

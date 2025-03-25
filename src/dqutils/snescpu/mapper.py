@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING, Final, Self
 
 if TYPE_CHECKING:
     import mmap
@@ -98,7 +98,7 @@ class HiROM(AbstractMapper):
     starting again with SNES bank $80.
     """
 
-    bank_offset_size = 0x10000
+    bank_offset_size: int = 0x10000
 
     @staticmethod
     def check_header_mapper_byte(mapper_byte: int) -> bool:
@@ -191,7 +191,7 @@ class LoROM(AbstractMapper):
     and starting again with SNES bank $80.
     """
 
-    bank_offset_size = 0x8000
+    bank_offset_size: int = 0x8000
 
     @staticmethod
     def check_header_mapper_byte(mapper_byte: int) -> bool:
@@ -281,11 +281,12 @@ class MapperNotFoundError(Exception):
         super().__init__("Mapper type not found")
 
 
-HEADER_LENGTH = 0x40
+HEADER_LENGTH: Final = 0x40
 
 
 def make_mapper(
-    rom: mmap.mmap | None = None, name: str | None = None
+    rom: mmap.mmap | None = None,
+    name: str | None = None,
 ) -> type[AbstractMapper]:
     """Return a mapper type.
 

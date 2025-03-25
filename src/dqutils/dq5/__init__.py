@@ -15,9 +15,15 @@ def main() -> None:
             func=print_all_scenario,
         ),
         Command(
-            name="print-battle-messages", help="print messages", func=print_all_battle
+            name="print-battle-messages",
+            help="print messages",
+            func=print_all_battle,
         ),
-        Command(name="print-strings", help="print strings", func=print_all),
+        Command(
+            name="print-strings",
+            help="print strings",
+            func=print_all,
+        ),
     )
 
     return run(commands)

@@ -110,7 +110,11 @@ def dump(
             output = [f"{i:04X}"]
             output.extend(
                 formatter.format(
-                    get_bits(chunk, member[COLUMN_OFFSET], member[COLUMN_MASK_BITS])
+                    get_bits(
+                        chunk,
+                        member[COLUMN_OFFSET],
+                        member[COLUMN_MASK_BITS],
+                    )
                 )
                 for (member, formatter) in zip(members, fmts, strict=False)
             )
@@ -159,7 +163,10 @@ def run(title: str, args: Sequence[str] = sys.argv[1:]) -> Literal[0]:
         arguments.sizeof_array,
         reader(sys.stdin, delimiter=delimiter, quoting=QUOTE_NONE),
         writer(
-            sys.stdout, delimiter=delimiter, quoting=QUOTE_NONE, lineterminator="\n"
+            sys.stdout,
+            delimiter=delimiter,
+            quoting=QUOTE_NONE,
+            lineterminator="\n",
         ),
     )
     return 0

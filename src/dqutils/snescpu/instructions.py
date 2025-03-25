@@ -323,12 +323,7 @@ class AbstractInstruction:
         """Return the actual size of this operand in bytes."""
 
         # Addition for Immediate mode.
-        if (
-            cls.add_if_x_zero
-            and flags & 0x10 == 0x00
-            or cls.add_if_m_zero
-            and flags & 0x20 == 0x00
-        ):
+        if cls.add_if_x_zero and flags & 0x10 == 0x00 or cls.add_if_m_zero and flags & 0x20 == 0x00:
             return cls.operand_size
 
         return cls.operand_size - 1

@@ -102,9 +102,7 @@ class StateMachine:
             A list of `State` subclasses.
         """
 
-        self.states.update({
-            state_t.__name__: state_t(self) for state_t in state_classes
-        })
+        self.states.update({state_t.__name__: state_t(self) for state_t in state_classes})
 
     def runtime_init(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Initialize states before running the state machine.
@@ -143,9 +141,7 @@ class StateMachine:
         last = kwargs.get("last", -1)
 
         self.rom.seek(self.mapper.from_cpu(first))
-        self.last_rom_addr = (
-            self.mapper.from_cpu(last) if last != -1 else self.rom.size()
-        )
+        self.last_rom_addr = self.mapper.from_cpu(last) if last != -1 else self.rom.size()
         self.runtime_init(**kwargs)
 
         state = self.get_state()

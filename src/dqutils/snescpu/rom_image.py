@@ -43,7 +43,7 @@ class RomImage:
         if not conf:
             raise ConfigNotFoundError
 
-        fin = open(conf.get("ROM", self.title), "rb")  # noqa: SIM115
+        fin = open(conf.get("ROM", self.title), "rb")
         image = mmap.mmap(fin.fileno(), 0, access=mmap.ACCESS_READ)
 
         self.fin, self.image = fin, image

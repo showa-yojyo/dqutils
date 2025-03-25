@@ -94,10 +94,10 @@ BRK_BMI: Final[tuple[tuple[int], ...]] = (
 )  # BRK #$AC
 
 
-BRK_BPL_RANGE_FIRST = 0x01
-BRK_BPL_RANGE_LAST = 0x1B
-BRK_BMI_RANGE_FIRST = 0x80
-BRK_BMI_RANGE_LAST = 0xAD
+BRK_BPL_RANGE_FIRST: Final = 0x01
+BRK_BPL_RANGE_LAST: Final = 0x1B
+BRK_BMI_RANGE_FIRST: Final = 0x80
+BRK_BMI_RANGE_LAST: Final = 0xAD
 
 
 class DisassembleStateDQ5(DisassembleState):
@@ -107,7 +107,8 @@ class DisassembleStateDQ5(DisassembleState):
         class BRK(get_instruction(0x00)):  # type: ignore[misc]
             @staticmethod
             def execute(
-                _: DisassembleState, context: ContextT
+                _: DisassembleState,
+                context: ContextT,
             ) -> tuple[ContextT, str | None]:
                 sigbyte = cast(int, self.current_operand)
 
