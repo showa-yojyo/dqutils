@@ -23,7 +23,7 @@ from dqutils.string import CodeSeq, get_hex, get_text
 from dqutils.string_generator import StringGeneratorCStyle
 
 if TYPE_CHECKING:
-    from dqutils.message_generator import AbstractMessageGenerator, IteratorT
+    from dqutils.message_generator import AbstractMessageGenerator, Context, IteratorT
     from dqutils.string_generator import StringInfo
 
 
@@ -108,7 +108,7 @@ def print_battle(
 
 
 def enum_scenario(
-    context: Mapping[str, Any],
+    context: Context,
     generator_t: type[AbstractMessageGenerator],
     first: int | None = None,
     last: int | None = None,
@@ -155,7 +155,7 @@ def enum_scenario(
 
 
 def print_scenario(
-    context: Mapping[str, Any],
+    context: Context,
     generator_t: type[AbstractMessageGenerator],
     first: int | None = None,
     last: int | None = None,
@@ -189,7 +189,7 @@ def print_scenario(
         The last index + 1 of the range of indices you want.
     """
 
-    charmap = cast(dict[int, str], context["charmap"])
+    charmap = context["charmap"]
     delims = cast(CodeSeq, context["delimiters"])
     for i, item in enumerate(enum_scenario(context, generator_t, first, last)):
         address, shift, code_seq = item

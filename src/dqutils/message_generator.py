@@ -11,12 +11,12 @@ from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
 from array import array
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, TypedDict
 
 if TYPE_CHECKING:
     import mmap
-    from collections.abc import Iterator, Mapping
-    from typing import Any, Final, Self
+    from collections.abc import Iterator
+    from typing import Final
 
     type IteratorT = Iterator[tuple[int, int, array[int]]]
 
@@ -31,13 +31,29 @@ _DUMMY_CODE: Final[int] = 0xFFFFFFFF
 _SHIFTBIT_ARRAY_SIZE: Final[int] = 8
 
 
+class Context(TypedDict):
+    title: str
+    delimiters: array[int]
+    charmap: dict[int, str]
+    decoding_mask: int
+    message_id_first: int
+    message_id_last: int
+    addr_group: int
+    addr_shiftbit_array: int
+    addr_message: int
+    addr_huffman_off: int
+    addr_huffman_on: int
+    huffman_root: int
+    decoding_read_size: int
+
+
 class AbstractMessageGenerator(metaclass=ABCMeta):
     """The base class of MessageGenerator subclasses."""
 
     # pylint: disable=too-many-instance-attributes
     def __init__(
-        self: Self,
-        context: Mapping[str, Any],
+        self,
+        context: Context,
         first: int | None = None,
         last: int | None = None,
     ) -> None:
@@ -82,8 +98,8 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             first = context["message_id_first"]
         if last is None:
             last = context["message_id_last"]
-        self.first = cast(int, first)
-        self.last = cast(int, last)
+        self.first = first
+        self.last = last
 
         self.addr_group = context["addr_group"]
         self.addr_shiftbit_array = context["addr_shiftbit_array"]
@@ -101,32 +117,59 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         self.mapper: type[AbstractMapper]
 
-    def assert_valid(self: Self) -> None:
+    def assert_valid(self) -> None:
         """Test if this instance is valid."""
-        assert self.title
-        assert self.mapper
-        assert isinstance(self.delimiters, array)
-        assert self.delimiters.typecode == "H"
-        assert self.addr_group >= 0
-        assert self.addr_shiftbit_array >= 0
-        assert len(self.shiftbit_array) == _SHIFTBIT_ARRAY_SIZE
-        assert self.addr_message >= 0
-        self._assert_range()
-        assert self.addr_huffman_off >= 0
-        assert self.addr_huffman_on >= 0
-        assert self.huffman_root > 0
-        assert self.huffman_off
-        assert len(self.huffman_off) == self.huffman_root + 2
-        assert self.huffman_on
-        assert len(self.huffman_on) == self.huffman_root + 2
 
-    def _assert_range(self: Self) -> None:
+        def assert_address_valid(name: str, addr: int) -> None:
+            class InvalidAddressError(ValueError):
+                def __init__(self, name, address):
+                    super().__init__(f"invalid address: {name} {address:6X}")
+
+            if addr < 0:
+                raise InvalidAddressError(name, addr)
+
+        if self.delimiters.typecode != "H":
+            msg = "typecode of delimiters must be H"
+            raise ValueError(msg)
+
+        assert_address_valid("group", self.addr_group)
+        assert_address_valid("shiftbit_array", self.addr_shiftbit_array)
+        assert_address_valid("message", self.addr_message)
+
+        if len(self.shiftbit_array) < _SHIFTBIT_ARRAY_SIZE:
+            msg = f"length of shiftbit_array must be equal to {_SHIFTBIT_ARRAY_SIZE}"
+            raise ValueError(msg)
+
+        self._assert_range()
+
+        assert_address_valid("huffman off", self.addr_huffman_off)
+        assert_address_valid("huffman on", self.addr_huffman_on)
+
+        if self.huffman_root <= 0:
+            msg = "huffman root must be positive integer"
+            raise ValueError(msg)
+
+        if len(self.huffman_off) != self.huffman_root + 2:
+            msg = "invalid huffman-off"
+            raise ValueError(msg)
+
+        if len(self.huffman_on) != self.huffman_root + 2:
+            msg = "invalid huffman-on"
+            raise ValueError(msg)
+
+    def _assert_range(self) -> None:
         """Test if both self.first and self.last are valid."""
 
-        assert self.first is not None
-        assert self.last is not None
+        msg = ""
+        if self.first is None:
+            msg = "self.first must be integer"
+        elif self.last is None:
+            msg = "self.last must be integer"
 
-    def setup(self: Self, mem: mmap.mmap) -> None:
+        if msg:
+            raise IndexError(msg)
+
+    def setup(self, mem: mmap.mmap) -> None:
         """Setup this instance.
 
         Parameters
@@ -142,7 +185,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         self.assert_valid()
 
-    def _setup_huffman_tree(self: Self, mem: mmap.mmap) -> None:
+    def _setup_huffman_tree(self, mem: mmap.mmap) -> None:
         """Initialize the Huffman trees.
 
         Parameters
@@ -151,24 +194,15 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             The input stream of ROM.
         """
 
-        # Test preconditions.
-        assert self.huffman_root
-        assert self.addr_huffman_off
-        assert self.addr_huffman_on
+        mem.seek(self.mapper.from_cpu(self.addr_huffman_off))
+        huffman_off = mem.read(self.huffman_root + 2)
 
-        if not self.huffman_off:
-            mem.seek(self.mapper.from_cpu(self.addr_huffman_off))
-            self.huffman_off = mem.read(self.huffman_root + 2)
+        mem.seek(self.mapper.from_cpu(self.addr_huffman_on))
+        huffman_on = mem.read(self.huffman_root + 2)
 
-        if not self.huffman_on:
-            mem.seek(self.mapper.from_cpu(self.addr_huffman_on))
-            self.huffman_on = mem.read(self.huffman_root + 2)
+        self.huffman_off, self.huffman_on = huffman_off, huffman_on
 
-        # Test postconditions.
-        assert len(self.huffman_off) == self.huffman_root + 2
-        assert len(self.huffman_on) == self.huffman_root + 2
-
-    def _setup_shiftbit_array(self: Self, mem: mmap.mmap) -> None:
+    def _setup_shiftbit_array(self, mem: mmap.mmap) -> None:
         """Initialize the shiftbit array.
 
         Parameters
@@ -177,14 +211,10 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             The input stream of ROM.
         """
 
-        assert self.addr_shiftbit_array
-
         mem.seek(self.mapper.from_cpu(self.addr_shiftbit_array))
         self.shiftbit_array = mem.read(_SHIFTBIT_ARRAY_SIZE)
 
-        assert len(self.shiftbit_array) == _SHIFTBIT_ARRAY_SIZE
-
-    def locate_message(self: Self, mem: mmap.mmap, message_id: int) -> tuple[int, int]:
+    def locate_message(self, mem: mmap.mmap, message_id: int) -> tuple[int, int]:
         """Return the location where the messege data is stored.
 
         Parameters
@@ -222,7 +252,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         return addr, shift
 
     def decode(
-        self: Self,
+        self,
         mem: mmap.mmap,
         addr: int,
         shift: int,
@@ -251,13 +281,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             A decoded character code.
         """
 
-        # Test preconditions
-        assert addr & 0xFF000000 == 0
-        assert shift & 0xFFFFFF00 == 0
-
         huffman_on, huffman_off = self.huffman_on, self.huffman_off
-        assert huffman_off
-        assert huffman_on
         node = self.huffman_root
         from_cpu_addr = self.mapper.from_cpu
         read_size = self.decoding_read_size
@@ -278,7 +302,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         return addr, shift, node & self.decoding_mask
 
-    def __iter__(self: Self) -> IteratorT:
+    def __iter__(self) -> IteratorT:
         """Return a generator iterator."""
 
         if self.first >= self.last:
@@ -292,9 +316,6 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
             addr_cur, shift_cur = self.locate_message(mem, self.first)
 
             delims = self.delimiters
-            assert isinstance(delims, array)
-            assert delims.typecode == "H"
-
             for _ in range(self.first, self.last):
                 addr, shift = addr_cur, shift_cur
 
@@ -308,7 +329,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
                 yield addr, shift, code_seq
 
     @abstractmethod
-    def _do_select_message_group(self: Self, message_id: int) -> tuple[int, int]:
+    def _do_select_message_group(self, message_id: int) -> tuple[int, int]:
         """Return detailed location information of message data.
 
         Parameters
@@ -326,7 +347,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def _do_is_leaf_node(self: Self, node: int) -> bool:
+    def _do_is_leaf_node(self, node: int) -> bool:
         """Determine if `node` is a leaf node.
 
         Parameters
@@ -341,7 +362,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
+    def _do_next_location(self, addr: int, shift: int) -> tuple[int, int]:
         """Return the next address to read data encoded.
 
         Parameters
@@ -360,7 +381,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         """
 
     @abstractmethod
-    def _do_next_node(self: Self, node: int) -> int:
+    def _do_next_node(self, node: int) -> int:
         """Return the next node to traverse in the Huffman tree.
 
         Parameters
@@ -382,7 +403,7 @@ _ONLY_MSB_ON_8BIT = 0x80
 class MessageGeneratorW(AbstractMessageGenerator):
     """This class is for DQ3 and DQ6."""
 
-    def _do_select_message_group(self: Self, message_id: int) -> tuple[int, int]:
+    def _do_select_message_group(self, message_id: int) -> tuple[int, int]:
         # The message ID gives the folowing information:
         # 1. 0007h bits: the number of AEh occurrences,
         #    e.g., in DQ3, the index of the array $C1B01C (1byte * 8)
@@ -393,39 +414,39 @@ class MessageGeneratorW(AbstractMessageGenerator):
         group += group << 1
         return count, group
 
-    def _do_is_leaf_node(self: Self, node: int) -> bool:
+    def _do_is_leaf_node(self, node: int) -> bool:
         return node & _ONLY_MSB_ON_16BIT == 0
 
-    def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
+    def _do_next_location(self, addr: int, shift: int) -> tuple[int, int]:
         shift >>= 1
         if shift == 0:
             shift = _ONLY_MSB_ON_8BIT
             addr = self.mapper.increment_address(addr)
         return addr, shift
 
-    def _do_next_node(self: Self, node: int) -> int:
+    def _do_next_node(self, node: int) -> int:
         return node & 0x7FFF
 
 
 class MessageGeneratorV(AbstractMessageGenerator):
     """This class is for DQ5."""
 
-    def _do_select_message_group(self: Self, message_id: int) -> tuple[int, int]:
+    def _do_select_message_group(self, message_id: int) -> tuple[int, int]:
         count = message_id & 0x000F
         group = message_id // 16 * 3
         return count, group
 
-    def _do_is_leaf_node(self: Self, node: int) -> bool:
+    def _do_is_leaf_node(self, node: int) -> bool:
         return node & _ONLY_MSB_ON_16BIT == _ONLY_MSB_ON_16BIT
 
-    def _do_next_location(self: Self, addr: int, shift: int) -> tuple[int, int]:
+    def _do_next_location(self, addr: int, shift: int) -> tuple[int, int]:
         shift <<= 1
         if shift > _ONLY_MSB_ON_8BIT:
             shift = 0x01
             addr = self.mapper.increment_address(addr)
         return addr, shift
 
-    def _do_next_node(self: Self, node: int) -> int:
+    def _do_next_node(self, node: int) -> int:
         node &= 0x1FFF
         node <<= 1
         return node

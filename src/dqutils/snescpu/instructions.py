@@ -24,7 +24,7 @@ def _execute_c2(state: DisassembleState, context: ContextT) -> tuple[ContextT, N
     value. This is the only means of setting the M and X status
     register bits.
     """
-    assert isinstance(state.current_operand, int)
+
     state.flags &= ~state.current_operand
     return context, None
 
@@ -36,7 +36,7 @@ def _execute_e2(state: DisassembleState, context: ContextT) -> tuple[ContextT, N
     value. This is the only means of setting the M and X status
     register bits.
     """
-    assert isinstance(state.current_operand, int)
+
     state.flags |= state.current_operand
     return context, None
 
@@ -429,7 +429,6 @@ def get_instruction(opcode: bytes | int) -> type[AbstractInstruction]:
     if isinstance(opcode, bytes):
         opcode = int.from_bytes(opcode, "little")
 
-    assert isinstance(opcode, int)
     return DEFAULT_INSTRUCTIONS[opcode]
 
 

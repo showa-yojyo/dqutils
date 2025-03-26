@@ -11,7 +11,7 @@ from dqutils.snescpu.rom_image import RomImage
 if TYPE_CHECKING:
     import mmap
     from collections.abc import Iterator, Mapping
-    from typing import Any, Self
+    from typing import Any
 
     type StringInfo = tuple[int, bytes | bytearray]
     type ContextT = Mapping[str, Any]
@@ -22,7 +22,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
     """The base class of StringGenerator subclasses."""
 
     def __init__(
-        self: Self,
+        self,
         context: ContextT,
         first: int | None = None,
         last: int | None = None,
@@ -65,7 +65,7 @@ class AbstractStringGenerator(metaclass=ABCMeta):
         self.mapper: type[AbstractMapper]
         self.assert_valid()
 
-    def __iter__(self: Self) -> Iterator[StringInfo]:
+    def __iter__(self) -> Iterator[StringInfo]:
         self.assert_valid()
 
         if self.first >= self.last:
@@ -77,15 +77,21 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             mem.seek(self.mapper.from_cpu(addr))
             yield from self._do_iterate(mem, addr)
 
-    def assert_valid(self: Self) -> None:
+    def assert_valid(self) -> None:
         """Test if this instance is valid."""
-        assert self.title
+        if not self.title:
+            msg = "title is not set"
+            raise ValueError(msg)
         # assert self.first and self.last and 0 <= self.first <= self.last
-        assert self.addr >= 0
-        assert self.delims is None or isinstance(self.delims, bytes)
+        if self.addr < 0:
+            msg = f"addr {self.addr} must be non-negative value"
+            raise ValueError(msg)
+        if self.delims and not isinstance(self.delims, bytes):
+            msg = f"{self.delims} not supported as delimiters"
+            raise TypeError(msg)
 
     @abstractmethod
-    def _do_iterate(self: Self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
+    def _do_iterate(self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
         """Iterate pairs of string information.
 
         Parameters
@@ -106,35 +112,22 @@ class AbstractStringGenerator(metaclass=ABCMeta):
 
 
 class StringGeneratorPascalStyle(AbstractStringGenerator):
-    """Return generator iterators for Pascal-style (size-included)
-    strings information.
-    """
+    """Return generator iterators for Pascal-style (size-included) strings information."""
 
-    def _do_iterate(self: Self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
+    def _do_iterate(self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
         first, last = self.first, self.last
-        assert first is not None
-        assert last is not None
-
         for i in range(last):
-            size = mem.read(1)[0]
-            if size and first <= i:
+            if (size := mem.read(1)[0]) and first <= i:
                 yield (addr, mem.read(size))
             addr += size + 1
 
 
 class StringGeneratorCStyle(AbstractStringGenerator):
-    """Return generator iterators for C-style (null-terminated)
-    strings information.
-    """
+    """Return generator iterators for C-style (null-terminated) strings information."""
 
-    def _do_iterate(self: Self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
+    def _do_iterate(self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
         first, last = self.first, self.last
-        assert first is not None
-        assert last is not None
-
         delims = self.delims
-        assert delims
-
         from_rom_addr = self.mapper.from_rom
         for i in range(last):
             code_seq = bytearray()
@@ -148,5 +141,5 @@ class StringGeneratorCStyle(AbstractStringGenerator):
                 code_seq.append(code)
 
             if first <= i:
-                assert code_seq[-1] in delims
+                # assert code_seq[-1] in delims
                 yield (addr, code_seq)

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, Final, Self
+from typing import TYPE_CHECKING, Self
 
 if TYPE_CHECKING:
     import mmap
@@ -281,9 +281,6 @@ class MapperNotFoundError(Exception):
         super().__init__("Mapper type not found")
 
 
-HEADER_LENGTH: Final = 0x40
-
-
 def make_mapper(
     rom: mmap.mmap | None = None,
     name: str | None = None,
@@ -309,15 +306,15 @@ def make_mapper(
     get_snes_header
     """
 
-    assert rom or name
+    if rom is None and name is None:
+        msg = "rom or name must be specified"
+        raise ValueError(msg)
 
     # pylint: disable=no-member
     mappers = AbstractMapper.__subclasses__()
 
     if rom:
         header = get_snes_header(rom)
-        assert isinstance(header, bytes)
-        assert len(header) == HEADER_LENGTH
 
         # ROM makeup byte.
         mapper_byte = header[0x15]

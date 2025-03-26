@@ -77,8 +77,14 @@ class StateMachine:
         -------
         pc : int
         """
-        assert self.rom
-        assert self.mapper
+        if not self.rom:
+            msg = "ROM is not set"
+            raise AttributeError(msg)
+
+        if not self.mapper:
+            msg = "mapper is not set"
+            raise AttributeError(msg)
+
         return self.mapper.from_rom(self.rom.tell())
 
     def unlink(self: Self) -> None:

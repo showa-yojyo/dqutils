@@ -70,7 +70,10 @@ class AbstractState(metaclass=ABCMeta):
         -------
         pc : int
         """
-        assert self.state_machine
+
+        if not self.state_machine:
+            msg = "state machine not set"
+            raise AttributeError(msg)
         return self.state_machine.program_counter
 
     @abstractmethod
@@ -206,20 +209,15 @@ class DisassembleState(AbstractState):
             True if this state machine is to be terminated.
         """
 
-        assert self.state_machine
-
-        fsm = self.state_machine
-        assert fsm.rom
-
         if self.until_return and self.current_opcode in (b"\x40", b"\x60", b"\x6b"):
             return True
 
+        fsm = self.state_machine
         return fsm.last_rom_addr <= fsm.rom.tell()
 
     def _read_instruction(self: Self) -> tuple[type[AbstractInstruction], bytes, bool]:
         """Read the current instruction and return as an object."""
 
-        assert self.state_machine
         fsm = self.state_machine
 
         # Read the opcode.
@@ -303,7 +301,6 @@ class DisassembleState(AbstractState):
             True if this line goes across the PB boundary.
         """
 
-        assert self.state_machine
         fsm = self.state_machine
 
         # cpu_addr is the value of PC immediately before reading
@@ -416,8 +413,6 @@ class DumpState(AbstractState):
         next_state : str
             The name of the next state for the state machine.
         """
-
-        assert self.state_machine
 
         # Expermentally implement Disasm-Dump-Disasm
         # state-transition.

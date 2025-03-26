@@ -15,7 +15,7 @@ from dqutils.message import enum_battle as _enum_battle
 from dqutils.message import enum_scenario as _enum_scenario
 from dqutils.message import print_battle as _print_battle
 from dqutils.message import print_scenario as _print_scenario
-from dqutils.message_generator import MessageGeneratorW
+from dqutils.message_generator import Context, MessageGeneratorW
 
 if TYPE_CHECKING:
     from dqutils.message_generator import IteratorT
@@ -31,7 +31,7 @@ CONTEXT_MESSAGE_BATTLE: Final = {
     "decoding_read_size": 2,
 }
 
-CONTEXT_MESSAGE_SCENARIO: Final = {
+CONTEXT_MESSAGE_SCENARIO: Final[Context] = {
     "title": "DRAGONQUEST6",
     "delimiters": array(
         "H",
@@ -41,6 +41,7 @@ CONTEXT_MESSAGE_SCENARIO: Final = {
         ),
     ),
     "charmap": CHARMAP_LARGE,
+    "decoding_mask": 0xFFFF,
     "message_id_first": 0x0000,
     "message_id_last": 0x1B2D,
     "addr_group": 0xC15BB5,

@@ -1,6 +1,1 @@
 extend = "ruff_defaults.toml"
-
-[lint]
-ignore = [
-    "S101",  # assert
-]

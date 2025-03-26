@@ -7,7 +7,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from types import TracebackType
-    from typing import BinaryIO, Self
+    from typing import BinaryIO, Final
 
 from dqutils.config import ConfigNotFoundError, get_config
 
@@ -16,7 +16,7 @@ from dqutils.config import ConfigNotFoundError, get_config
 class RomImage:
     """This class manages the file handler of given SNES ROM image."""
 
-    def __init__(self: Self, title: str) -> None:
+    def __init__(self, title: str) -> None:
         """Create an object of RomImage.
 
         Parameters
@@ -38,7 +38,7 @@ class RomImage:
         self.fin: BinaryIO
         self.image: mmap.mmap
 
-    def __enter__(self: Self) -> mmap.mmap:
+    def __enter__(self) -> mmap.mmap:
         conf = get_config()
         if not conf:
             raise ConfigNotFoundError
@@ -50,7 +50,7 @@ class RomImage:
         return self.image
 
     def __exit__(
-        self: Self,
+        self,
         exc_type: type[BaseException] | None,
         exc_value: BaseException | None,
         traceback: TracebackType | None,
@@ -61,8 +61,8 @@ class RomImage:
             self.fin.close()
 
 
-class RomHeaderNotFoundError(Exception):
-    def __init__(self: Self) -> None:
+class RomHeaderNotFoundError(ValueError):
+    def __init__(self) -> None:
         super().__init__("ROM header not found")
 
 
@@ -82,9 +82,9 @@ def get_snes_header(mem: mmap.mmap) -> bytes:
         ROM.
     """
 
-    assert not mem.closed
-
     bkp = mem.tell()
+    all_bits_on: Final = 0xFFFF
+    header_length: Final = 0x40
     try:
         # Detect which ROM type it is.
         # For LoROM, SNES header is located in [$7FC0, $8000),
@@ -92,12 +92,15 @@ def get_snes_header(mem: mmap.mmap) -> bytes:
         for i in (0x7FC0, 0xFFC0):
             mem.seek(i)
             buffer = mem.read(64)
+            if len(buffer) != header_length:
+                msg = "invalid header"
+                raise ValueError(msg)
 
             # [$xFDC, $xFDE): checksum complement (inverse).
             # [$xFDE, $xFE0): checksum bytes.
             chksum1 = int.from_bytes(buffer[0x1C:0x1E], "little")
             chksum2 = int.from_bytes(buffer[0x1E:0x20], "little")
-            if chksum1 ^ chksum2 == 0xFFFF:  # noqa: PLR2004
+            if chksum1 ^ chksum2 == all_bits_on:
                 return buffer
         raise RomHeaderNotFoundError
     finally:
