@@ -10,7 +10,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import MutableMapping, Sequence
-    from typing import Any, Final, Self, Unpack
+    from typing import Any, Final, Unpack
 
     type ContextT = MutableMapping[str, Any]
 
@@ -26,7 +26,7 @@ class AbstractState(metaclass=ABCMeta):
     The base class of state subclasses for class `StateMachine`.
     """
 
-    def __init__(self: Self, state_machine: StateMachine) -> None:
+    def __init__(self, state_machine: StateMachine | None) -> None:
         """Create an object of class `AbstractState`.
 
         This class is abstract and cannot be directly instantiated.
@@ -40,9 +40,9 @@ class AbstractState(metaclass=ABCMeta):
         --------------
         >>> self.state_machine is state_machine
         """
-        self.state_machine: StateMachine | None = state_machine
+        self._state_machine: StateMachine | None = state_machine
 
-    def __call__(self: Self, context: ContextT) -> tuple[ContextT, str | None]:
+    def __call__(self, context: ContextT) -> tuple[ContextT, str | None]:
         """Do something and return the name of the next state.
 
         An empty string will be returned to tell that this state is
@@ -63,7 +63,7 @@ class AbstractState(metaclass=ABCMeta):
         return context, None
 
     @property
-    def program_counter(self: Self) -> int:
+    def program_counter(self) -> int:
         """Return the program counter.
 
         Returns
@@ -76,8 +76,16 @@ class AbstractState(metaclass=ABCMeta):
             raise AttributeError(msg)
         return self.state_machine.program_counter
 
+    @property
+    def state_machine(self) -> StateMachine:
+        """Return the underlying state machine."""
+        if not self._state_machine:
+            msg = "state machine not set"
+            raise AttributeError(msg)
+        return self._state_machine
+
     @abstractmethod
-    def runtime_init(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
+    def runtime_init(self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Initialize before running the state machine.
 
         See also
@@ -85,14 +93,14 @@ class AbstractState(metaclass=ABCMeta):
         `StateMachine.runtime_init`
         """
 
-    def unlink(self: Self) -> None:
+    def unlink(self) -> None:
         """Remove circular references.
 
         Postconditions
         --------------
         >>> self.state_machine is None
         """
-        self.state_machine = None
+        self._state_machine = None
 
 
 # Does it need to be configurable?
@@ -102,7 +110,7 @@ OUTPUT_FORMAT: Final[str] = "{bank:02X}/{addr:04X}:\t{opcode:02X}{operand_raw:<6
 class DisassembleState(AbstractState):
     """This state provides a disassembler."""
 
-    def __init__(self: Self, state_machine: StateMachine) -> None:
+    def __init__(self, state_machine: StateMachine) -> None:
         """
         Create an object of class `DisassembleState`.
 
@@ -133,7 +141,7 @@ class DisassembleState(AbstractState):
             instructions[opcode] = instruction
         self.instructions = instructions
 
-    def __call__(self: Self, context: ContextT) -> tuple[ContextT, str | None]:
+    def __call__(self, context: ContextT) -> tuple[ContextT, str | None]:
         """Disassemble bytes.
 
         Parameters
@@ -166,7 +174,7 @@ class DisassembleState(AbstractState):
 
         return context, None
 
-    def runtime_init(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
+    def runtime_init(self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Initialize before running the state machine.
 
         Parameters
@@ -196,7 +204,7 @@ class DisassembleState(AbstractState):
         self.flags = kwargs.get("flags", 0)
         self.until_return = kwargs.get("until_return", False)
 
-    def _is_terminated(self: Self) -> bool:
+    def _is_terminated(self) -> bool:
         """Determine if this state machine is terminated.
 
         When --until-return option is enabled,
@@ -215,7 +223,7 @@ class DisassembleState(AbstractState):
         fsm = self.state_machine
         return fsm.last_rom_addr <= fsm.rom.tell()
 
-    def _read_instruction(self: Self) -> tuple[type[AbstractInstruction], bytes, bool]:
+    def _read_instruction(self) -> tuple[type[AbstractInstruction], bytes, bool]:
         """Read the current instruction and return as an object."""
 
         fsm = self.state_machine
@@ -252,7 +260,7 @@ class DisassembleState(AbstractState):
         return instruction, operand_raw, across_boundary
 
     def _eval_instruction(
-        self: Self,
+        self,
         instruction: type[AbstractInstruction],
         context: ContextT,
         *,
@@ -283,7 +291,7 @@ class DisassembleState(AbstractState):
         return context, None
 
     def _print_instruction(
-        self: Self,
+        self,
         instruction: type[AbstractInstruction],
         operand_raw: bytes | None,
         *,
@@ -323,7 +331,7 @@ class DisassembleState(AbstractState):
             file=out,
         )
 
-    def _init_instructions(self: Self) -> dict[int, type[AbstractInstruction]]:
+    def _init_instructions(self) -> dict[int, type[AbstractInstruction]]:
         """Return specialized instructions.
 
         Override this method if necessary, especially for BRK, COP,
@@ -338,7 +346,7 @@ class DisassembleState(AbstractState):
 
         return {}
 
-    def get_instruction(self: Self, opcode: bytes) -> type[AbstractInstruction]:
+    def get_instruction(self, opcode: bytes) -> type[AbstractInstruction]:
         """Return an object of class `AbstractInstruction`.
 
         Parameters
@@ -379,7 +387,7 @@ BANK_SIZE: Final[int] = 0x10000
 class DumpState(AbstractState):
     """This state provides `hexdump`."""
 
-    def __init__(self: Self, state_machine: StateMachine) -> None:
+    def __init__(self, state_machine: StateMachine) -> None:
         """
         Create an object of class `DumpState`.
 
@@ -397,7 +405,7 @@ class DumpState(AbstractState):
         self.byte_count: Sequence[int] = ()
         self.record_count = 0
 
-    def __call__(self: Self, context: ContextT) -> tuple[ContextT, str | None]:
+    def __call__(self, context: ContextT) -> tuple[ContextT, str | None]:
         """
         Perform byte-by-byte dump the contents of a ROM, in hexadecimal format.
 
@@ -441,7 +449,7 @@ class DumpState(AbstractState):
 
         return context, next_state
 
-    def runtime_init(self: Self, **kwargs: Unpack[StateMachineArgs]) -> None:
+    def runtime_init(self, **kwargs: Unpack[StateMachineArgs]) -> None:
         """Initialize before running the state machine.
 
         Parameters

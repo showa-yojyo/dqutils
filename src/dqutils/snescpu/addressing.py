@@ -65,7 +65,7 @@ def _format_program_counter_relative_long(state: DisassembleState) -> str:
 
 def _format_stack_program_counter_relative_long(state: DisassembleState) -> str:
     """Stack (PCounter Relative Long)"""
-    return f"${(state.program_counter + state.current_operand) & 0xFFFF:04X}"
+    return f"${(state.program_counter + cast(int, state.current_operand)) & 0xFFFF:04X}"
 
 
 # pylint: disable=line-too-long

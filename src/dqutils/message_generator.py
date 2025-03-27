@@ -31,16 +31,16 @@ _DUMMY_CODE: Final[int] = 0xFFFFFFFF
 _SHIFTBIT_ARRAY_SIZE: Final[int] = 8
 
 
-class Context(TypedDict):
+class MsgGenContext(TypedDict):
     title: str
     delimiters: array[int]
     charmap: dict[int, str]
     decoding_mask: int
-    message_id_first: int
-    message_id_last: int
+    id_first: int
+    id_last: int
     addr_group: int
     addr_shiftbit_array: int
-    addr_message: int
+    address: int
     addr_huffman_off: int
     addr_huffman_on: int
     huffman_root: int
@@ -53,7 +53,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     # pylint: disable=too-many-instance-attributes
     def __init__(
         self,
-        context: Context,
+        context: MsgGenContext,
         first: int | None = None,
         last: int | None = None,
     ) -> None:
@@ -78,10 +78,8 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
             and the following keys are optional:
 
-            - ``message_id_first``: this value is referred when
-              `first` is not specified.
-            - ``message_id_last``: this value is referred when
-              `last` is not specified.
+            - ``id_first``: this value is referred when `first` is not specified.
+            - ``id_last``: this value is referred when `last` is not specified.
             - ``decoding_read_size``: the size of an encoded code.
             - ``decoding_mask``: the mask for an decoded code.
 
@@ -95,22 +93,22 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         self.delimiters = context["delimiters"]
 
         if first is None:
-            first = context["message_id_first"]
+            first = context["id_first"]
         if last is None:
-            last = context["message_id_last"]
+            last = context["id_last"]
         self.first = first
         self.last = last
 
         self.addr_group = context["addr_group"]
         self.addr_shiftbit_array = context["addr_shiftbit_array"]
-        self.addr_message = context["addr_message"]
+        self._address = context["address"]
         self.addr_huffman_off = context["addr_huffman_off"]
         self.addr_huffman_on = context["addr_huffman_on"]
         self.huffman_root = context["huffman_root"]
 
         self.shiftbit_array: bytes
-        self.huffman_off: bytes | None = None
-        self.huffman_on: bytes | None = None
+        self.huffman_off: bytes
+        self.huffman_on: bytes
 
         self.decoding_read_size = context.get("decoding_read_size", 2)
         self.decoding_mask = context.get("decoding_mask", 0xFFFF)
@@ -122,7 +120,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         def assert_address_valid(name: str, addr: int) -> None:
             class InvalidAddressError(ValueError):
-                def __init__(self, name, address):
+                def __init__(self, name: str, address: int) -> None:
                     super().__init__(f"invalid address: {name} {address:6X}")
 
             if addr < 0:
@@ -134,7 +132,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
 
         assert_address_valid("group", self.addr_group)
         assert_address_valid("shiftbit_array", self.addr_shiftbit_array)
-        assert_address_valid("message", self.addr_message)
+        assert_address_valid("message", self._address)
 
         if len(self.shiftbit_array) < _SHIFTBIT_ARRAY_SIZE:
             msg = f"length of shiftbit_array must be equal to {_SHIFTBIT_ARRAY_SIZE}"
@@ -240,7 +238,7 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         # In fact, the array in RHS is
         # {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80}.
         shift = self.shiftbit_array[buffer1[0] & 0x07]
-        addr = get_bits(buffer1, 0, 0xFFFFF8) + self.addr_message
+        addr = get_bits(buffer1, 0, 0xFFFFF8) + self._address
         delims = self.delimiters
 
         # The loop counter depends on message id & 0x0007.

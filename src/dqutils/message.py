@@ -16,21 +16,21 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, cast
 
 if TYPE_CHECKING:
-    from collections.abc import Iterator, Mapping
-    from typing import Any
+    from collections.abc import Iterator
 
+from dqutils import INVALID_ID
 from dqutils.string import CodeSeq, get_hex, get_text
 from dqutils.string_generator import StringGeneratorCStyle
 
 if TYPE_CHECKING:
-    from dqutils.message_generator import AbstractMessageGenerator, Context, IteratorT
-    from dqutils.string_generator import StringInfo
+    from dqutils.message_generator import AbstractMessageGenerator, IteratorT, MsgGenContext
+    from dqutils.string_generator import StrGenContext, StringInfo
 
 
 def enum_battle(
-    context: Mapping[str, Any],
-    first: int | None = None,
-    last: int | None = None,
+    context: StrGenContext,
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> Iterator[StringInfo]:
     """Return generator iterators of message data by specifying
     their indices.
@@ -48,9 +48,9 @@ def enum_battle(
 
       and the following keys are optional:
 
-      - ``message_id_first``:
+      - ``id_first``:
         this value is referred when `first` is not specified.
-      - ``message_id_last``:
+      - ``id_last``:
         this value is referred when `last` is not specified.
 
     first : int, optional
@@ -69,9 +69,10 @@ def enum_battle(
 
 
 def print_battle(
-    context: Mapping[str, Any],
-    first: int | None = None,
-    last: int | None = None,
+    context: StrGenContext,
+    charmap: dict[int, str],
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> None:
     """Print message data to sys.stdout.
 
@@ -89,9 +90,9 @@ def print_battle(
 
       and the following keys are optional:
 
-      - ``message_id_first``:
+      - ``id_first``:
         this value is referred when `first` is not specified.
-      - ``message_id_last``:
+      - ``id_last``:
         this value is referred when `last` is not specified.
 
     first : int, optional
@@ -100,18 +101,17 @@ def print_battle(
         The last index + 1 of the range of indices you want.
     """
 
-    charmap = cast(dict[int, str], context["charmap"])
-    delims = cast(bytes, context["delimiters"])
+    delims = context["delimiters"]
     for i, item in enumerate(enum_battle(context, first, last)):
         text = get_text(item[1], charmap, delims) if charmap else get_hex(item[1])
         print(f"{i:04X}:{item[0]:06X}:{text}")
 
 
 def enum_scenario(
-    context: Context,
+    context: MsgGenContext,
     generator_t: type[AbstractMessageGenerator],
-    first: int | None = None,
-    last: int | None = None,
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
@@ -129,9 +129,9 @@ def enum_scenario(
 
       and the following keys are optional:
 
-      - ``message_id_first``:
+      - ``id_first``:
         this value is referred when `first` is not specified.
-      - ``message_id_last``:
+      - ``id_last``:
         this value is referred when `last` is not specified.
 
     generator_t : `~AbstractMessageGenerator`
@@ -155,10 +155,10 @@ def enum_scenario(
 
 
 def print_scenario(
-    context: Context,
+    context: MsgGenContext,
     generator_t: type[AbstractMessageGenerator],
-    first: int | None = None,
-    last: int | None = None,
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> None:
     """Print message data to sys.stdout.
 
@@ -175,9 +175,9 @@ def print_scenario(
 
       and the following keys are optional:
 
-      - ``message_id_first``:
+      - ``id_first``:
         this value is referred when `first` is not specified.
-      - ``message_id_last``:
+      - ``id_last``:
         this value is referred when `last` is not specified.
 
     generator_t : `~AbstractMessageGenerator`

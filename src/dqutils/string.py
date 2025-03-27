@@ -11,13 +11,14 @@ forms of raw bytes or human-readable texts.
 from __future__ import annotations
 
 from array import array
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
+
+from dqutils import INVALID_ID
 
 if TYPE_CHECKING:
     from collections.abc import Iterator, Mapping
-    from typing import Any
 
-    from dqutils.string_generator import AbstractStringGenerator, StringInfo
+    from dqutils.string_generator import AbstractStringGenerator, StrGenContext, StringInfo
 
 type CodeSeq = bytes | bytearray | array[int]
 
@@ -69,10 +70,10 @@ def get_hex(code_seq: CodeSeq) -> str:
 
 
 def enum_string(
-    context: Mapping[str, Any],
+    context: StrGenContext,
     generator_t: type[AbstractStringGenerator],
-    first: int | None = None,
-    last: int | None = None,
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
@@ -85,15 +86,14 @@ def enum_string(
       This shall have the following keys:
 
       - ``title``: the game title.
-      - ``addr_string`` or ``addr_message``: the address that
-        string data are stored.
+      - ``address``: the address that string/data are stored.
       - ``delimiters``: delimeter characters, in type bytes.
 
       and the following keys are optional:
 
-      - ``string_id_first`` or ``message_id_first``:
+      - ``id_first``:
         this value is referred when `first` is not specified.
-      - ``string_id_last`` or ``message_id_last``:
+      - ``id_last``:
         this value is referred when `last` is not specified.
 
     generator_t : `~AbstractStringGenerator`
@@ -116,10 +116,11 @@ def enum_string(
 
 
 def print_string(
-    context: Mapping[str, Any],
+    context: StrGenContext,
     generator_t: type[AbstractStringGenerator],
-    first: int | None = None,
-    last: int | None = None,
+    charmap: Mapping[int, str],
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> None:
     """Print string data to sys.stdout.
 
@@ -131,29 +132,28 @@ def print_string(
       This shall have the following keys:
 
       - ``title``: the game title.
-      - ``charmap``: a dict object for character mapping.
-      - ``addr_string`` or ``addr_message``: the address that
-        string data are stored.
+      - ``address``: the address that string/data are stored.
       - ``delimiters``: delimeter characters, in type bytes.
 
       and the following keys are optional:
 
-      - ``string_id_first`` or ``message_id_first``:
+      - ``id_first``:
         this value is referred when `first` is not specified.
-      - ``string_id_last`` or ``message_id_last``:
+      - ``id_last``:
         this value is referred when `last` is not specified.
 
     generator_t : `~AbstractStringGenerator`
         The type of string generator. See the module
         dqutils.string_generator for details.
+    charmap :
+        a dict object for character mapping.
     first : int, optional
         The first index of the range of indices you want.
     last : int, optional
         The last index + 1 of the range of indices you want.
     """
 
-    delim = cast(bytes, context["delimiters"])
-    charmap = cast(dict[int, str], context["charmap"])
+    delim = context["delimiters"]
     start = 0 if first is None else int(first)
     for i, item in enumerate(generator_t(context, start, last), start):
         text = get_text(item[1], charmap, delim) if charmap else get_hex(item[1])

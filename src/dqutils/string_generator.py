@@ -3,30 +3,32 @@
 from __future__ import annotations
 
 from abc import ABCMeta, abstractmethod
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING, TypedDict, cast
 
+from dqutils import INVALID_ID
 from dqutils.snescpu.mapper import AbstractMapper, make_mapper
 from dqutils.snescpu.rom_image import RomImage
 
 if TYPE_CHECKING:
     import mmap
-    from collections.abc import Iterator, Mapping
-    from typing import Any
+    from collections.abc import Iterator
 
     type StringInfo = tuple[int, bytes | bytearray]
-    type ContextT = Mapping[str, Any]
+
+
+class StrGenContext(TypedDict):
+    title: str
+    delimiters: bytes
+    address: int
+    id_first: int
+    id_last: int
 
 
 # pylint: disable=too-few-public-methods
 class AbstractStringGenerator(metaclass=ABCMeta):
     """The base class of StringGenerator subclasses."""
 
-    def __init__(
-        self,
-        context: ContextT,
-        first: int | None = None,
-        last: int | None = None,
-    ) -> None:
+    def __init__(self, context: StrGenContext, first: int, last: int) -> None:
         """Create an object of class AbstractStringGenerator.
 
         Parameters
@@ -35,15 +37,14 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             This shall have the following keys:
 
             - ``title``: the game title.
-            - ``addr_string`` or ``addr_message``: the address that
-              string or message data are stored.
+            - ``address``: the address that string/message data are stored.
             - ``delimiters``: delimeter characters, in type bytes.
 
             and the following keys are optional:
 
-            - ``string_id_first`` or ``message_id_first``:
+            - ``id_first``:
               this value is referred when `first` is not specified.
-            - ``string_id_last`` or ``message_id_last``:
+            - ``id_last``:
               this value is referred when `last` is not specified.
 
         first : int, optional
@@ -52,15 +53,15 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             The last index + 1 of the range of indices you want.
         """
 
-        if first is None:
-            first = context.get("string_id_first", context.get("message_id_first"))
-        if last is None:
-            last = context.get("string_id_last", context.get("message_id_last"))
+        if first < 0:
+            first = context.get("id_first", INVALID_ID)
+        if last < 0:
+            last = context.get("id_last", INVALID_ID)
 
         self.title: str = context["title"]
-        self.first: int = cast(int, first)
-        self.last: int = cast(int, last)
-        self.addr: int = context.get("addr_string", context.get("addr_message"))
+        self.first = first
+        self.last = last
+        self._address: int = context["address"]
         self.delims: bytes | None = context.get("delimiters")
         self.mapper: type[AbstractMapper]
         self.assert_valid()
@@ -68,12 +69,15 @@ class AbstractStringGenerator(metaclass=ABCMeta):
     def __iter__(self) -> Iterator[StringInfo]:
         self.assert_valid()
 
+        if INVALID_ID in {self.first, self.last}:
+            return
+
         if self.first >= self.last:
             return
 
         with RomImage(self.title) as mem:
             self.mapper = make_mapper(rom=mem)
-            addr = self.addr
+            addr = self._address
             mem.seek(self.mapper.from_cpu(addr))
             yield from self._do_iterate(mem, addr)
 
@@ -83,8 +87,8 @@ class AbstractStringGenerator(metaclass=ABCMeta):
             msg = "title is not set"
             raise ValueError(msg)
         # assert self.first and self.last and 0 <= self.first <= self.last
-        if self.addr < 0:
-            msg = f"addr {self.addr} must be non-negative value"
+        if self._address < 0:
+            msg = f"addr {self._address} must be non-negative value"
             raise ValueError(msg)
         if self.delims and not isinstance(self.delims, bytes):
             msg = f"{self.delims} not supported as delimiters"
@@ -114,6 +118,14 @@ class AbstractStringGenerator(metaclass=ABCMeta):
 class StringGeneratorPascalStyle(AbstractStringGenerator):
     """Return generator iterators for Pascal-style (size-included) strings information."""
 
+    def __init__(self, title: str, address: int, id_first: int, id_last: int) -> None:
+        self.title = title
+        self.first = id_first
+        self.last = id_last
+        self._address = address
+        self.delims = None
+        self.assert_valid()
+
     def _do_iterate(self, mem: mmap.mmap, addr: int) -> Iterator[StringInfo]:
         first, last = self.first, self.last
         for i in range(last):
@@ -136,7 +148,7 @@ class StringGeneratorCStyle(AbstractStringGenerator):
             # do-while loop
             code = mem.read_byte()
             code_seq.append(code)
-            while code not in delims:
+            while code not in cast(bytes, delims):
                 code = mem.read_byte()
                 code_seq.append(code)
 

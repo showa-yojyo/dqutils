@@ -4,7 +4,7 @@ Instructions of the 65816 Processor.
 
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, cast
 
 from dqutils.snescpu.addressing import get_addressing_mode
 
@@ -25,7 +25,7 @@ def _execute_c2(state: DisassembleState, context: ContextT) -> tuple[ContextT, N
     register bits.
     """
 
-    state.flags &= ~state.current_operand
+    state.flags &= ~cast(int, state.current_operand)
     return context, None
 
 
@@ -37,7 +37,7 @@ def _execute_e2(state: DisassembleState, context: ContextT) -> tuple[ContextT, N
     register bits.
     """
 
-    state.flags |= state.current_operand
+    state.flags |= cast(int, state.current_operand)
     return context, None
 
 

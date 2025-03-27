@@ -9,13 +9,21 @@ This package contains the following sub-packages:
 
 """
 
+from __future__ import annotations
+
 import sys
 from argparse import ArgumentParser
-from collections.abc import Callable, Iterable
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
+
+if TYPE_CHECKING:
+    from collections.abc import Callable, Iterable
+    from typing import Final
+
 
 # Release data
 from dqutils.release import __version__
+
+INVALID_ID: Final[int] = -1
 
 
 class Command(NamedTuple):

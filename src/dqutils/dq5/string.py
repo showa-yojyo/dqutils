@@ -10,61 +10,53 @@ raw bytes and legible texts.
 # ruff: noqa: T201
 from __future__ import annotations
 
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Final
 
-from dqutils.string import enum_string as _enum_string
+from dqutils import INVALID_ID
 from dqutils.string import get_text
 from dqutils.string_generator import StringGeneratorPascalStyle
 
 if TYPE_CHECKING:
-    from dqutils.string_generator import ContextT, StringInfo
+    from dqutils.string_generator import StrGenContext, StringInfo
 from dqutils.dq5.charsmall import CHARMAP, process_dakuten
 
 CONTEXT_GROUP: Final = (
     # Partners (human beings).
-    {"addr_string": 0x23C5CE, "string_id_first": 0, "string_id_last": 8},
+    {"address": 0x23C5CE, "id_first": 0, "id_last": 8},
     # Classes.
-    {"addr_string": 0x23C5F9, "string_id_first": 0, "string_id_last": 17},
+    {"address": 0x23C5F9, "id_first": 0, "id_last": 17},
     # Distinction (male/female/others!).
-    {"addr_string": 0x23C690, "string_id_first": 0, "string_id_last": 3},
+    {"address": 0x23C690, "id_first": 0, "id_last": 3},
     # Spells and skills.
-    {"addr_string": 0x228000, "string_id_first": 0, "string_id_last": 171},
+    {"address": 0x228000, "id_first": 0, "id_last": 171},
     # Monsters.
-    {"addr_string": 0x23C69C, "string_id_first": 0, "string_id_last": 236},
+    {"address": 0x23C69C, "id_first": 0, "id_last": 236},
     # Items.
-    {"addr_string": 0x23CE0E, "string_id_first": 0, "string_id_last": 216},
+    {"address": 0x23CE0E, "id_first": 0, "id_last": 216},
     # Strategies.
-    {"addr_string": 0x23D5B5, "string_id_first": 0, "string_id_last": 6},
+    {"address": 0x23D5B5, "id_first": 0, "id_last": 6},
     # Unknown 1.
-    {"addr_string": 0x308000, "string_id_first": 0, "string_id_last": 0},
+    {"address": 0x308000, "id_first": 0, "id_last": 0},
     # Unknown 2.
-    {"addr_string": 0x23D6A1, "string_id_first": 0, "string_id_last": 0},
+    {"address": 0x23D6A1, "id_first": 0, "id_last": 0},
     # Ditto.
-    {"addr_string": 0x23D6A1, "string_id_first": 0, "string_id_last": 0},
+    {"address": 0x23D6A1, "id_first": 0, "id_last": 0},
     # Partners (monsters).
-    {"addr_string": 0x23C242, "string_id_first": 0, "string_id_last": 168},
+    {"address": 0x23C242, "id_first": 0, "id_last": 168},
     # Destination list.
-    {"addr_string": 0x23D5F3, "string_id_first": 0, "string_id_last": 23},
+    {"address": 0x23D5F3, "id_first": 0, "id_last": 23},
 )
 """the string table located at $21955B."""
 
-CONTEXT_PROTOTYPE: Final = {
-    "title": "DRAGONQUEST5",
-    "charmap": CHARMAP,
-}
-
-for group in CONTEXT_GROUP:
-    group.update(CONTEXT_PROTOTYPE)  # type: ignore[arg-type]
-
 
 def enum_string(
-    context: ContextT,
-    first: int | None = None,
-    last: int | None = None,
+    context: StrGenContext,
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
@@ -85,7 +77,12 @@ def enum_string(
     b : bytearray
         The next bytes of data in the range of 0 to `last` - 1.
     """
-    yield from _enum_string(context, StringGeneratorPascalStyle, first, last)
+    yield from StringGeneratorPascalStyle(
+        "DRAGONQUEST5",
+        context["address"],
+        first,
+        last,
+    )
 
 
 def print_all() -> None:
@@ -93,8 +90,14 @@ def print_all() -> None:
 
     for groupid, context in enumerate(CONTEXT_GROUP):
         print(f"Group #{groupid:d}")
-        charmap = cast(dict[int, str], context["charmap"])
-        for i, entry in enumerate(StringGeneratorPascalStyle(context)):
+        for i, entry in enumerate(
+            StringGeneratorPascalStyle(
+                "DRAGONQUEST5",
+                context["address"],
+                context["id_first"],
+                context["id_last"],
+            )
+        ):
             address, code_seq = entry
-            text = process_dakuten(get_text(code_seq, charmap, None))
+            text = process_dakuten(get_text(code_seq, CHARMAP, None))
             print(f"{i:04X}:{address:06X}:{text}")

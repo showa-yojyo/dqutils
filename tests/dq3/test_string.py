@@ -2,6 +2,7 @@
 
 import pytest
 
+from dqutils.dq3.charsmall import CHARMAP
 from dqutils.dq3.string import CONTEXT, enum_string
 from dqutils.string import get_text
 
@@ -14,7 +15,7 @@ def test_get_text():
     """Test function dqutils.dq3.get_text."""
     text = get_text(
         b"\x26\x24\x12\x24\xdc\x0e\xac",
-        CONTEXT["charmap"],
+        CHARMAP,
         CONTEXT["delimiters"],
     )
     assert "ひのきのぼう" in text
@@ -53,6 +54,6 @@ def test_enum_string(str_id, expected):
     assert actual[0] == int(expected_address, 16)
     assert expected_readable in get_text(
         actual[1],
-        CONTEXT["charmap"],
+        CHARMAP,
         CONTEXT["delimiters"],
     )

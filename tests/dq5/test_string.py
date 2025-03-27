@@ -2,7 +2,7 @@
 
 import pytest
 
-from dqutils.dq5.charsmall import process_dakuten
+from dqutils.dq5.charsmall import CHARMAP, process_dakuten
 from dqutils.dq5.string import CONTEXT_GROUP, enum_string
 from dqutils.string import get_text
 
@@ -25,16 +25,13 @@ def test_enum_string():
 @pytest.mark.parametrize("ctx", CONTEXT_GROUP)
 def test_enum_string_0_0(ctx):
     """Test enum_string(?, 0, 0)"""
-    if ctx["string_id_last"] == 0:
-        assert ctx["string_id_first"] == 0
+    if ctx["id_last"] == 0:
+        assert ctx["id_first"] == 0
         with pytest.raises(StopIteration):
             next(enum_string(ctx))
 
 
 def test_make_text():
     """Test function dqutils.dq5.charmapsmall.process_dakuten."""
-    context = CONTEXT_GROUP[5]
-    charmap = context["charmap"]
-
-    text = process_dakuten(get_text(HINOKINOBOU, charmap, None))
+    text = process_dakuten(get_text(HINOKINOBOU, CHARMAP, None))
     assert text == "ひのきのぼう"

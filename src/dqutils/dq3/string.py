@@ -8,27 +8,27 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Final
 
+from dqutils import INVALID_ID
 from dqutils.dq3.charsmall import CHARMAP
 from dqutils.string import enum_string as _enum_string
 from dqutils.string import print_string as _print_string
 from dqutils.string_generator import StringGeneratorCStyle
 
 if TYPE_CHECKING:
-    from dqutils.string_generator import StringInfo
+    from dqutils.string_generator import StrGenContext, StringInfo
 
-CONTEXT: Final = {
+CONTEXT: Final[StrGenContext] = {
     "title": "DRAGONQUEST3",
     "delimiters": b"\xac",
-    "charmap": CHARMAP,
-    "addr_string": 0xFECFB7,
-    "string_id_first": 0x0000,
-    "string_id_last": 0x03BE,
+    "address": 0xFECFB7,
+    "id_first": 0x0000,
+    "id_last": 0x03BE,
 }
 
 
 def enum_string(
-    first: int | None = None,
-    last: int | None = None,
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> Iterator[StringInfo]:
     """Return generator iterators of string data by specifying
     their indices.
@@ -52,7 +52,7 @@ def enum_string(
     yield from _enum_string(CONTEXT, StringGeneratorCStyle, first, last)
 
 
-def print_string(first: int | None = None, last: int | None = None) -> None:
+def print_string(first: int = INVALID_ID, last: int = INVALID_ID) -> None:
     """Print string data to sys.stdout.
 
     String data those indices in [`first`, `last`) will be used.
@@ -64,7 +64,7 @@ def print_string(first: int | None = None, last: int | None = None) -> None:
     last : int, optional
         The last index + 1 of the range of indices you want.
     """
-    _print_string(CONTEXT, StringGeneratorCStyle, first, last)
+    _print_string(CONTEXT, StringGeneratorCStyle, CHARMAP, first, last)
 
 
 def print_all() -> None:

@@ -9,6 +9,7 @@ if TYPE_CHECKING:
     from collections.abc import Iterator
     from typing import Final
 
+from dqutils import INVALID_ID
 from dqutils.dq3.charlarge import CHARMAP as CHARMAP_LARGE
 from dqutils.dq3.charsmall import CHARMAP as CHARMAP_SMALL
 from dqutils.message import enum_battle as _enum_battle
@@ -18,20 +19,18 @@ from dqutils.message import print_scenario as _print_scenario
 from dqutils.message_generator import MessageGeneratorW
 
 if TYPE_CHECKING:
-    from dqutils.message_generator import Context, IteratorT
-    from dqutils.string_generator import StringInfo
+    from dqutils.message_generator import IteratorT, MsgGenContext
+    from dqutils.string_generator import StrGenContext, StringInfo
 
-CONTEXT_MESSAGE_BATTLE: Final = {
+CONTEXT_MESSAGE_BATTLE: Final[StrGenContext] = {
     "title": "DRAGONQUEST3",
     "delimiters": b"\xac\xae",
-    "charmap": CHARMAP_SMALL,
-    "message_id_first": 0x0000,
-    "message_id_last": 0x0177,
-    "addr_message": 0xFC9F22,
-    "decoding_read_size": 2,
+    "id_first": 0x0000,
+    "id_last": 0x0177,
+    "address": 0xFC9F22,
 }
 
-CONTEXT_MESSAGE_SCENARIO: Final[Context] = {
+CONTEXT_MESSAGE_SCENARIO: Final[MsgGenContext] = {
     "title": "DRAGONQUEST3",
     "delimiters": array(
         "H",
@@ -42,11 +41,11 @@ CONTEXT_MESSAGE_SCENARIO: Final[Context] = {
     ),
     "charmap": CHARMAP_LARGE,
     "decoding_mask": 0xFFFF,
-    "message_id_first": 0x0000,
-    "message_id_last": 0x0FCF,
+    "id_first": 0x0000,
+    "id_last": 0x0FCF,
     "addr_group": 0xC15331,
     "addr_shiftbit_array": 0xC1B01C,
-    "addr_message": 0xFCC258,
+    "address": 0xFCC258,
     "addr_huffman_off": 0xC159D3,
     "addr_huffman_on": 0xC161A7,
     "huffman_root": 0x07D2,
@@ -55,8 +54,8 @@ CONTEXT_MESSAGE_SCENARIO: Final[Context] = {
 
 
 def enum_battle(
-    first: int | None = None,
-    last: int | None = None,
+    first: int = INVALID_ID,
+    last: int = INVALID_ID,
 ) -> Iterator[StringInfo]:
     """Return generator iterators of message data by specifying
     their indices.
@@ -82,10 +81,10 @@ def enum_battle(
 
 def print_all_battle() -> None:
     """Print all message data of battle mode to sys.stdout."""
-    _print_battle(CONTEXT_MESSAGE_BATTLE)
+    _print_battle(CONTEXT_MESSAGE_BATTLE, CHARMAP_SMALL)
 
 
-def enum_scenario(first: int | None = None, last: int | None = None) -> IteratorT:
+def enum_scenario(first: int = INVALID_ID, last: int = INVALID_ID) -> IteratorT:
     """Return generator iterators of message data by specifying
     their indices.
 
