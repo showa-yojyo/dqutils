@@ -18,15 +18,13 @@ jobs:
       uses: actions/checkout@v4
 
     - name: Set up Python ${{ matrix.python }}
-      uses: actions/setup-python@v5.2.0
+      uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python }}
 
-    - name: Install test dependencies
-      run: |
-        pip install --user pipenv
-        pipenv sync --dev
+    - name: Install Hatch
+      uses: pypa/hatch@install
 
     - name: Test
       run: |
-        pipenv run pytest tests
+        hatch test
