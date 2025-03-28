@@ -93,9 +93,7 @@ classifiers = [
 #
 # For an analysis of this field vs pip's requirements files see:
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
-dependencies = [
-    "pipenv"
-]
+dependencies = []
 
 # List additional groups of dependencies here (e.g. development dependencies).
 # Users will be able to install these using the "extras" syntax, for example:
@@ -107,9 +105,7 @@ dependencies = [
 # https://packaging.python.org/en/latest/specifications/dependency-specifiers/#extras
 [project.optional-dependencies]
 dev = []
-test = [
-    "pytest == 8.3.*"
-]
+test = []
 
 # List URLs that are relevant to your project
 #

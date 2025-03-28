@@ -19,10 +19,10 @@ As the package is not currently published on any package registry (e.g. PyPI),
 install directly from your local repositories. For example:
 
 ```console
-$ git clone https://github.com/showa-yojyo/dqutils
+$ git clone https://github.com/showa-yojyo/dqutils $REPOSITORY_ROOT
 ...
-$ cd $SOME_DIRECTORY
-$ pipenv install /path/to/dqutils
+$ cd $REPOSITORY_ROOT
+$ hatch run pip install -e .
 ```
 
 ### How to configure
@@ -46,15 +46,7 @@ DRAGONQUEST6 = /path/to/DRAGONQUEST6.smc
 
 ## How to test
 
-UNDER CONSTRUCTION (issue #11) (available only for developers?)
-
 Run the following command under the project root directory:
-
-```console
-pipenv run pytest
-```
-
-You can use Hatch as well as Pipenv:
 
 ```console
 hatch test
@@ -62,29 +54,12 @@ hatch test
 
 ## Build the Package
 
-To build the package, install the required packages and run the build command
-with Pipenv. The generated files will be in the `dist` directory. For example:
+To build the package, run the build command provided by [Hatch]. The generated
+files will be in the `dist` directory. For example:
 
 ```console
-$ cd $REPOSITORY_ROOT
-$ pipenv sync
-To activate this project's virtualenv, run pipenv shell.
-Alternatively, run a command inside the virtualenv with pipenv run.
-Installing dependencies from Pipfile.lock (xxxxxx)...
-All dependencies are now up-to-date!
-$ pipenv run python -m build
-* Creating isolated environment: venv+pip...
-* Installing packages in isolated environment:
-  - hatchling
-* Getting build dependencies for sdist...
-* Building sdist...
-* Building wheel from sdist
-* Creating isolated environment: venv+pip...
-* Installing packages in isolated environment:
-  - hatchling
-* Getting build dependencies for wheel...
-* Building wheel...
-Successfully built dqutils-x.y.z.tar.gz and dqutils-x.y.z-py3-none-any.whl
+cd $REPOSITORY_ROOT
+hatch build
 ```
 
 ## Usage
@@ -97,6 +72,9 @@ To print all of the message data in Dragon Quest 3, run:
 python -m dqutils.dq3 print-scenatio-messages
 python -m dqutils.dq3 print-battle-messages
 ```
+
+(Or `hatch run python -m ...` if this package has been installed in Hatch's
+virtual environment as mentioned above.)
 
 To print all of the string data in Dragon Quest 3, run:
 
@@ -181,3 +159,5 @@ See the `LICENSE` file under the installation directory.
   * Web site (GitHub): [showa-yojyo (プレハブ小屋)](https://github.com/showa-yojyo/)
   * E-mail: <yojyo@hotmail.com>
   * Twitter: [@showa_yojyo](https://twitter.com/showa_yojyo)
+
+[Hatch]: <https://hatch.pypa.io/dev/>
