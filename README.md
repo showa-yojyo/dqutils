@@ -58,7 +58,7 @@ To build the package, run the build command provided by [Hatch]. The generated
 files will be in the `dist` directory. For example:
 
 ```console
-cd $REPOSITORY_ROOT
+cd $REPOSITORY_ROOT 
 hatch build
 ```
 
@@ -69,7 +69,7 @@ hatch build
 To print all of the message data in Dragon Quest 3, run:
 
 ```console
-python -m dqutils.dq3 print-scenatio-messages
+python -m dqutils.dq3 print-scenario-messages
 python -m dqutils.dq3 print-battle-messages
 ```
 
