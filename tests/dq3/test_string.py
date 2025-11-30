@@ -57,3 +57,12 @@ def test_enum_string(str_id, expected):
         CHARMAP,
         CONTEXT["delimiters"],
     )
+
+
+def test_enum_all_strings():
+    counter = 0
+    for i, data in enumerate(enum_string()):
+        if i == 0:
+            assert data[0] == CONTEXT["address"]
+        counter += 1
+    assert counter == CONTEXT["id_last"]
