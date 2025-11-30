@@ -20,6 +20,7 @@ if TYPE_CHECKING:
 
     type IteratorT = Iterator[tuple[int, int, array[int]]]
 
+from dqutils import INVALID_ID
 from dqutils.bit import get_bits, get_int
 from dqutils.snescpu.mapper import make_mapper
 from dqutils.snescpu.rom_image import RomImage
@@ -54,8 +55,8 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
     def __init__(
         self,
         context: MsgGenContext,
-        first: int | None = None,
-        last: int | None = None,
+        first: int = INVALID_ID,
+        last: int = INVALID_ID,
     ) -> None:
         """Create an object of class AbstractMessageGenerator.
 
@@ -92,9 +93,9 @@ class AbstractMessageGenerator(metaclass=ABCMeta):
         self.title = context["title"]
         self.delimiters = context["delimiters"]
 
-        if first is None:
+        if first == INVALID_ID:
             first = context["id_first"]
-        if last is None:
+        if last == INVALID_ID:
             last = context["id_last"]
         self.first = first
         self.last = last
