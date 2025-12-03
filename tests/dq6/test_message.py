@@ -5,7 +5,7 @@ from array import array
 
 import pytest
 
-from dqutils.dq6.message import enum_battle, enum_scenario
+from dqutils.dq6.message import CONTEXT_MESSAGE_SCENARIO, enum_battle, enum_scenario
 
 from .. import requires_config
 
@@ -86,3 +86,7 @@ def test_enum_scenario(msg_id, addr, expected):
 def test_enum_scenario_invalid_range(first, last):
     with pytest.raises(StopIteration):
         next(enum_scenario(first, last))
+
+
+def test_enum_all_scenario():
+    assert sum(1 for _ in enum_scenario()) == CONTEXT_MESSAGE_SCENARIO["id_last"]

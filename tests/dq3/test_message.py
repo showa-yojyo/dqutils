@@ -5,7 +5,7 @@ from array import array
 
 import pytest
 
-from dqutils.dq3.message import enum_battle, enum_scenario
+from dqutils.dq3.message import CONTEXT_MESSAGE_SCENARIO, enum_battle, enum_scenario
 
 from .. import requires_config
 
@@ -46,3 +46,7 @@ def test_enum_scenario(msg_id, addr, expected):
     assert actual[0] == addr
     # [-1] is one of the delimiter characters.
     assert actual[-1][:-1] == expected
+
+
+def test_enum_all_scenario():
+    assert sum(1 for _ in enum_scenario()) == CONTEXT_MESSAGE_SCENARIO["id_last"]

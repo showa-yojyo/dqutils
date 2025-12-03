@@ -151,6 +151,12 @@ def enum_scenario(
     code_seq : bytearray
         A sequence of characters locating in `addr`.
     """
+
+    if first == INVALID_ID:
+        first = context["id_first"]
+    if last == INVALID_ID:
+        last = context["id_last"]
+
     yield from generator_t(context, first, last)
 
 

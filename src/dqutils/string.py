@@ -154,7 +154,8 @@ def print_string(
     """
 
     delim = context["delimiters"]
-    start = 0 if first is None else int(first)
-    for i, item in enumerate(generator_t(context, start, last), start):
+    if first == INVALID_ID:
+        first = 0
+    for i, item in enumerate(generator_t(context, first, last), first):
         text = get_text(item[1], charmap, delim) if charmap else get_hex(item[1])
         print(f"{i:04X}:{item[0]:06X}:{text}")  # noqa: T201
