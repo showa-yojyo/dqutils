@@ -10,21 +10,21 @@ jobs:
   test:
     strategy:
       matrix:
-        python: ['3.13']
         platform: [ubuntu-latest]
+        python-version: ['3.13', '3.14']
     runs-on: ${{ matrix.platform }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
-    - name: Set up Python ${{ matrix.python }}
-      uses: actions/setup-python@v5
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
       with:
-        python-version: ${{ matrix.python }}
+        python-version: ${{ matrix.python-version }}
 
     - name: Install Hatch
       uses: pypa/hatch@install
 
     - name: Test
       run: |
-        hatch test
+        hatch test --python ${{ matrix.python-version }}

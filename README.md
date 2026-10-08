@@ -49,7 +49,7 @@ DRAGONQUEST6 = /path/to/DRAGONQUEST6.smc
 Run the following command under the project root directory:
 
 ```console
-hatch test
+hatch test --python 3.14
 ```
 
 ## Build the Package

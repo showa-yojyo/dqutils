@@ -40,4 +40,4 @@ dependencies = [
 #lint-fix = "ruff check --fix {args:src/dqutils}"
 
 [[envs.hatch-test.matrix]]
-python = ["3.13"]
+python = ["3.13", "3.14"]

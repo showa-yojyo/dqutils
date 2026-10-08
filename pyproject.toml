@@ -78,6 +78,7 @@ classifiers = [
     # "pip install". See instead "requires-python" key in this file.
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Programming Language :: Python :: 3 :: Only",
 
     # Pick your license as you wish
