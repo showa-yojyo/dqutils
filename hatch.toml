@@ -4,26 +4,19 @@ path = "src/dqutils/release.py"
 [build]
 exclude = [
     "/.*",
-    "Pipfile*",
-]
-[build.targets.wheel]
-exclude = [
+    "/*.ini",
+    "/ruff*.toml",
+    "/uv.lock",
     "/tests",
 ]
+
 ignore-vcs = true
 
-[envs.types]
-dependencies = [
-    "mypy~=1.15"
-]
 [envs.types.scripts]
 check = "mypy --strict {args:src/dqutils}"
 
 [envs.hatch-static-analysis]
 config-path = "ruff_defaults.toml"
-dependencies = [
-  "ruff~=0.11"
-]
 
 #[envs.hatch-static-analysis.scripts]
 
@@ -40,4 +33,8 @@ dependencies = [
 #lint-fix = "ruff check --fix {args:src/dqutils}"
 
 [[envs.hatch-test.matrix]]
-python = ["3.13", "3.14"]
+python = [
+    "3.13",
+    "3.14",
+    "3.15",
+]

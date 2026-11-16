@@ -7,27 +7,19 @@
 
 This package provides the following features:
 
-* (DQ3, 5 and 6) View all text data of scenatio and battle scene.
-* (DQ3, 5 and 6) View all string data.
-* (DQ3, 5 and 6) Dump arrays of structs.
+* (DQ 3, 5 and 6) View all text data of scenatio and battle scene.
+* (DQ 3, 5 and 6) View all string data.
+* (DQ 3, 5 and 6) Dump arrays of structs.
 
 ## Setup
 
 ### How to install
 
-As the package is not currently published on any package registry (e.g. PyPI),
-install directly from your local repositories. For example:
-
-```console
-$ git clone https://github.com/showa-yojyo/dqutils $REPOSITORY_ROOT
-...
-$ cd $REPOSITORY_ROOT
-$ hatch run pip install -e .
-```
+TO BE REWRITTEN.
 
 ### How to configure
 
-Before run a dqutils tool, you must make one of the directory below:
+Before to run a dqutils tool, you must create one of the directory below:
 
 * `$XDG_CONFIG_HOME/dqutils`
 * `$HOME/.config/dqutils`
@@ -49,7 +41,7 @@ DRAGONQUEST6 = /path/to/DRAGONQUEST6.smc
 Run the following command under the project root directory:
 
 ```console
-hatch test --python 3.14
+uv run hatch test --python=3.15
 ```
 
 ## Build the Package
@@ -59,22 +51,21 @@ files will be in the `dist` directory. For example:
 
 ```console
 cd $REPOSITORY_ROOT 
-hatch build
+uv build
 ```
 
 ## Usage
 
 ### View Texts
 
-To print all of the message data in Dragon Quest 3, run:
+For example, to print all of the message data in Dragon Quest 3, run as below:
 
 ```console
 python -m dqutils.dq3 print-scenario-messages
 python -m dqutils.dq3 print-battle-messages
 ```
 
-(Or `hatch run python -m ...` if this package has been installed in Hatch's
-virtual environment as mentioned above.)
+(Or run `uv run python -m ...` in development environment.)
 
 To print all of the string data in Dragon Quest 3, run:
 
