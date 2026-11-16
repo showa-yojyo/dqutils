@@ -20,14 +20,13 @@ from __future__ import annotations
 
 import sys
 from argparse import ArgumentParser
-from csv import QUOTE_NONE, reader, writer
+from csv import QUOTE_NONE, reader, writer, DictWriter
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from _csv import _writer
     from argparse import Namespace
     from collections.abc import Iterable, Sequence
-    from typing import Final, Literal
+    from typing import Any, Final, Literal
 
 from dqutils.bit import get_bits
 from dqutils.release import __version__
@@ -71,7 +70,7 @@ def dump(
     sizeof_object: int,
     sizeof_array: int,
     source: Iterable[list[str]],
-    destination: _writer,
+    destination: Any,
 ) -> None:
     """Dump a sequence of typed objects in ROM image.
 
