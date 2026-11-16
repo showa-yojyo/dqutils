@@ -19,7 +19,7 @@ name = "dqutils"
 #
 # For a discussion on single-sourcing the version, see
 # https://packaging.python.org/guides/single-sourcing-package-version/
-# version = "1.1.2"
+# version = "x.y.z"
 dynamic = ["version"]
 
 # This is a one-line description or tagline of what your project does. This
@@ -59,14 +59,14 @@ keywords = []
 # authored the project, and a valid email address corresponding to the name
 # listed.
 authors = [
-    { name="プレハブ小屋", email="yojyo@hotmail.com" },
+    { name="プレハブ小屋", email = "2386769+showa-yojyo@users.noreply.github.com" },
 ]
 
 # This should be your name or the names of the organization who currently
 # maintains the project, and a valid email address corresponding to the name
 # listed.
 maintainers = [
-    { name="プレハブ小屋", email="yojyo@hotmail.com" },
+    { name="プレハブ小屋", email = "2386769+showa-yojyo@users.noreply.github.com" },
 ]
 
 # Classifiers help users find your project by categorizing it.
@@ -79,6 +79,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Programming Language :: Python :: 3 :: Only",
 
     # Pick your license as you wish
@@ -96,17 +97,21 @@ classifiers = [
 # https://packaging.python.org/discussions/install-requires-vs-requirements/
 dependencies = []
 
-# List additional groups of dependencies here (e.g. development dependencies).
-# Users will be able to install these using the "extras" syntax, for example:
-#
-#   $ pip install sampleproject[dev]
-#
-# Optional dependencies the project provides. These are commonly referred to as
-# "extras". For a more extensive definition see:
-# https://packaging.python.org/en/latest/specifications/dependency-specifiers/#extras
-[project.optional-dependencies]
-dev = []
-test = []
+[dependency-groups]
+dev = [
+    "hatch",
+    { include-group = "test" },
+    { include-group = "linter" },
+]
+linter = [
+    "mypy>=2.4.1",
+    "ruff>=0.17.5",
+]
+test = [
+    "coverage[toml]>=7.17.3",
+    "pytest>=9.2.0",
+    "pytest-cov>=7.1.0",
+]
 
 # List URLs that are relevant to your project
 #
@@ -132,7 +137,7 @@ Source = "https://github.com/showa-yojyo/dqutils/"
 # https://packaging.python.org/en/latest/tutorials/packaging-projects/#choosing-a-build-backend
 [build-system]
 
-# A list of packages that are needed to build your package:
+ # A list of packages that are needed to build your package:
 requires = ["hatchling"]
 
 # The name of the Python object that frontends will use to perform the build:
